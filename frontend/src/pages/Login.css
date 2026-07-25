@@ -1,10 +1,10 @@
-.signup {
+.login {
   display: flex;
   height: 100vh;
   width: fit-content;
 }
 
-.signup__form {
+.login__form {
   display: flex;
   flex-direction: column;
   padding: 25px;
@@ -12,13 +12,13 @@
   gap: 20px;
 }
 
-.signup__title {
+.login__title {
   text-align: left;
   font-size: 20px;
   color: #26215c;
 }
 
-.signup__divider {
+.login__divider {
   display: flex;
   align-items: center;
   text-align: center;
@@ -27,14 +27,14 @@
   padding: 0 12px;
 }
 
-.signup__divider::before,
-.signup__divider::after {
+.login__divider::before,
+.login__divider::after {
   content: "";
   flex: 1;
   border-bottom: 1px solid #cccccc;
 }
 
-.signup__divider_text {
+.login__divider_text {
   padding: 0 12px;
   font-size: 16px;
 }

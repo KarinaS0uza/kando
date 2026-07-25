@@ -13,7 +13,6 @@ const imageModules = import.meta.glob("../assets/*.{png,jpg,jpeg,svg}", {
   eager: true,
 });
 const images = Object.values(imageModules).map((mod) => mod.default);
-console.log(images[0]);
 
 export default function TalentPassport({
   candidateName = "Nícolas Silva Gomes",

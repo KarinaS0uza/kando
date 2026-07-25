@@ -1,0 +1,94 @@
+.join__form {
+  display: flex;
+  flex-direction: column;
+  padding: 25px;
+  flex: 1;
+  gap: 20px;
+}
+.join__title {
+  text-align: left;
+  font-size: 20px;
+  color: #26215c;
+}
+
+.join__form_inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  font-size: 16px;
+}
+
+.join__form_input-email {
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+  position: relative;
+}
+
+.join__form_email {
+  background-color: rgb(96%, 96%, 100%);
+  border: none;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.join__form_password {
+  background-color: rgb(96%, 96%, 100%);
+  border: none;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.join__form_input-error {
+  border: 1px solid red;
+  border-color: red;
+}
+
+.join__form_input-error:focus-visible {
+  outline: 1px solid red;
+}
+
+.join__form-error {
+  color: red;
+  font-size: 12px;
+  align-self: start;
+  padding-left: 10px;
+  position: absolute;
+  bottom: -23px;
+}
+
+.join__form_button {
+  border: none;
+  background-color: #26215c;
+  color: white;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+.join__form_button:disabled {
+  background-color: #e2e2e2;
+  color: #adadad;
+  font-weight: 500;
+}
+
+.join__create-account {
+  display: flex;
+  justify-content: center;
+  font-size: 16px;
+  gap: 5px;
+  top: -20px;
+  position: relative;
+}
+
+.join__create {
+  display: flex;
+}
+.join__account {
+}
+.join__account_link {
+  text-decoration: none;
+}

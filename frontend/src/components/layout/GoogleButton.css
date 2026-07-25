@@ -1,0 +1,17 @@
+.login__google_button {
+  border: 1px solid rgb(184, 184, 184);
+  background-color: #ffffff;
+  color: rgb(129, 129, 129);
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 10px;
+  gap: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login__google_button-icon {
+  width: 20px;
+}
