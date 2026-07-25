@@ -7,10 +7,9 @@ from django.db import models
 
 class JobPosting(models.Model):
     """
-    Raw job posting content submitted by a candidate for comparison
-    against their resume.
+    A job posting submitted by a candidate, either as pasted text 
+    or as a PDF that will later be processed into text.
     """
-
     class Source(models.TextChoices):
         PDF = "pdf", "PDF"
         TEXT = "text", "Text"
@@ -29,18 +28,13 @@ class JobPosting(models.Model):
     source = models.CharField(
         max_length=10,
         choices=Source.choices,
-        help_text="pdf or text",
+        help_text="Submission source: 'text' or 'pdf'.",
     )
     raw_text = models.TextField(
         blank=True,
         null=True,
     )
-    file_url = models.URLField(
-        max_length=500,
-        blank=True,
-        null=True,
-        help_text="Set when source is pdf, stored on Supabase",
-    )
+    
     extracted_text = models.TextField(
         blank=True,
         null=True,
