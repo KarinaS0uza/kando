@@ -9,6 +9,7 @@ export default function JoinForm({
   accountText,
   linkText,
   buttonText,
+  formType,
 }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -60,12 +61,23 @@ export default function JoinForm({
     setErrorPassword("");
     setLoading(true);
     try {
-      const user = await authService.login(email, password);
+      let user;
+      if (formType == "login") {
+        user = await authService.login(email, password);
+      } else {
+        user = await authService.signup(email, password);
+      }
       login(user);
       navigate("/dashboard");
     } catch (err) {
-      setErrorEmail(err.message);
-      setErrorPassword(err.message);
+      console.log(err);
+
+      if (err == "Error: Este email já está cadastrado.") {
+        setErrorEmail(err.message);
+      } else {
+        setErrorEmail(err.message);
+        setErrorPassword(err.message);
+      }
     } finally {
       setLoading(false);
     }

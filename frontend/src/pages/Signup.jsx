@@ -14,6 +14,7 @@ export default function Signup() {
           accountText="Já tem conta?"
           linkText="Entre"
           buttonText="Cadastrar"
+          formType="signup"
         />
         <div className="signup__divider">
           <span className="signup__divider_text">ou</span>

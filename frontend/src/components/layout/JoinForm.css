@@ -67,12 +67,24 @@
   padding: 10px;
   border-radius: 10px;
   margin-top: 10px;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .join__form_button:disabled {
   background-color: #e2e2e2;
   color: #adadad;
   font-weight: 500;
+}
+
+.join__form_button:hover {
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    0 1px 3px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .join__create-account {

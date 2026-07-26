@@ -14,6 +14,7 @@ export default function Login() {
           accountText="Não tem conta?"
           linkText="Cadastre-se"
           buttonText="Entrar"
+          formType="login"
         />
         <div className="login__divider">
           <span className="login__divider_text">ou</span>
