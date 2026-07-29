@@ -1,0 +1,149 @@
+.upload__input {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 250px;
+  height: 100%;
+  width: auto;
+  border: 1px dashed rgb(173, 171, 171);
+  transition:
+    outline-offset 0.2s ease,
+    outline-color 0.2s ease;
+}
+
+.upload__input-onDrag {
+  border: 4px dashed transparent;
+  outline: 4px dashed rgb(175, 175, 175);
+  outline-offset: -10px;
+}
+
+.upload__preview {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  width: auto;
+  border: 1px solid rgb(173, 171, 171);
+  animation: upload__preview-in 0.35s ease;
+}
+
+@keyframes upload__preview-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.upload__preview_content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+}
+
+.upload__preview_page {
+  /* react-pdf sets min-width/min-height: min-content inline, which blocks shrinking */
+  min-height: 0 !important;
+  min-width: 0 !important;
+}
+
+.upload__preview_page canvas {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  width: auto !important;
+  height: auto !important;
+  margin-inline: auto;
+  object-fit: contain;
+}
+
+.upload__preview_pages {
+  flex-shrink: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+  margin: 0;
+  list-style-type: none;
+  text-align: center;
+  position: relative;
+  top: 0;
+}
+
+.upload__dropzone {
+  box-sizing: border-box;
+
+  padding: clamp(20px, 8%, 100px);
+  max-width: 500px;
+  flex-grow: 1;
+  height: 100%;
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.upload__icon {
+  width: 30px;
+  height: auto;
+}
+
+.upload__icon-onDrag {
+  width: 60px;
+}
+
+.upload__text {
+  color: rgb(201, 201, 201);
+  opacity: 1;
+}
+
+.upload__file_list {
+  flex-shrink: 0;
+  height: 20px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.upload__file {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  padding-right: 2px;
+  gap: 2px;
+  min-width: 0;
+}
+
+.upload__file_name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+  margin: 0;
+  list-style-type: none;
+  text-align: start;
+  padding-left: 2px;
+}
+
+.upload__file_delete-button {
+  border: none;
+  background-color: transparent;
+  font-size: 10px;
+  text-align: end;
+  max-height: 15px;
+}
+
+.upload__file_delete-button_icon {
+  width: 13px;
+}

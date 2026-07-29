@@ -52,11 +52,11 @@
 
 body {
   display: block;
-  margin: 8px;
+  margin: 0px;
 }
 
 #root {
-  width: 1126px;
+  width: 100%;
   max-width: 100%;
   margin: 0 auto;
   text-align: center;
@@ -67,6 +67,7 @@ body {
   box-sizing: border-box;
   font-weight: 600;
   align-items: center;
+  justify-content: center;
 }
 
 h1,
