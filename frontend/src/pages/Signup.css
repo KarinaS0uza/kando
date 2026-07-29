@@ -1,7 +1,14 @@
 .signup {
   display: flex;
-  height: 100vh;
-  width: fit-content;
+  height: 540px;
+  width: 900px;
+  justify-self: center;
+  border: 1px solid rgb(240, 238, 238);
+  border-radius: 15px;
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    0 1px 3px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
 }
 
 .signup__form {
