@@ -1,5 +1,5 @@
 import "./InputUpload.css";
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
@@ -28,8 +28,11 @@ export default function InputUpload({ onFileChange }) {
 
   function handleErrorMessage(err, file) {
     switch (err.code) {
-      case "file-too-large":
-        return `${file.name} dépasse la taille maximale`;
+      case "file-too-large": {
+        const message = `${file.name} excede o tamanho máximo de 5MB`;
+        toast.error(message);
+        return message;
+      }
       case "too-many-files":
         return "Trop de fichiers";
       case "file-invalid-type":
@@ -45,6 +48,7 @@ export default function InputUpload({ onFileChange }) {
     accept: { "application/pdf": [".pdf"] },
     maxFiles: 1,
     multiple: false,
+    maxSize: 5 * 1024 * 1024,
     getErrorMessage: (err, file) => {
       return handleErrorMessage(err, file);
     },
@@ -86,9 +90,13 @@ export default function InputUpload({ onFileChange }) {
         }}
       />
       <section
-        className={
-          isDragActive ? "upload__input upload__input-onDrag" : "upload__input"
-        }
+        className={[
+          "upload__input",
+          isDragActive && "upload__input-onDrag",
+          file && "upload__input-hasFile",
+        ]
+          .filter(Boolean)
+          .join(" ")}
       >
         {!file && (
           <div {...getRootProps({ className: "upload__dropzone" })}>

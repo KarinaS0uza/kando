@@ -11,8 +11,9 @@
 
 .upload__inputs {
   display: flex;
-  gap: 40px;
-  max-height: 600px;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-content: flex-start;
 }
 
 .upload__inputs-pdf {
@@ -140,8 +141,8 @@
 
 .upload__compare-button-wrap {
   align-self: center;
-  margin-top: 20px;
   display: inline-block;
+  flex-basis: 100%;
 }
 
 .upload__compare-button {
@@ -158,18 +159,19 @@
     background-color 0.2s ease,
     box-shadow 0.2s ease,
     transform 0.2s ease;
+  margin: auto;
+}
+
+.upload__compare-button:hover {
+  cursor: pointer;
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    0 1px 3px rgba(0, 0, 0, 0.3);
+  transform: translateY(-1px);
 }
 
 .upload__compare-button:disabled {
   background-color: #e2e2e2;
   color: #adadad;
   font-weight: 500;
-}
-
-.upload__compare-button-wrap:hover .upload__compare-button {
-  box-shadow:
-    0 4px 8px rgba(0, 0, 0, 0.12),
-    0 1px 3px rgba(0, 0, 0, 0.3);
-  transform: translateY(-1px);
-  cursor: pointer;
 }

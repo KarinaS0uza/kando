@@ -12,9 +12,13 @@
 }
 
 .upload__input-onDrag {
-  border: 4px dashed transparent;
+  border: none;
   outline: 4px dashed rgb(175, 175, 175);
   outline-offset: -10px;
+}
+
+.upload__input-hasFile {
+  border: none;
 }
 
 .upload__preview {
