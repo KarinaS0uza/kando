@@ -7,7 +7,9 @@ from rest_framework.views import APIView
 
 from .models import JobPosting
 from .serializers import JobPostingSerializer
-
+from .services.storage import get_temp_pdf_path, temp_storage
+from .services.pdf_extraction import extract_text_from_pdf
+from .services.pdf_extraction import PdfExtractionError
 
 class JobPostingListCreateView(APIView):
     """
@@ -65,3 +67,5 @@ class JobPostingDetailView(APIView):
             )
         job_posting.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    

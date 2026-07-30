@@ -123,6 +123,10 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 
+# Media files (user-uploaded content, e.g. temporary PDF uploads)
+MEDIA_ROOT = BASE_DIR / "media"
+
+
 # Custom user model
 # https://docs.djangoproject.com/en/6.0/topics/auth/customizing/#substituting-a-custom-user-model
 

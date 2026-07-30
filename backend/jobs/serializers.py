@@ -2,6 +2,8 @@
 from rest_framework import serializers
 
 from .models import JobPosting
+from .services.pdf_extraction import PdfExtractionError, extract_text_from_pdf
+
 
 MIN_RAW_TEXT_LENGTH = 150
 
@@ -76,9 +78,14 @@ class JobPostingSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        # Remove the temporary field so Django doesn't try to save it.
-        validated_data.pop("pdf", None)
+        pdf = validated_data.pop("pdf", None)
+
+        if validated_data.get("source") == JobPosting.Source.PDF:
+            try:
+                markdown = extract_text_from_pdf(pdf)
+            except PdfExtractionError as exc:
+                raise serializers.ValidationError({"pdf": str(exc)})
+            validated_data["raw_text"] = markdown
 
         validated_data["submitted_by"] = self.context["request"].user
-
         return super().create(validated_data)
