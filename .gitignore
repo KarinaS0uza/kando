@@ -23,3 +23,6 @@ media/
 # Node.js
 node_modules/
 dist/
+
+# Colinha pra lembrar como inicia backend
+iniciar-backend.txt

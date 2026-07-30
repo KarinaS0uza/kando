@@ -11,6 +11,7 @@ import SimulationQuestions from "../pages/SimulationQuestions";
 import Report from "../pages/Report";
 import TalentPassport from "../pages/TalentPassport";
 import StudyPath from "../pages/StudyPath";
+import Reliability from "../pages/Reliability";
 
 export default function AppRoutes() {
   return (
@@ -32,6 +33,14 @@ export default function AppRoutes() {
         element={
           <ProtectedRoute>
             <UploadProfile />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/upload/reliability"
+        element={
+          <ProtectedRoute>
+            <Reliability />
           </ProtectedRoute>
         }
       />

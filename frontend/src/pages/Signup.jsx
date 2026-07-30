@@ -8,6 +8,11 @@ export default function Signup() {
     <div className="signup">
       <WelcomePanel />
       <section className="signup__form">
+        <img
+          className="signup__form-background"
+          src="./src/assets/join-background.png"
+          alt=""
+        />
         <p className="signup__title">Cadastrar</p>
         <JoinForm
           pathTo="/login"

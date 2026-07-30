@@ -1,30 +1,27 @@
-const API_URL = import.meta.env.VITE_API_URL;
+import axios from "axios";
 
-async function request(endpoint, options = {}) {
-  const response = await fetch(`${API_URL}${endpoint}`, {
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
-    ...options,
-  });
+const apiClient = axios.create({
+  baseURL: "http://localhost:8000/api",
+});
 
-  if (!response.ok) {
-    throw new Error(
-      `Erro na requisição: ${response.status} ${response.statusText}`,
-    );
+// Interceptor para adicionar o token automaticamente
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
+  return config;
+});
 
-  return response.json();
-}
-
-const api = {
-  get: (endpoint) => request(endpoint, { method: "GET" }),
-  post: (endpoint, body) =>
-    request(endpoint, { method: "POST", body: JSON.stringify(body) }),
-  put: (endpoint, body) =>
-    request(endpoint, { method: "PUT", body: JSON.stringify(body) }),
-  delete: (endpoint) => request(endpoint, { method: "DELETE" }),
+export const createUser = (userInfo) => {
+  return apiClient.post(`/users/create/`, userInfo);
 };
 
-export default api;
+export const login = (userInfo) => {
+  return apiClient.post(`/login/`, userInfo);
+};
+
+export const setAPIJobText = (jobInfo) => {
+  return apiClient.post(`/job-postings/`, jobInfo);
+};
