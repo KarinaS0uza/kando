@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import authService from "../../services/authService";
+import { createUser, login } from "../../services/api";
 import useAuth from "../../hooks/useAuth";
 import "./JoinForm.css";
 
@@ -16,7 +17,7 @@ export default function JoinForm({
   const [errorEmail, setErrorEmail] = useState("");
   const [errorPassword, setErrorPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  //const { login } = useAuth();
   const navigate = useNavigate();
   const [errorClassEmail, setErrorClassEmail] = useState(false);
   const [errorClassPassword, setErrorClassPassword] = useState(false);
@@ -56,6 +57,12 @@ export default function JoinForm({
   };
 
   const handleSubmit = async (e) => {
+    const userInfo = {
+      email: email,
+      password: password,
+      full_name: "Nicolas SG",
+    };
+
     e.preventDefault();
     setErrorEmail("");
     setErrorPassword("");
@@ -63,12 +70,13 @@ export default function JoinForm({
     try {
       let user;
       if (formType == "login") {
-        user = await authService.login(email, password);
+        user = await login(userInfo);
+        localStorage.setItem("token", JSON.stringify(user.data.access));
       } else {
-        user = await authService.signup(email, password);
+        user = await createUser(userInfo);
+        login(email, password);
       }
-      login(user);
-      navigate("/dashboard");
+      navigate("/upload");
     } catch (err) {
       console.log(err);
 
