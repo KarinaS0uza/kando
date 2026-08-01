@@ -1,0 +1,77 @@
+.scoreModal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  padding: 20px;
+  text-align: center;
+  position: relative;
+  margin-top: 20px;
+}
+
+.scoreModal__close_button {
+  position: absolute;
+  right: -18px;
+  top: -9px;
+  border: none;
+  background-color: transparent;
+  color: #26215c;
+}
+
+.scoreModal__close_button:hover {
+  cursor: pointer;
+}
+
+.scoreModal__title {
+  color: #26215c;
+  font-weight: bold;
+}
+
+.scoreModal__subtitle {
+  font-size: 15px;
+}
+.scoreModal__list {
+  list-style-type: circle;
+  list-style-type: none;
+
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0;
+}
+.scoreModal__item {
+  color: rgb(59, 59, 59);
+  font-size: 16px;
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 10px;
+  gap: 10px;
+  display: flex;
+  align-items: center;
+  background-color: rgb(98%, 98%, 99%);
+  border: 1px solid #26215cab;
+  text-align: start;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.scoreModal__button {
+  border: none;
+  background-color: #26215c;
+  color: white;
+  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+  width: 100%;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.scoreModal__button:hover {
+  transform: translateY(-2px);
+  transition: all 0.2s ease;
+}

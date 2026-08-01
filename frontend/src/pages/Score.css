@@ -1,0 +1,162 @@
+.resultsPage {
+  display: flex;
+  flex-direction: column;
+  width: clamp(300px, 70%, 1000px);
+  height: 100%;
+}
+.resultsPage__title {
+  align-self: flex-start;
+  font-size: 35px;
+  color: #26215c;
+  margin-bottom: 30px;
+}
+.resultsPage__section {
+  margin-top: 20px;
+}
+
+.resultsPage__correspondence {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.resultsPage__texts {
+  display: flex;
+  flex-direction: column;
+}
+.resultsPage__subtitle {
+  text-align: start;
+  color: #757474;
+  margin: 0;
+  height: 22px;
+  font-size: 13px;
+}
+
+.resultsPage__subtitle:first-child {
+  font-size: 25px;
+  color: #26215c;
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 55px;
+}
+.results__matches,
+.results__gaps {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.results__title {
+  align-self: flex-start;
+}
+.results__skills {
+  display: flex;
+  gap: 15px;
+}
+.results__skill {
+  border: none;
+  background-color: rgb(92%, 95%, 87%);
+  color: rgb(79, 122, 79);
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 10px;
+  margin-top: 10px;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.results__skill:hover {
+  transform: translateY(-2px);
+  transition: all 0.2s ease;
+}
+
+.results__skill_gaps {
+  background-color: rgb(98%, 93%, 85%);
+  color: rgb(124, 102, 68);
+}
+.results__gaps {
+}
+
+.results__divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #26215c;
+  margin: 0;
+}
+
+.results__divider::after,
+.results__divider::before {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #cccccc;
+}
+
+.results__viewMore {
+  margin-top: 100px;
+  border: none;
+  background-color: #ffffff;
+  color: rgb(77, 77, 77);
+  border: 1px solid #cccccc;
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 10px;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+  padding: 15px 100px;
+}
+
+.results__viewMore:hover {
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    0 1px 3px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.footer {
+  background-color: rgba(38, 33, 92, 0.137);
+  height: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  right: 0;
+  margin: 0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 10000;
+  padding: 0 35px;
+}
+
+.footer__text {
+  color: #00000070;
+}
+
+.footer__button {
+  border: none;
+  background-color: #26215c;
+  color: white;
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 10px;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+  padding: 15px 100px;
+}
+
+.footer__button:hover {
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    0 1px 3px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}

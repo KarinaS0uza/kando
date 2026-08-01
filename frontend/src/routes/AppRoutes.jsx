@@ -5,7 +5,7 @@ import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import Dashboard from "../pages/Dashboard";
 import UploadProfile from "../pages/UploadProfile";
-import ProfileScore from "../pages/ProfileScore";
+import Score from "../pages/Score";
 import SimulationInstructions from "../pages/SimulationInstructions";
 import SimulationQuestions from "../pages/SimulationQuestions";
 import Report from "../pages/Report";
@@ -48,7 +48,7 @@ export default function AppRoutes() {
         path="/score"
         element={
           <ProtectedRoute>
-            <ProfileScore />
+            <Score />
           </ProtectedRoute>
         }
       />
