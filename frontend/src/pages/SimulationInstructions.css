@@ -1,0 +1,76 @@
+.instructions {
+  display: flex;
+  flex-direction: column;
+  width: clamp(300px, 70%, 1000px);
+  height: 100%;
+  flex: 1;
+}
+
+.instructions__title {
+  align-self: flex-start;
+  font-size: 35px;
+  color: #26215c;
+  margin-bottom: 30px;
+}
+
+.instructions__text {
+  text-align: start;
+}
+
+.instructions__buttons {
+  width: 100%;
+  height: min-content;
+  margin-top: auto;
+  margin-bottom: 100px;
+  align-self: flex-end;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.instructions__button_foward {
+  border: none;
+  background-color: #26215c;
+  color: white;
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 10px;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+  padding: 15px 100px;
+  width: fit-content;
+  height: fit-content;
+}
+
+.instructions__button_foward:hover {
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    0 1px 3px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.instructions__button_back {
+  margin-top: 100px;
+  border: none;
+  background-color: #ffffff;
+  color: rgb(77, 77, 77);
+  border: 1px solid #cccccc;
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 10px;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+  padding: 15px 100px;
+}
+
+.instructions__button_back:hover {
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    0 1px 3px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
