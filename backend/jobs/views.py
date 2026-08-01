@@ -7,9 +7,6 @@ from rest_framework.views import APIView
 
 from .models import JobPosting
 from .serializers import JobPostingSerializer
-from .services.storage import get_temp_pdf_path, temp_storage
-from .services.pdf_extraction import extract_text_from_pdf
-from .services.pdf_extraction import PdfExtractionError
 
 class JobPostingListCreateView(APIView):
     """
@@ -19,11 +16,13 @@ class JobPostingListCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        """Lista as job postings do usuário autenticado."""
         job_postings = JobPosting.objects.filter(submitted_by=request.user)
         serializer = JobPostingSerializer(job_postings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
+        """Cria uma nova job posting."""
         serializer = JobPostingSerializer(
             data=request.data,
             context={"request": request},
@@ -43,12 +42,14 @@ class JobPostingDetailView(APIView):
     separar a rota delete pra ser admin depois que finalizarmos os testes
     """
     def get_object(self, pk, user):
+        """Busca a job posting do usuário pelo pk, ou None se não existir."""
         try:
             return JobPosting.objects.get(pk=pk, submitted_by=user)
         except JobPosting.DoesNotExist:
             return None
 
     def get(self, request, pk):
+        """Retorna o detalhe de uma job posting específica."""
         job_posting = self.get_object(pk, request.user)
         if job_posting is None:
             return Response(
@@ -59,6 +60,7 @@ class JobPostingDetailView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, pk):
+        """Remove uma job posting."""
         job_posting = self.get_object(pk, request.user)
         if job_posting is None:
             return Response(
@@ -67,5 +69,3 @@ class JobPostingDetailView(APIView):
             )
         job_posting.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-    

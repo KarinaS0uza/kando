@@ -1,20 +1,33 @@
 """Serializers do app jobs."""
+from django.db import transaction
 from rest_framework import serializers
 
-from .models import JobPosting
+from .models import JobPosting, JobPostingNormalization
+from .services.job_llm_normalization import normalize_job_posting
 from .services.pdf_extraction import PdfExtractionError, extract_text_from_pdf
 
 
 MIN_RAW_TEXT_LENGTH = 150
 
 
+class JobPostingNormalizationSerializer(serializers.ModelSerializer):
+    """Read-only representation of a JobPosting's LLM normalization result."""
+
+    class Meta:
+        model = JobPostingNormalization
+        fields = ["success", "structured_data", "error_message", "created_at"]
+
+
 class JobPostingSerializer(serializers.ModelSerializer):
+    """Serializer for creating and reading JobPostings."""
+
     # Temporary field used only during the request.
     # It is NOT stored in the database.
     pdf = serializers.FileField(
         write_only=True,
         required=False,
     )
+    normalization = JobPostingNormalizationSerializer(read_only=True)
 
     class Meta:
         model = JobPosting
@@ -26,6 +39,7 @@ class JobPostingSerializer(serializers.ModelSerializer):
             "pdf",
             "extracted_text",
             "created_at",
+            "normalization",
         ]
         read_only_fields = [
             "id",
@@ -34,10 +48,10 @@ class JobPostingSerializer(serializers.ModelSerializer):
             "created_at",
         ]
 
-    def validate(self, data):
-        source = data.get("source")
-        raw_text = data.get("raw_text")
-        pdf = data.get("pdf")
+    def validate(self, attrs):
+        source = attrs.get("source")
+        raw_text = attrs.get("raw_text")
+        pdf = attrs.get("pdf")
 
         if source == JobPosting.Source.TEXT:
             if not raw_text or not raw_text.strip():
@@ -57,7 +71,7 @@ class JobPostingSerializer(serializers.ModelSerializer):
                     "raw_text": f"Minimum {MIN_RAW_TEXT_LENGTH} characters."
                 })
 
-            data["raw_text"] = cleaned
+            attrs["raw_text"] = cleaned
 
         elif source == JobPosting.Source.PDF:
             if not pdf:
@@ -69,13 +83,13 @@ class JobPostingSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({
                     "raw_text": "Do not provide raw_text when source='pdf'."
                 })
-            
+
         else:
             raise serializers.ValidationError({
                 "source": "Source must be either 'text' or 'pdf'."
         })
 
-        return data
+        return attrs
 
     def create(self, validated_data):
         pdf = validated_data.pop("pdf", None)
@@ -88,4 +102,23 @@ class JobPostingSerializer(serializers.ModelSerializer):
             validated_data["raw_text"] = markdown
 
         validated_data["submitted_by"] = self.context["request"].user
-        return super().create(validated_data)
+
+        normalization_result = normalize_job_posting(validated_data["raw_text"])
+
+        with transaction.atomic():
+            job_posting = super().create(validated_data)
+            if "error" in normalization_result:
+                normalization = JobPostingNormalization.objects.create(
+                    job_posting=job_posting,
+                    success=False,
+                    error_message=normalization_result["error"],
+                )
+            else:
+                normalization = JobPostingNormalization.objects.create(
+                    job_posting=job_posting,
+                    success=True,
+                    structured_data=normalization_result,
+                )
+
+        job_posting.normalization = normalization
+        return job_posting
