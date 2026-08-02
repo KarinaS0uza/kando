@@ -7,11 +7,17 @@ export async function carregarSvgColorido(url, cor) {
   let svgTexto = await response.text();
 
   if (cor) {
+    // preserva fill/stroke="none" (ex.: contornos de wave.svg) e só substitui cores de verdade
     svgTexto = svgTexto
-      .replace(/fill=["'][^"']*["']/g, "")
-      .replace(/stroke=["'][^"']*["']/g, "");
+      .replace(/fill=(["'])(?!\s*none\1)[^"']*\1/gi, `fill="${cor}"`)
+      .replace(/stroke=(["'])(?!\s*none\1)[^"']*\1/gi, `stroke="${cor}"`);
 
-    svgTexto = svgTexto.replace("<svg", `<svg fill="${cor}" stroke="${cor}"`);
+    if (!/<svg[^>]*\sfill=/i.test(svgTexto)) {
+      svgTexto = svgTexto.replace("<svg", `<svg fill="${cor}"`);
+    }
+    if (!/<svg[^>]*\sstroke=/i.test(svgTexto)) {
+      svgTexto = svgTexto.replace("<svg", `<svg stroke="${cor}"`);
+    }
   }
 
   const blob = new Blob([svgTexto], { type: "image/svg+xml" });
