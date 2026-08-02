@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import JobPosting, JobPostingNormalization
+from .models import JobPostingSubmission, JobPostingNormalization
 from .serializers import JobPostingSerializer, validate_job_text
 from .services.job_llm_normalization import normalize_job_posting
 from .services.pdf_extraction import (
@@ -32,7 +32,7 @@ class JobPostingListCreateView(APIView):
 
     def get(self, request):
         """Return all job postings owned by the authenticated user."""
-        job_postings = JobPosting.objects.filter(
+        job_postings = JobPostingSubmission.objects.filter(
             submitted_by=request.user
         )
 
@@ -66,7 +66,7 @@ class JobPostingListCreateView(APIView):
         validated_data = serializer.validated_data
         pdf = validated_data.pop("pdf", None)
 
-        if validated_data.get("source") == JobPosting.Source.PDF:
+        if validated_data.get("source") == JobPostingSubmission.Source.PDF:
             try:
                 extracted_text = extract_text_from_pdf(pdf)
             except PdfExtractionError as exc:
@@ -90,7 +90,7 @@ class JobPostingListCreateView(APIView):
         )
 
         with transaction.atomic():
-            job_posting = JobPosting.objects.create(
+            job_posting = JobPostingSubmission.objects.create(
                 **validated_data
             )
 
@@ -136,11 +136,11 @@ class JobPostingDetailView(APIView):
     def get_object(self, pk, user):
         """Return a posting belonging to the user, or ``None`` if absent."""
         try:
-            return JobPosting.objects.get(
+            return JobPostingSubmission.objects.get(
                 pk=pk,
                 submitted_by=user,
             )
-        except JobPosting.DoesNotExist:
+        except JobPostingSubmission.DoesNotExist:
             return None
 
     def get(self, request, pk):
