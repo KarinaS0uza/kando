@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120" width="200" height="120">
+  <!-- Grupo de ondas com menos ondulações e na cor solicitada -->
+  <g fill="none" stroke="rgb(78%, 42%, 25%)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Linha 1 -->
+    <path d="M 10 20 C 40 20, 40 40, 70 40 S 100 20, 130 20 S 160 40, 190 40" />
+    <!-- Linha 2 -->
+    <path d="M 10 40 C 40 40, 40 60, 70 60 S 100 40, 130 40 S 160 60, 190 60" />
+    <!-- Linha 3 -->
+    <path d="M 10 60 C 40 60, 40 80, 70 80 S 100 60, 130 60 S 160 80, 190 80" />
+    <!-- Linha 4 -->
+    <path d="M 10 80 C 40 80, 40 100, 70 100 S 100 80, 130 80 S 160 100, 190 100" />
+  </g>
+</svg>

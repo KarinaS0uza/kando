@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="800px" height="800px" viewBox="-11.5 -10.23174 23 20.46348" xmlns="http://www.w3.org/2000/svg">
+<circle cx="0" cy="0" r="2.05"/>
+<path fill-rule="evenodd" d="M -11,0 A 11,4.2 0 1,0 11,0 A 11,4.2 0 1,0 -11,0 Z M -10.6,0 A 10.6,3.9 0 1,0 10.6,0 A 10.6,3.9 0 1,0 -10.6,0 Z"/>
+<path fill-rule="evenodd" transform="rotate(60)" d="M -11,0 A 11,4.2 0 1,0 11,0 A 11,4.2 0 1,0 -11,0 Z M -10.6,0 A 10.6,3.9 0 1,0 10.6,0 A 10.6,3.9 0 1,0 -10.6,0 Z"/>
+<path fill-rule="evenodd" transform="rotate(120)" d="M -11,0 A 11,4.2 0 1,0 11,0 A 11,4.2 0 1,0 -11,0 Z M -10.6,0 A 10.6,3.9 0 1,0 10.6,0 A 10.6,3.9 0 1,0 -10.6,0 Z"/>
+</svg>
