@@ -1,6 +1,6 @@
-"""URLs do app jobs.
+"""URLs for the jobs application.
 
-Define as rotas de envio e acesso privado a vagas.
+Defines the routes for submitting and privately accessing job postings.
 """
 # urls.py
 from django.urls import path

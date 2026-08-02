@@ -1,1 +1,1 @@
-"""Testes da API privada de vagas."""
+"""Tests for the private job postings API."""

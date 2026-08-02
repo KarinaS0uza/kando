@@ -1,7 +1,7 @@
-"""App config do app jobs."""
+"""App configuration for the jobs application."""
 from django.apps import AppConfig
 
 
 class JobsConfig(AppConfig):
-    """Configuração do app jobs."""
+    """Configuration for the jobs app."""
     name = "jobs"

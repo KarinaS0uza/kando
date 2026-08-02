@@ -1,4 +1,3 @@
-# jobs/services/job_llm_normalization.py
 """LLM-based normalization of job posting text (extraction/normalization step).
 
 Runs after text extraction (PDF via docling, or plain text), before the
@@ -73,13 +72,13 @@ def normalize_job_posting(text: str) -> dict:
     {"error": str, "retryable": bool} on failure.
     """
     if not text or not text.strip():
-        return {"error": "Empty job posting text", "retryable": False}
+        return {"error": "Texto da vaga vazio", "retryable": False}
     try:
         return _call_llm(text)
     except json.JSONDecodeError:
-        return {"error": "LLM returned invalid JSON", "retryable": True}
+        return {"error": "O LLM retornou um JSON inválido", "retryable": True}
     except Exception as exc:  # pylint: disable=broad-exception-caught
         # Service boundary: any failure calling the LLM must degrade to
         # {"error": ...} instead of propagating, so JobPosting creation
         # never breaks because the LLM call failed.
-        return {"error": f"Failed to call the LLM: {exc}", "retryable": True}
+        return {"error": f"Falha ao chamar o LLM: {exc}", "retryable": True}
