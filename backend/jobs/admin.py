@@ -1,12 +1,12 @@
 """Admin registration for the jobs application."""
 from django.contrib import admin
 
-from .models import JobPosting, JobPostingNormalization
+from .models import JobPostingSubmission, JobPostingNormalization
 
 
-@admin.register(JobPosting)
+@admin.register(JobPostingSubmission)
 class JobPostingAdmin(admin.ModelAdmin):
-    """Admin configuration for JobPosting."""
+    """Admin configuration for JobPostingSubmission."""
     list_display = ("id", "submitted_by", "source", "created_at")
     list_filter = ("source",)
 

@@ -5,13 +5,13 @@ from django.conf import settings
 from django.db import models
 
 
-class JobPosting(models.Model):
+class JobPostingSubmission(models.Model):
     """
-    A job posting submitted by a candidate, either as pasted text 
+    A job posting submitted by a candidate, either as pasted text
     or as a PDF that will later be processed into text.
     """
     class Source(models.TextChoices):
-        """Submission source options for a JobPosting."""
+        """Submission source options for a JobPostingSubmission."""
         PDF = "pdf", "PDF"
         TEXT = "text", "Text"
 
@@ -43,18 +43,18 @@ class JobPosting(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = "job_postings"
+        db_table = "jobpostingsubmission"
         ordering = ["-created_at"]
-        verbose_name = "Job Posting"
-        verbose_name_plural = "Job Postings"
+        verbose_name = "Job Posting Submission"
+        verbose_name_plural = "Job Posting Submissions"
 
     def __str__(self):
-        return f"JobPosting({self.id}) - {self.source}"
+        return f"JobPostingSubmission({self.id}) - {self.source}"
 
 
 class JobPostingNormalization(models.Model):
     """
-    Structured data extracted from a JobPosting by the LLM analysis service.
+    Structured data extracted from a JobPostingSubmission by the LLM analysis service.
     """
     id = models.UUIDField(
         primary_key=True,
@@ -62,7 +62,7 @@ class JobPostingNormalization(models.Model):
         editable=False,
     )
     job_posting = models.OneToOneField(
-        JobPosting,
+        JobPostingSubmission,
         on_delete=models.CASCADE,
         related_name="normalization",
     )
@@ -76,7 +76,7 @@ class JobPostingNormalization(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = "job_posting_normalizations"
+        db_table = "jobpostingnormalization"
         ordering = ["-created_at"]
         verbose_name = "Job Posting Normalization"
         verbose_name_plural = "Job Posting Normalizations"

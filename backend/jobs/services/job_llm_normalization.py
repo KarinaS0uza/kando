@@ -1,69 +1,72 @@
 """LLM-based normalization of job posting text (extraction/normalization step).
 
 Runs after text extraction (PDF via docling, or plain text), before the
-JobPosting is persisted. Requires GROQ_API_KEY in the environment.
+JobPostingSubmission is persisted. Requires GROQ_API_KEY in the environment.
 """
 
 import json
 import os
+import time
 
 from groq import Groq
+
+from ai_core.models import Prompt, PromptCallMetadata
 
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
 
-
-PROMPT_TEMPLATE = """Você é um especialista em análise de vagas de emprego. O texto abaixo foi
-copiado de um site de vagas (como Indeed, LinkedIn, etc.) e PODE conter
-elementos irrelevantes misturados, como: menu de navegação, botões
-("Candidatar-se", "Salvar vaga", "Compartilhar"), vagas similares/sugeridas,
-avaliações da empresa, ou texto duplicado.
-
-Ignore completamente esses elementos e extraia informação APENAS do conteúdo
-real da descrição da vaga (requisitos, responsabilidades, benefícios, etc.).
-
-Se o texto estiver desorganizado, sem quebras de linha claras, ou fora de
-ordem, reorganize mentalmente antes de extrair os dados.
-
-Retorne APENAS um JSON válido, sem texto adicional, sem markdown, seguindo
-EXATAMENTE esta estrutura e esta regra:
-
-- "requisitos_elegibilidade" deve conter APENAS requisitos de elegibilidade legal/administrativa que não são skills técnicas — exemplos: cidadania exigida, clearance de segurança, vistos de trabalho obrigatórios, licenças ou registros profissionais obrigatórios por lei (ex: CRM, OAB, CREA). NÃO inclua aqui requisitos técnicos comuns (linguagens, frameworks, anos de experiência) — esses continuam em "requisitos_obrigatorios". Se a vaga não mencionar nenhum requisito desse tipo, retorne uma lista vazia []
-
-{{
-  "vaga": {{"titulo": string, "empresa": string, "localizacao": string, "modelo_trabalho": "presencial" | "remoto" | "hibrido"}},
-  "requisitos_obrigatorios": [string],
-  "requisitos_desejaveis": [string],
-  "requisitos_elegibilidade": [string],
-  "responsabilidades": [string],
-  "tecnologias_mencionadas": [{{"nome": string, "categoria": "linguagem" | "framework" | "ferramenta" | "banco_de_dados" | "cloud" | "metodologia_ou_conceito" | "outro"}}],
-  "senioridade_esperada": "junior" | "pleno" | "senior" | "especialista",
-  "area_vaga": string,
-  "metadata": {{"confianca_geral_analise": number, "campos_nao_encontrados": [string]}}
-}}
-
-Exemplos de referência para categorizar tecnologias corretamente (evite confundir):
-- "linguagem": HTML, HTML5, CSS, CSS3, JavaScript, TypeScript, Python, Java, R
-- "framework": React, Angular, Vue.js, Express, Django, Next.js
-- "ferramenta": Git, Jest, Cypress, Selenium, Playwright, Kubernetes, Docker, D3.js, ECharts, Plotly
-- "cloud": AWS, Azure, Azure Government, Google Cloud Platform, GCP
-- "banco_de_dados": PostgreSQL, MongoDB, MySQL, Redis
-- "metodologia_ou_conceito": Machine Learning, Deep Learning, Agile, DevOps, Scrum, Design Patterns
-
-Vaga:
-{vaga}
-"""
+PROMPT_KEY = "job_normalization"
 
 
 def _call_llm(text: str) -> dict:
-    prompt = PROMPT_TEMPLATE.format(vaga=text)
-    response = client.chat.completions.create(
-        model=MODEL,
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.2,
-        response_format={"type": "json_object"},
-    )
-    return json.loads(response.choices[0].message.content)
+    prompt_row = None
+    formatted_prompt = ""
+    output_text = None
+    error_message = None
+    usage = None
+    status = PromptCallMetadata.Status.API_ERROR
+    started_at = time.monotonic()
+    try:
+        prompt_row = Prompt.objects.get(prompt_description=PROMPT_KEY, is_active=True)
+        formatted_prompt = prompt_row.prompt_detail.format(vaga=text)
+        response = client.chat.completions.create(
+            model=MODEL,
+            messages=[{"role": "user", "content": formatted_prompt}],
+            temperature=0.2,
+            response_format={"type": "json_object"},
+        )
+        usage = response.usage
+        output_text = response.choices[0].message.content
+        output_data = json.loads(output_text)
+        status = PromptCallMetadata.Status.SUCCESS
+        return output_data
+    except Prompt.DoesNotExist as exc:
+        error_message = str(exc)
+        status = PromptCallMetadata.Status.PROMPT_MISSING
+        raise
+    except json.JSONDecodeError as exc:
+        error_message = str(exc)
+        status = PromptCallMetadata.Status.INVALID_JSON
+        raise
+    except Exception as exc:
+        error_message = str(exc)
+        status = PromptCallMetadata.Status.API_ERROR
+        raise
+    finally:
+        PromptCallMetadata.objects.create(
+            prompt=prompt_row,
+            prompt_description=prompt_row.prompt_description if prompt_row else PROMPT_KEY,
+            version=prompt_row.version if prompt_row else None,
+            model_name=MODEL,
+            status=status,
+            input_text=formatted_prompt,
+            output_text=output_text,
+            error_message=error_message,
+            prompt_tokens=getattr(usage, "prompt_tokens", None),
+            completion_tokens=getattr(usage, "completion_tokens", None),
+            total_tokens=getattr(usage, "total_tokens", None),
+            duration_ms=int((time.monotonic() - started_at) * 1000),
+        )
 
 
 def normalize_job_posting(text: str) -> dict:
@@ -75,10 +78,12 @@ def normalize_job_posting(text: str) -> dict:
         return {"error": "Texto da vaga vazio", "retryable": False}
     try:
         return _call_llm(text)
+    except Prompt.DoesNotExist:
+        return {"error": "Prompt de normalização não configurado", "retryable": False}
     except json.JSONDecodeError:
         return {"error": "O LLM retornou um JSON inválido", "retryable": True}
     except Exception as exc:  # pylint: disable=broad-exception-caught
         # Service boundary: any failure calling the LLM must degrade to
-        # {"error": ...} instead of propagating, so JobPosting creation
+        # {"error": ...} instead of propagating, so JobPostingSubmission creation
         # never breaks because the LLM call failed.
         return {"error": f"Falha ao chamar o LLM: {exc}", "retryable": True}

@@ -2,7 +2,7 @@
 
 from rest_framework import serializers
 
-from .models import JobPosting, JobPostingNormalization
+from .models import JobPostingSubmission, JobPostingNormalization
 
 
 MIN_RAW_TEXT_LENGTH = 150
@@ -96,7 +96,7 @@ class JobPostingSerializer(serializers.ModelSerializer):
     class Meta:
         """Configure writable, readable, and protected model fields."""
 
-        model = JobPosting
+        model = JobPostingSubmission
         fields = [
             "id",
             "submitted_by",
@@ -178,7 +178,7 @@ class JobPostingSerializer(serializers.ModelSerializer):
         raw_text = attrs.get("raw_text")
         pdf = attrs.get("pdf")
 
-        if source == JobPosting.Source.TEXT:
+        if source == JobPostingSubmission.Source.TEXT:
             if pdf:
                 raise serializers.ValidationError({
                     "pdf": (
@@ -193,7 +193,7 @@ class JobPostingSerializer(serializers.ModelSerializer):
                     "raw_text": exc.detail
                 }) from exc
 
-        elif source == JobPosting.Source.PDF:
+        elif source == JobPostingSubmission.Source.PDF:
             if not pdf:
                 raise serializers.ValidationError({
                     "pdf": (
