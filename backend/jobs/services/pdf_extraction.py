@@ -1,4 +1,4 @@
-# jobs/services/pdf_extraction.py
+"""PDF text extraction service using docling."""
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import PdfPipelineOptions
 from docling.document_converter import DocumentConverter, PdfFormatOption
@@ -11,8 +11,19 @@ class PdfExtractionError(Exception):
 
 
 def extract_text_from_pdf(pdf_file) -> str:
+    """Extract markdown text from an uploaded PDF file.
+
+    Args:
+        pdf_file (django.core.files.uploadedfile.UploadedFile): PDF file
+            uploaded through the API request.
+
+    Returns:
+        The extracted text as markdown.
+
+    Raises:
+        PdfExtractionError: When no usable text can be extracted.
+    """
     name, path = get_temp_pdf_path(pdf_file)
-    print(path, "CHEGOU AQUI")
     try:
         pipeline_options = PdfPipelineOptions()
         pipeline_options.do_ocr = False
@@ -29,6 +40,6 @@ def extract_text_from_pdf(pdf_file) -> str:
         temp_storage.delete(name)
 
     if not markdown or not markdown.strip():
-        raise PdfExtractionError("No usable text could be extracted from the PDF.")
+        raise PdfExtractionError("Não foi possível extrair texto utilizável do PDF.")
 
     return markdown

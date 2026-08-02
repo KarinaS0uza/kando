@@ -1,4 +1,4 @@
-"""Models do app jobs."""
+"""Models for the jobs application."""
 import uuid
 
 from django.conf import settings
