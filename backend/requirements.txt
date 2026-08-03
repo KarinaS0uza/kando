@@ -27,6 +27,7 @@ Faker==40.36.0
 filelock==3.32.0
 filetype==1.2.0
 fsspec==2026.6.0
+groq==1.5.0
 h11==0.16.0
 hf-xet==1.5.2
 httpcore==1.0.9

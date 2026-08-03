@@ -2,6 +2,10 @@
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import PdfPipelineOptions
 from docling.document_converter import DocumentConverter, PdfFormatOption
+from docling_core.transforms.serializer.markdown import (
+    MarkdownDocSerializer,
+    MarkdownParams,
+)
 
 from .storage import get_temp_pdf_path, temp_storage
 
@@ -35,7 +39,11 @@ def extract_text_from_pdf(pdf_file) -> str:
         )
 
         result = converter.convert(path)
-        markdown = result.document.export_to_markdown()
+        serializer = MarkdownDocSerializer(
+            doc=result.document,
+            params=MarkdownParams(image_placeholder="", include_hyperlinks=False),
+        )
+        markdown = serializer.serialize().text
     finally:
         temp_storage.delete(name)
 

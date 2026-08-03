@@ -6,7 +6,7 @@ from .models import JobPostingSubmission, JobPostingNormalization
 
 
 MIN_RAW_TEXT_LENGTH = 150
-MAX_RAW_TEXT_LENGTH = 100_000
+MAX_RAW_TEXT_LENGTH = 10_000
 
 MAX_PDF_SIZE = 5 * 1024 * 1024  # 5 MB
 PDF_SIGNATURE = b"%PDF-"
