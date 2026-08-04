@@ -1,0 +1,247 @@
+.tp-wrapper {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.tp-card {
+  background-color: #ffffff;
+  border: 2px solid #d1d5db;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.tp-label {
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #9ca3af;
+  margin-bottom: 20px;
+}
+
+.tp-medallion {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background-color: #fef3c7;
+  border: 1px solid #fbbf24;
+  color: #b45309;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+
+.tp-header {
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.tp-name {
+  font-size: 18px;
+  font-weight: 500;
+  color: #111827;
+  margin: 0;
+}
+
+.tp-role {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 4px 0 0;
+}
+
+.tp-stats {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  padding: 16px 0;
+  margin: 20px 0;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tp-stat {
+  text-align: center;
+}
+
+.tp-stat-value {
+  font-size: 24px;
+  font-weight: 500;
+  color: #111827;
+  margin: 0;
+}
+
+.tp-stat-label {
+  font-size: 11px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.tp-skills-label {
+  text-align: center;
+  font-size: 11px;
+  color: #9ca3af;
+  margin-bottom: 12px;
+}
+
+.tp-skills-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.tp-skill-badge {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  margin: 0 auto;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tp-skill-badge-larger {
+  position: relative;
+  width: 142px;
+  height: 152px;
+  margin: 0 auto;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tp-skill-badge-golden {
+  position: relative;
+  width: 142px;
+  height: 152px;
+  margin: 0 0 0 -19px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tp-skill-text {
+  width: 55%;
+  text-align: center;
+}
+
+.tp-skill-text-2 {
+  position: relative;
+  top: -5%;
+  left: 42%;
+  transform: translate(-50%, -50%);
+  text-align: start;
+}
+
+.tp-skill-text-black {
+  position: relative;
+  top: 0%;
+  left: 45%;
+  transform: translate(-50%, -50%);
+  text-align: start;
+}
+
+.tp-skill-text-black .tp-skill-name,
+.tp-skill-text-black .tp-skill-adjective {
+  color: rgb(83, 83, 83);
+}
+
+.tp-skill-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.tp-skill-adjective {
+  font-size: 10px;
+  color: #fee2e2;
+  margin: 0;
+}
+
+.tp-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.tp-footer-date,
+.tp-footer-code {
+  font-size: 10px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.tp-footer-code {
+  font-family: monospace;
+}
+
+.tp-share-button {
+  width: 100%;
+  margin-top: 16px;
+  padding: 10px 0;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.tp-share-button:hover {
+  background-color: #f3f4f6;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tp-card {
+    background-color: #1f2937;
+    border-color: #4b5563;
+  }
+  .tp-label,
+  .tp-stat-label,
+  .tp-skills-label,
+  .tp-footer-date,
+  .tp-footer-code {
+    color: #9ca3af;
+  }
+  .tp-medallion {
+    background-color: rgba(217, 119, 6, 0.2);
+    border-color: rgba(217, 119, 6, 0.5);
+    color: #fbbf24;
+  }
+  .tp-name,
+  .tp-stat-value {
+    color: #f9fafb;
+  }
+  .tp-role {
+    color: #9ca3af;
+  }
+  .tp-stats,
+  .tp-footer {
+    border-color: #374151;
+  }
+  .tp-share-button {
+    border-color: #4b5563;
+    color: #e5e7eb;
+  }
+  .tp-share-button:hover {
+    background-color: #374151;
+  }
+}
