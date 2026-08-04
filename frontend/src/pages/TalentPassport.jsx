@@ -1,97 +1,90 @@
-import { Award, Share2 } from "lucide-react";
+import { useState } from "react";
+import jsPDF from "jspdf";
+import PassportCertificate from "../components/layout/PassportCertificate";
+import Header from "../components/layout/Header";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import DownloadIcon from "@mui/icons-material/Download";
+import ImageIcon from "@mui/icons-material/Image";
+
 import "./TalentPassport.css";
 
-const DEFAULT_SKILLS = [
-  { name: "React", adjective: "specialist" },
-  { name: "Git", adjective: "confident" },
-  { name: "Lógica", adjective: "sharp" },
-  { name: "APIs", adjective: "fluent" },
-  { name: "SQL", adjective: "expert" },
-];
+function shareOnLinkedin() {
+  const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`;
+  window.open(url, "_blank", "noopener,noreferrer,width=600,height=600");
+}
 
-const imageModules = import.meta.glob("../assets/*.{png,jpg,jpeg,svg}", {
-  eager: true,
-});
-const images = Object.values(imageModules).map((mod) => mod.default);
+async function baixarPdf(imagemDataUrl) {
+  if (!imagemDataUrl) return;
 
-export default function TalentPassport({
-  candidateName = "Nícolas Silva Gomes",
-  roleTitle = "Frontend Developer — pronto para entrevistas",
-  overallScore = 87,
-  skills = DEFAULT_SKILLS,
-  issueDate = "16/08/2026",
-  verificationCode = "#KND-2026-0417",
-}) {
+  const imagem = new Image();
+  imagem.src = imagemDataUrl;
+  await new Promise((resolve) => {
+    imagem.onload = resolve;
+  });
+
+  const doc = new jsPDF({
+    orientation: imagem.width >= imagem.height ? "landscape" : "portrait",
+    unit: "px",
+    format: [imagem.width, imagem.height],
+  });
+  doc.addImage(imagemDataUrl, "PNG", 0, 0, imagem.width, imagem.height);
+  doc.save("talent-passport.pdf");
+}
+
+function baixarPng(imagemDataUrl) {
+  if (!imagemDataUrl) return;
+
+  const link = document.createElement("a");
+  link.href = imagemDataUrl;
+  link.download = "talent-passport.png";
+  link.click();
+}
+
+export default function TalentPassport() {
+  const [imagemDataUrl, setImagemDataUrl] = useState(null);
+
   return (
-    <div className="tp-wrapper">
-      <div className="tp-card">
-        <p className="tp-label">TALENT PASSPORT</p>
+    <>
+      <Header menuActive={true} />
+      <div className="passport">
+        <h1 className="passport__title">Seu certificado Talent Passport</h1>
+        <p className="passport__subtitle">
+          Parabéns pela conquista! Seu certificado oficial está pronto para ser
+          compartilhado.
+        </p>
 
-        <div className="tp-medallion">
-          <Award size={32} />
+        <div className="passport__certificate">
+          <PassportCertificate onImagemGerada={setImagemDataUrl} />
         </div>
 
-        <div className="tp-header">
-          <p className="tp-name">{candidateName}</p>
-          <p className="tp-role">{roleTitle}</p>
-        </div>
-
-        <div className="tp-stats">
-          <div className="tp-stat">
-            <p className="tp-stat-value">{overallScore}</p>
-            <p className="tp-stat-label">score geral</p>
-          </div>
-          <div className="tp-stat">
-            <p className="tp-stat-value">{skills.length}</p>
-            <p className="tp-stat-label">habilidades validadas</p>
-          </div>
-        </div>
-
-        <p className="tp-skills-label">selos de habilidade</p>
-
-        <div className="tp-skills-grid">
-          <div
-            key={skills[0].name}
-            className="tp-skill-badge"
-            style={{ backgroundImage: `url(${images[0]})` }}
+        <div className="passport__actions">
+          <button
+            className="passport__action passport__action--linkedin"
+            onClick={shareOnLinkedin}
           >
-            <div className="tp-skill-text">
-              <p className="tp-skill-name">{skills[1].name}</p>
-              <p className="tp-skill-adjective">{skills[1].adjective}</p>
-            </div>
-          </div>
-          <div
-            key={skills[0].name}
-            className="tp-skill-badge tp-skill-badge-larger"
-            style={{ backgroundImage: `url(${images[1]})` }}
-          >
-            <div className="tp-skill-text tp-skill-text-2">
-              <p className="tp-skill-name">{skills[0].name}</p>
-              <p className="tp-skill-adjective">{skills[0].adjective}</p>
-            </div>
-          </div>
-          <div
-            key={skills[0].name}
-            className="tp-skill-badge tp-skill-badge-golden"
-            style={{ backgroundImage: `url(${images[3]})` }}
-          >
-            <div className="tp-skill-text tp-skill-text-black">
-              <p className="tp-skill-name">{skills[3].name}</p>
-              <p className="tp-skill-adjective">{skills[4].adjective}</p>
-            </div>
-          </div>
-        </div>
+            <LinkedInIcon fontSize="small" />
+            Compartilhar no LinkedIn
+          </button>
 
-        <div className="tp-footer">
-          <p className="tp-footer-date">emitido em {issueDate}</p>
-          <p className="tp-footer-code">{verificationCode}</p>
+          <button
+            className="passport__action"
+            onClick={() => baixarPdf(imagemDataUrl)}
+            disabled={!imagemDataUrl}
+          >
+            <DownloadIcon fontSize="small" />
+            Baixar PDF
+          </button>
+
+          <button
+            className="passport__action"
+            onClick={() => baixarPng(imagemDataUrl)}
+            disabled={!imagemDataUrl}
+          >
+            <ImageIcon fontSize="small" />
+            Baixar PNG
+          </button>
         </div>
       </div>
-
-      <button className="tp-share-button">
-        <Share2 size={16} />
-        Compartilhar passaporte
-      </button>
-    </div>
+    </>
   );
 }
