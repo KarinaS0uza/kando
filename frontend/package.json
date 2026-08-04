@@ -20,6 +20,9 @@
     "lucide-react": "^1.25.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
+    "react-dropzone": "^19.1.1",
+    "react-hot-toast": "^2.6.0",
+    "react-pdf": "^10.4.1",
     "react-router-dom": "^7.18.1"
   },
   "devDependencies": {
