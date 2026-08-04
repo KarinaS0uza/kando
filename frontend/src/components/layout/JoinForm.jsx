@@ -71,7 +71,7 @@ export default function JoinForm({
       let user;
       if (formType == "login") {
         user = await login(userInfo);
-        localStorage.setItem("token", JSON.stringify(user.data.access));
+        localStorage.setItem("token", user.data.access);
       } else {
         user = await createUser(userInfo);
         login(email, password);

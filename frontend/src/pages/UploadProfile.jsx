@@ -4,7 +4,8 @@ import InputUpload from "../components/layout/InputUpload";
 import { useState } from "react";
 import textFieldIcon from "../assets/text-field.svg";
 import { useNavigate } from "react-router-dom";
-import { login, setAPIJobText } from "../services/api";
+import { login, createJobPosting, createResume } from "../services/api";
+import { setUploadPromises } from "../utils/uploadTracker";
 
 export default function UploadProfile() {
   const [resumeFile, setResumeFile] = useState(null);
@@ -33,21 +34,11 @@ export default function UploadProfile() {
   const resumeOk = resumeFile || !isTextInvalid(resumeText);
   const jobOk = jobFile || !isTextInvalid(jobText);
 
-  const handleSubmit = async (e) => {
-    console.log(e.target[0]);
-
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const objJobText = {
-      source: "text",
-      raw_text: jobText,
-    };
-
-    try {
-      const res = await setAPIJobText(objJobText);
-      console.log(res);
-    } catch (error) {
-      console.log(error);
-    }
+    const jobP = createJobPosting(jobFile);
+    const resumeP = createResume(resumeFile);
+    setUploadPromises(jobP, resumeP);
     navigate("/upload/reliability");
   };
 

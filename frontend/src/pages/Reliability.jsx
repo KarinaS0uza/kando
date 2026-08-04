@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import "./Reliability.css";
 import { useState } from "react";
+import { waitForUploads } from "../utils/uploadTracker";
+import { toast } from "react-hot-toast";
 
 export default function Reliability() {
   const [isLoading, setIsLoading] = useState(false);
@@ -12,14 +14,27 @@ export default function Reliability() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+
     try {
       console.log("Valor do slider 1:", e.target[0].value);
       console.log("Valor do slider 2:", e.target[1].value);
+
+      const results = await waitForUploads();
+      const hasError = results.some((r) => r.status === "rejected");
+
+      if (hasError) {
+        toast.error("Erro no upload anterior.");
+        setIsLoading(false);
+        return;
+      }
+
+      navigate("/score/");
     } catch (error) {
       console.log(error);
+      toast.error("Algo deu errado.");
+    } finally {
+      setIsLoading(false);
     }
-    navigate("/upload/reliability");
-    setIsLoading(false);
   };
 
   return (
