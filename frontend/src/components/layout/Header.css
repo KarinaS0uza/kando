@@ -13,19 +13,36 @@
   z-index: 10000;
 }
 
+.header__logo-link {
+  display: flex;
+  align-items: center;
+  margin-left: 40px;
+}
+
 .header__tp-icon {
   width: 45px;
-  margin-left: 40px;
 }
 
 .header__links {
   display: flex;
-  gap: 30px;
+  gap: 40px;
 }
 
 .header__link {
   color: white;
   text-decoration: none;
+  font-size: 16px;
+  border-bottom: 2px solid transparent;
+  transition: 0.3s;
+}
+
+.header__link:hover {
+  border-bottom: 2px solid white;
+}
+
+.header__link--active {
+  border-bottom: 2px solid white;
+  font-weight: bold;
 }
 
 .header__logoff-button {
@@ -34,16 +51,22 @@
   margin-right: 40px;
   background-color: transparent;
   color: white;
-  border: 1px solid #dadce0;
+  border: 2px solid #dadce0;
   border-radius: 5px;
   display: flex;
-
   text-align: right;
   align-items: center;
   justify-content: center;
   gap: 10px;
 }
 
+.header__logoff-button:hover {
+  transform: translateY(-1px);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
 .header__logoff-icon {
   width: 15px;
+  height: 15px;
 }
