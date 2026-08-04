@@ -19,6 +19,7 @@
     "@mui/x-data-grid-generator": "^9.10.1",
     "@react-spring/web": "^10.1.2",
     "axios": "^1.19.0",
+    "jspdf": "^4.2.1",
     "lucide-react": "^1.25.0",
     "prop-types": "^15.8.1",
     "react": "^19.2.7",

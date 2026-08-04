@@ -1,0 +1,16 @@
+.talent__main_image {
+  width: 100%;
+  max-width: 800px;
+}
+
+.passport-certificate__overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  align-content: center;
+  backdrop-filter: blur(10px);
+  color: black;
+}

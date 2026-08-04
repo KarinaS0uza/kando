@@ -1,3 +1,79 @@
-.talent__main_image {
-  width: 800px;
+.passport {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: clamp(300px, 70%, 1000px);
+  text-align: center;
+}
+
+.passport__title {
+  font-size: 35px;
+  color: #1a1a2e;
+  margin-bottom: 4px;
+}
+
+.passport__subtitle {
+  font-size: 15px;
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+.passport__certificate {
+  align-self: center;
+  max-width: 700px;
+  padding: 25px;
+  border: 1px solid rgb(240, 238, 238);
+  border-radius: 10px;
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    0 1px 3px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+}
+
+.passport__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.passport__action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #d1d5db;
+  background-color: #fff;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.passport__action:hover {
+  background-color: #f3f4f6;
+  transform: translateY(-1px);
+}
+
+.passport__action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.passport__action--linkedin {
+  border: none;
+  background-color: #0a66c2;
+  color: #fff;
+}
+
+.passport__action--linkedin:hover {
+  background-color: #095196;
 }
