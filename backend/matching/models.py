@@ -35,7 +35,10 @@ class MatchResult(models.Model):
     overall_match_score = models.PositiveIntegerField(
         blank=True,
         null=True,
-        help_text="Snapshot of structured_data['score_compatibilidade'], promoted for sorting/filtering.",
+        help_text=(
+            "Snapshot of structured_data['score_compatibilidade'], "
+            "promoted for sorting/filtering."
+        ),
     )
     seniority_compatible = models.BooleanField(
         blank=True,

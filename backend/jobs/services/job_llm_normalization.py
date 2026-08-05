@@ -18,6 +18,9 @@ MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
 
 PROMPT_KEY = "job_normalization"
 
+# The LLM service modules share the same call/logging boilerplate by design.
+# pylint: disable=duplicate-code
+
 
 def _call_llm(text: str) -> dict:
     prompt_row = None

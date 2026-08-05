@@ -80,7 +80,7 @@ class MatchResultSerializer(serializers.ModelSerializer):
         return (match_result.structured_data or {}).get("pontos_melhoria")
 
 
-class MatchRequestSerializer(serializers.Serializer):
+class MatchRequestSerializer(serializers.Serializer):  # pylint: disable=abstract-method
     """Validate a request to match one resume against one job posting.
 
     Both submissions must belong to the requesting user and must already
