@@ -4,6 +4,10 @@ Define os serializers usados pelas rotas de autenticação e cadastro
 de usuários.
 """
 
+from django.contrib.auth.password_validation import (
+    validate_password as django_validate_password,
+)
+from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import serializers
 
 from .models import User
@@ -37,6 +41,18 @@ class UserSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id", "is_staff", "date_joined", "updated_at"]
 
+    def validate_password(self, value):
+        """Run the configured AUTH_PASSWORD_VALIDATORS against the password.
+
+        On update, ``self.instance`` is passed so attribute-similarity checks
+        can compare the password against the user's own data.
+        """
+        try:
+            django_validate_password(value, user=self.instance)
+        except DjangoValidationError as exc:
+            raise serializers.ValidationError(list(exc.messages)) from exc
+        return value
+
     def create(self, validated_data):
         """Cria um novo usuário, definindo senha (ou deixando inutilizável)."""
         password = validated_data.pop("password", None)
@@ -59,7 +75,7 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
 
 
-class LoginSerializer(serializers.Serializer):
+class LoginSerializer(serializers.Serializer):  # pylint: disable=abstract-method
     """Serializer usado apenas para validar as credenciais de login."""
 
     email = serializers.EmailField()
