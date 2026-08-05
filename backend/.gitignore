@@ -20,6 +20,9 @@ media/
 .vscode/
 .idea/
 
+# Local one-off scripts (not part of the app)
+local_scripts/
+
 # Node.js
 node_modules/
 dist/.DS_Store

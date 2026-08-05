@@ -7,6 +7,7 @@ JobPostingSubmission is persisted. Requires GROQ_API_KEY in the environment.
 import json
 import os
 import time
+from string import Template
 
 from groq import Groq
 
@@ -28,7 +29,7 @@ def _call_llm(text: str) -> dict:
     started_at = time.monotonic()
     try:
         prompt_row = Prompt.objects.get(prompt_description=PROMPT_KEY, is_active=True)
-        formatted_prompt = prompt_row.prompt_detail.format(vaga=text)
+        formatted_prompt = Template(prompt_row.prompt_detail).safe_substitute(vaga=text)
         response = client.chat.completions.create(
             model=MODEL,
             messages=[{"role": "user", "content": formatted_prompt}],
