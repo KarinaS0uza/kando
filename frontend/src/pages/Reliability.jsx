@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import "./Reliability.css";
 import { useState } from "react";
-import { waitForUploads } from "../utils/uploadTracker";
+import { waitForUploads, startMatch } from "../utils/uploadTracker";
 import { toast } from "react-hot-toast";
 
 export default function Reliability() {
@@ -19,14 +19,18 @@ export default function Reliability() {
       console.log("Valor do slider 1:", e.target[0].value);
       console.log("Valor do slider 2:", e.target[1].value);
 
-      const results = await waitForUploads();
-      const hasError = results.some((r) => r.status === "rejected");
+      const [jobResult, resumeResult] = await waitForUploads();
+      const hasError = [jobResult, resumeResult].some(
+        (r) => r.status === "rejected"
+      );
 
       if (hasError) {
         toast.error("Erro no upload anterior.");
         setIsLoading(false);
         return;
       }
+
+      startMatch(resumeResult.value.data.id, jobResult.value.data.id);
 
       navigate("/score/");
     } catch (error) {

@@ -58,3 +58,10 @@ export const createResume = (content, extraFields = {}) => {
     headers: isFormData ? { "Content-Type": "multipart/form-data" } : undefined,
   });
 };
+
+export const createMatch = (resumeId, jobId) => {
+  return apiClient.post(`/matching/`, {
+    resume_id: resumeId,
+    job_id: jobId,
+  });
+};

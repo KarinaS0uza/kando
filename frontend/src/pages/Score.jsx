@@ -1,19 +1,58 @@
 import { useNavigate } from "react-router-dom";
 import Header from "../components/layout/Header";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
 
 import "./Score.css";
 import ScoreModal from "../components/layout/ScoreModal";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
+import { waitForMatch } from "../utils/uploadTracker";
 import Stack from "@mui/material/Stack";
 import CircularProgress from "@mui/material/CircularProgress";
 
 export default function ProfileScore() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [percent, setPercent] = useState();
+  const [percent, setPercent] = useState(0);
   const [gaps, setGaps] = useState([]);
   const [matches, setMatches] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchMatch() {
+      try {
+        const response = await waitForMatch();
+        if (cancelled) return;
+
+        if (!response.data.success) {
+          toast.error(
+            response.data.error_message ||
+              "Não foi possível calcular a compatibilidade."
+          );
+          return;
+        }
+
+        setPercent(response.data.overall_match_score ?? 0);
+        setMatches(response.data.matches || []);
+        setGaps(response.data.gaps || []);
+      } catch (error) {
+        console.log(error);
+        toast.error("Algo deu errado ao carregar o resultado.");
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    }
+
+    fetchMatch();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   function handleOpenModal() {
     setOpenModal(true);
@@ -23,22 +62,20 @@ export default function ProfileScore() {
     setOpenModal(false);
   }
 
-  const getUserInfo = async (e) => {
-    e.preventDefault();
-    try {
-      console.log();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const navigate = useNavigate();
-
   function handleClick() {
     navigate("/simulation/instructions");
   }
 
-  const skills_test = ["HTML", "CSS", "React.js", "Node.js", "Next.js"];
-  const percent__test = "56";
+  if (isLoading) {
+    return (
+      <>
+        <Header />
+        <div className="resultsPage">
+          <LoadingSpinner />
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -50,7 +87,7 @@ export default function ProfileScore() {
             <CircularProgress
               enableTrackSlot
               variant="determinate"
-              value={percent__test}
+              value={percent}
               aria-label="Export data"
               size={62}
               thickness={5}
@@ -63,7 +100,7 @@ export default function ProfileScore() {
             />
           </Stack>
           <div className="resultsPage__texts">
-            <p className="resultsPage__subtitle">{`${percent__test}%`}</p>
+            <p className="resultsPage__subtitle">{`${percent}%`}</p>
             <p className="resultsPage__subtitle">
               de correspondência com a vaga
             </p>
@@ -75,7 +112,7 @@ export default function ProfileScore() {
               <h2 className="results__title">Correspondências</h2>
               <span className="results__divider"></span>
               <div className="results__skills">
-                {skills_test.map((r) => {
+                {matches.map((r) => {
                   return <div className="results__skill">{r}</div>;
                 })}
               </div>
@@ -84,7 +121,7 @@ export default function ProfileScore() {
               <h2 className="results__title">A obter</h2>
               <span className="results__divider"></span>
               <div className="results__skills">
-                {skills_test.map((r) => {
+                {gaps.map((r) => {
                   return (
                     <div className="results__skill results__skill_gaps">
                       {r}
