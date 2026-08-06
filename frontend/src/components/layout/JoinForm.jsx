@@ -12,15 +12,28 @@ export default function JoinForm({
   buttonText,
   formType,
 }) {
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorFullName, setErrorFullName] = useState("");
   const [errorEmail, setErrorEmail] = useState("");
   const [errorPassword, setErrorPassword] = useState("");
   const [loading, setLoading] = useState(false);
   //const { login } = useAuth();
   const navigate = useNavigate();
+  const [errorClassFullName, setErrorClassFullName] = useState(false);
   const [errorClassEmail, setErrorClassEmail] = useState(false);
   const [errorClassPassword, setErrorClassPassword] = useState(false);
+
+  function checkFullName(value) {
+    if (value == "") {
+      return "";
+    } else if (value.trim().length < 3) {
+      return "Nome inválido";
+    } else {
+      return "";
+    }
+  }
 
   function checkEmail(value) {
     if (value == "") {
@@ -42,6 +55,13 @@ export default function JoinForm({
     }
   }
 
+  const handleFullNameChange = (e) => {
+    const val = e.target.value;
+    setFullName(val);
+    setErrorFullName(checkFullName(val));
+    setErrorClassFullName(checkFullName(val));
+  };
+
   const handleEmailChange = (e) => {
     const val = e.target.value;
     setEmail(val);
@@ -60,7 +80,7 @@ export default function JoinForm({
     const userInfo = {
       email: email,
       password: password,
-      full_name: "Nicolas SG",
+      full_name: fullName,
     };
 
     e.preventDefault();
@@ -68,13 +88,13 @@ export default function JoinForm({
     setErrorPassword("");
     setLoading(true);
     try {
-      let user;
       if (formType == "login") {
-        user = await login(userInfo);
+        const user = await login(userInfo);
         localStorage.setItem("token", user.data.access);
       } else {
-        user = await createUser(userInfo);
-        login(email, password);
+        await createUser(userInfo);
+        const user = await login(userInfo);
+        localStorage.setItem("token", user.data.access);
       }
       navigate("/upload");
     } catch (err) {
@@ -93,6 +113,19 @@ export default function JoinForm({
 
   return (
     <form action="" className="join__form_inputs" onSubmit={handleSubmit}>
+      {formType === "signup" && (
+        <div className="join__form_input-email">
+          <input
+            type="text"
+            className={`join__form_email ${errorClassFullName ? "join__form_input-error" : ""}`}
+            placeholder="Nome completo"
+            required
+            value={fullName}
+            onChange={(e) => handleFullNameChange(e)}
+          />
+          {errorFullName && <p className="join__form-error">{errorFullName}</p>}
+        </div>
+      )}
       <div className="join__form_input-email">
         <input
           type="email"
@@ -117,7 +150,11 @@ export default function JoinForm({
       </div>
       <button
         className="join__form_button"
-        disabled={!!checkEmail(email) || !!checkPassword(password)}
+        disabled={
+          !!checkEmail(email) ||
+          !!checkPassword(password) ||
+          (formType === "signup" && (!fullName || !!checkFullName(fullName)))
+        }
       >
         {buttonText}
       </button>
