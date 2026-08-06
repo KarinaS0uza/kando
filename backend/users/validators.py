@@ -33,7 +33,11 @@ class ComplexityValidator:
     """Validate that the password mixes upper, lower, digit and special chars."""
 
     def validate(self, password, user=None):  # pylint: disable=unused-argument
-        """Reject passwords missing any required character class."""
+        """Reject passwords missing any required character class.
+
+        The error names only the classes actually missing, so the user gets a
+        specific, actionable message instead of the full rule every time.
+        """
         missing = []
         if not re.search(r"[A-Z]", password):
             missing.append("uma letra maiúscula")
