@@ -44,8 +44,13 @@ class UserSerializer(serializers.ModelSerializer):
     def validate_password(self, value):
         """Run the configured AUTH_PASSWORD_VALIDATORS against the password.
 
-        On update, ``self.instance`` is passed so attribute-similarity checks
-        can compare the password against the user's own data.
+        Kept as a field-level validator (rather than an object-level
+        ``validate``) so password errors are collected and returned together
+        with any other field errors — e.g. "email already exists" — in a single
+        response, instead of being hidden until the email is corrected. DRF keys
+        the resulting message under ``password`` automatically. On update,
+        ``self.instance`` lets attribute-similarity checks compare the password
+        against the user's own data.
         """
         try:
             django_validate_password(value, user=self.instance)
