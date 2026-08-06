@@ -24,4 +24,5 @@ urlpatterns = [
     path("api/", include("jobs.urls")),
     path("api/", include("ai_core.urls")),
     path("api/", include("resumes.urls")),
+    path("api/", include("matching.urls")),
 ]

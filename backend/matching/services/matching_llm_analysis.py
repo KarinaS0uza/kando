@@ -1,7 +1,7 @@
-"""LLM-based normalization of resume text (extraction/normalization step).
+"""LLM-based compatibility analysis between a resume and a job posting.
 
-Runs after text extraction (PDF via docling, or plain text), before the
-ResumeSubmission is persisted. Requires GROQ_API_KEY in the environment.
+Runs on demand, after both the ResumeSubmission and the JobPostingSubmission
+have a successful normalization. Requires GROQ_API_KEY in the environment.
 """
 
 import json
@@ -16,10 +16,10 @@ from ai_core.models import Prompt, PromptCallMetadata
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
 
-PROMPT_KEY = "resume_normalization"
+PROMPT_KEY = "job_resume_matching_analysis"
 
 
-def _call_llm(text: str) -> dict:
+def _call_llm(resume_structured_data: dict, job_structured_data: dict) -> dict:
     prompt_row = None
     formatted_prompt = ""
     output_text = None
@@ -29,7 +29,10 @@ def _call_llm(text: str) -> dict:
     started_at = time.monotonic()
     try:
         prompt_row = Prompt.objects.get(prompt_description=PROMPT_KEY, is_active=True)
-        formatted_prompt = Template(prompt_row.prompt_detail).safe_substitute(resume=text)
+        formatted_prompt = Template(prompt_row.prompt_detail).safe_substitute(
+            resume=json.dumps(resume_structured_data, ensure_ascii=False),
+            vaga=json.dumps(job_structured_data, ensure_ascii=False),
+        )
         response = client.chat.completions.create(
             model=MODEL,
             messages=[{"role": "user", "content": formatted_prompt}],
@@ -70,21 +73,19 @@ def _call_llm(text: str) -> dict:
         )
 
 
-def normalize_resume(text: str) -> dict:
+def analyze_match(resume_structured_data: dict, job_structured_data: dict) -> dict:
     """
     Returns the structured JSON from the LLM on success, or
     {"error": str, "retryable": bool} on failure.
     """
-    if not text or not text.strip():
-        return {"error": "Texto do currículo vazio", "retryable": False}
     try:
-        return _call_llm(text)
+        return _call_llm(resume_structured_data, job_structured_data)
     except Prompt.DoesNotExist:
-        return {"error": "Prompt de normalização não configurado", "retryable": False}
+        return {"error": "Prompt de matching não configurado", "retryable": False}
     except json.JSONDecodeError:
         return {"error": "O LLM retornou um JSON inválido", "retryable": True}
     except Exception as exc:  # pylint: disable=broad-exception-caught
         # Service boundary: any failure calling the LLM must degrade to
-        # {"error": ...} instead of propagating, so ResumeSubmission creation
+        # {"error": ...} instead of propagating, so MatchResult creation
         # never breaks because the LLM call failed.
         return {"error": f"Falha ao chamar o LLM: {exc}", "retryable": True}

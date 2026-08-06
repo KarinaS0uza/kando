@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "jobs",
     "resumes",
     "passports",
+    "matching",
 ]
 
 MIDDLEWARE = [
@@ -105,6 +106,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {"min_length": 8},
+    },
+    {
+        "NAME": "users.validators.MaximumLengthValidator",
+        "OPTIONS": {"max_length": 100},
+    },
+    {
+        "NAME": "users.validators.ComplexityValidator",
     },
     {
         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
@@ -118,7 +127,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "pt-br"
 
 TIME_ZONE = "UTC"
 
