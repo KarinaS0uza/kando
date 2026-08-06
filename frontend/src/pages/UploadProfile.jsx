@@ -36,8 +36,8 @@ export default function UploadProfile() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const jobP = createJobPosting(jobFile);
-    const resumeP = createResume(resumeFile);
+    const jobP = createJobPosting(jobFile || jobText);
+    const resumeP = createResume(resumeFile || resumeText);
     setUploadPromises(jobP, resumeP);
     navigate("/upload/reliability");
   };
