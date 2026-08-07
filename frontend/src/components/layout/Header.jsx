@@ -21,7 +21,12 @@ export default function Header({ menuActive }) {
           </Link>
           <Link className="header__link">Comparar vaga</Link>
           <Link className="header__link">Simulado</Link>
-          <Link className="header__link">Trilha de estudo</Link>
+          <Link
+            to="/study-path"
+            className={`header__link ${pathname === "/study-path" ? "header__link--active" : ""}`}
+          >
+            Trilha de estudo
+          </Link>
           <Link className="header__link">Talent Passport</Link>
         </nav>
       )}

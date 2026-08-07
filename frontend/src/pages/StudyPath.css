@@ -1,0 +1,113 @@
+.studyPath {
+  display: flex;
+  flex-direction: column;
+  width: clamp(300px, 70%, 1000px);
+  padding-bottom: 60px;
+}
+
+.studyPath__title {
+  align-self: flex-start;
+  font-size: 35px;
+  color: #26215c;
+  margin-bottom: 5px;
+}
+
+.studyPath__subtitle {
+  align-self: flex-start;
+  color: #757474;
+  font-size: 15px;
+  margin-bottom: 30px;
+  max-width: 75%;
+  text-align: start;
+}
+
+.studyPath__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  margin: 80px auto;
+}
+
+.studyPath__emptyText {
+  color: #757474;
+  font-size: 15px;
+  max-width: 480px;
+}
+
+.studyPath__emptyButton {
+  background-color: #26215c;
+  color: #fff;
+  padding: 12px 30px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.studyPath__emptyButton:hover {
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    0 1px 3px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+.timeline__cardDescription {
+  font-size: 14px;
+  color: #757474;
+  margin: 8px 0 0;
+}
+
+.timeline__cardResource {
+  font-size: 13px;
+  color: #26215c;
+  margin: 8px 0 0;
+}
+
+.studyPath__skillTitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: #4a4a4a;
+}
+
+.studyPath__mainCard {
+  border: 1px solid #e4e2f0;
+  max-width: 60%;
+  border-radius: 12px;
+  margin: 10px;
+  padding: 16px 20px !important;
+  box-shadow: 0 2px 6px rgba(38, 33, 92, 0.06);
+}
+
+.studyPath__mainCard.studyPath__mainCard--left {
+  justify-self: end;
+}
+
+.studyPath__skillsHeaderCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 34px;
+  padding: 16px 20px !important;
+}
+
+.studyPath__skillsHeaderTitle {
+  margin-bottom: 0 !important;
+}
+
+.studyPath__mainCardTitle {
+  line-height: 1.4 !important;
+}
+
+.studyPath__finalCard {
+  max-width: 320px;
+}
+
+.studyPath__finalImage {
+  width: 100%;
+  border-radius: 8px;
+  display: block;
+  object-fit: cover;
+}

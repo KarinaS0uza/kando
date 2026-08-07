@@ -65,3 +65,45 @@ export const createMatch = (resumeId, jobId) => {
     job_id: jobId,
   });
 };
+
+export const listMatches = () => {
+  return apiClient.get(`/matching/`);
+};
+
+// Mock temporário: o backend ainda não expõe /study-track/.
+// TODO: trocar pelo apiClient.get(`/study-track/${matchId}/`) quando existir.
+const MOCK_STUDY_TRACK = {
+  titulo_trilha: "Trilha para Desenvolvedor Full-Stack Pleno",
+  introducao:
+    "Baseado no seu desempenho no desafio técnico e nos requisitos da vaga, montamos uma trilha priorizando as áreas com maior impacto na sua evolução.",
+  itens: [
+    {
+      posicao: 1,
+      skill: "PostgreSQL",
+      tipo_recurso: null,
+      sugestao_recurso: null,
+      motivacao:
+        "Bancos de dados relacionais são essenciais pra vagas full-stack, e foi sua área de maior dificuldade no teste.",
+    },
+    {
+      posicao: 2,
+      skill: "Angular",
+      tipo_recurso: "curso",
+      sugestao_recurso: "Curso introdutório de Angular",
+      motivacao:
+        "Essa é uma das tecnologias mais pedidas nas vagas que você buscou, e ainda não aparece no seu perfil.",
+    },
+    {
+      posicao: 3,
+      skill: "C#",
+      tipo_recurso: "documentacao",
+      sugestao_recurso: "Documentação oficial C#/.NET",
+      motivacao:
+        "Complementa bem seu conhecimento de backend, ampliando as vagas que você pode buscar.",
+    },
+  ],
+};
+
+export const getStudyTrack = () => {
+  return Promise.resolve({ data: MOCK_STUDY_TRACK });
+};
