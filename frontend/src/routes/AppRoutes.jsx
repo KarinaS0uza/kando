@@ -9,7 +9,6 @@ import UploadProfile from "../pages/UploadProfile";
 import Score from "../pages/Score";
 import SimulationInstructions from "../pages/SimulationInstructions";
 import SimulationQuestions from "../pages/SimulationQuestions";
-import Report from "../pages/Report";
 import TalentPassport from "../pages/TalentPassport";
 import StudyPath from "../pages/StudyPath";
 import Reliability from "../pages/Reliability";
@@ -66,14 +65,6 @@ export default function AppRoutes() {
         element={
           <ProtectedRoute>
             <SimulationQuestions />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/report"
-        element={
-          <ProtectedRoute>
-            <Report />
           </ProtectedRoute>
         }
       />

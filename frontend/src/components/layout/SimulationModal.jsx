@@ -4,7 +4,7 @@ import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { useSpring, animated } from "@react-spring/web";
-import "./simulationModal.css";
+import "./SimulationModal.css";
 import CertificateIcon from "@mui/icons-material/CardMembership";
 import RouteIcon from "@mui/icons-material/Route";
 import LeaderboardIcon from "@mui/icons-material/Leaderboard";

@@ -15,12 +15,13 @@
 
 .login__form {
   position: relative;
+  z-index: 0;
   display: flex;
   flex-direction: column;
   padding: 25px;
   flex: 1;
   gap: 20px;
-  height: auto;
+  height: 100%;
   background-size: cover;
   background-position: center;
 }

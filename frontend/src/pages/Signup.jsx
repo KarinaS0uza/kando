@@ -2,6 +2,7 @@ import "./Signup.css";
 import WelcomePanel from "../components/layout/WelcomePanel";
 import JoinForm from "../components/layout/JoinForm";
 import GoogleButton from "../components/layout/GoogleButton";
+import joinBackground from "../assets/join-background.png";
 
 export default function Signup() {
   return (
@@ -10,7 +11,7 @@ export default function Signup() {
       <section className="signup__form">
         <img
           className="signup__form-background"
-          src="./src/assets/join-background.png"
+          src={joinBackground}
           alt=""
         />
         <p className="signup__title">Cadastrar</p>

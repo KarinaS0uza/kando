@@ -129,7 +129,7 @@ export default function SimulationQuestions() {
       <SimulationModal
         openModal={showCompleteModal}
         closeModal={() => setShowCompleteModal(false)}
-        viewResults={() => navigate("/report")}
+        viewResults={() => navigate("/dashboard")}
       />
     </>
   );

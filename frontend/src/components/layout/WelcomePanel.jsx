@@ -29,22 +29,18 @@ export default function WelcomePanel() {
         </p>
       </div>
       <div className="login__welcome_instructions">
-        <div className="login__welcome_instructions_list-numbers">
-          <p className="login__welcome_instructions_list-number">1</p>
-          <p className="login__welcome_instructions_list-number">2</p>
-          <p className="login__welcome_instructions_list-number">3</p>
-        </div>
-        <div className="login__welcome_instructions_list-texts">
-          <p className="login__welcome_instructions_list-text">
-            Envie seu perfil
-          </p>
-          <p className="login__welcome_instructions_list-text">
-            Faça a simulação
-          </p>
-          <p className="login__welcome_instructions_list-text">
-            Estude com trilha personalizada
-          </p>
-        </div>
+        {[
+          "Envie seu perfil",
+          "Faça a simulação",
+          "Estude com trilha personalizada",
+        ].map((text, i) => (
+          <div className="login__welcome_instructions_row" key={text}>
+            <p className="login__welcome_instructions_list-number">
+              {i + 1}
+            </p>
+            <p className="login__welcome_instructions_list-text">{text}</p>
+          </div>
+        ))}
       </div>
     </section>
   );
