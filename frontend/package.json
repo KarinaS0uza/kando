@@ -26,6 +26,7 @@
     "lucide-react": "^1.25.0",
     "prop-types": "^15.8.1",
     "react": "^19.2.7",
+    "react-archer": "^5.1.0",
     "react-dom": "^19.2.7",
     "react-dropzone": "^19.1.1",
     "react-hot-toast": "^2.6.0",

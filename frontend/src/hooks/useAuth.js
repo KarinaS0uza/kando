@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 
+function hasSession() {
+  return !!localStorage.getItem("token") || !!localStorage.getItem("kando_user");
+}
+
 export default function useAuth() {
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    () => !!localStorage.getItem("kando_user"),
-  );
+  const [isAuthenticated, setIsAuthenticated] = useState(hasSession);
 
   useEffect(() => {
-    setIsAuthenticated(!!localStorage.getItem("kando_user"));
+    setIsAuthenticated(hasSession());
   }, []);
 
   const login = (userData) => {
