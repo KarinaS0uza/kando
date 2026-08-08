@@ -50,6 +50,8 @@ export default function JoinForm({
       return "";
     } else if (value.length < 8) {
       return "Senha inválida. Mínimo de 8 caracteres";
+    } else if (value.length > 100) {
+      return "Senha inválida. Máximo de 100 caracteres";
     } else {
       return "";
     }
@@ -103,7 +105,6 @@ export default function JoinForm({
       if (err == "Error: Este email já está cadastrado.") {
         setErrorEmail(err.message);
       } else {
-        setErrorEmail(err.message);
         setErrorPassword(err.message);
       }
     } finally {
