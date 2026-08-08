@@ -1,4 +1,5 @@
 .instructions {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   width: clamp(300px, 70%, 1000px);
@@ -73,4 +74,60 @@
   transform: translateY(-1px);
   transition: all 0.2s ease;
   cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .instructions {
+    width: min(90%, 760px);
+  }
+
+  .instructions__button_back,
+  .instructions__button_foward {
+    min-width: 200px;
+    padding: 14px 48px;
+  }
+}
+
+@media (max-width: 600px) {
+  .instructions {
+    width: 100%;
+    padding: 0 16px 24px;
+  }
+
+  .instructions__title {
+    margin: 20px 0;
+    font-size: clamp(24px, 8vw, 30px);
+    line-height: 1.2;
+  }
+
+  .instructions__text {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .instructions__buttons {
+    margin-top: 32px;
+    margin-bottom: 0;
+    gap: 12px;
+  }
+
+  .instructions__button_back,
+  .instructions__button_foward {
+    width: 50%;
+    min-width: 0;
+    min-height: 44px;
+    margin-top: 0;
+    padding: 12px 16px;
+  }
+}
+
+@media (max-width: 360px) {
+  .instructions__buttons {
+    flex-direction: column-reverse;
+  }
+
+  .instructions__button_back,
+  .instructions__button_foward {
+    width: 100%;
+  }
 }

@@ -1,4 +1,5 @@
 .studyPath {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   width: clamp(300px, 70%, 1000px);
@@ -110,4 +111,84 @@
   border-radius: 8px;
   display: block;
   object-fit: cover;
+}
+
+@media (max-width: 900px) {
+  .studyPath {
+    width: min(90%, 760px);
+  }
+
+  .studyPath__mainCard {
+    max-width: 70%;
+  }
+}
+
+@media (max-width: 700px) {
+  .studyPath {
+    width: 100%;
+    padding: 0 16px 40px;
+  }
+
+  .studyPath__title {
+    width: 100%;
+    margin: 20px 0 6px;
+    font-size: clamp(24px, 8vw, 30px);
+    line-height: 1.2;
+    text-align: left;
+  }
+
+  .studyPath__subtitle {
+    max-width: none;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .studyPath__timeline {
+    width: min(calc(100% - 16px), 480px);
+    margin-inline: auto;
+    align-self: center;
+  }
+
+  .studyPath__mainCard,
+  .studyPath__finalCard {
+    box-sizing: border-box;
+    width: calc(100% - 10px);
+    max-width: none;
+    margin: 8px 0 8px 10px;
+    padding: 14px 16px !important;
+  }
+
+  .studyPath__mainCardTitle,
+  .timeline__cardDescription,
+  .timeline__cardResource,
+  .studyPath__skillTitle {
+    overflow-wrap: anywhere;
+    text-align: left;
+  }
+
+  .studyPath__empty {
+    width: 100%;
+    margin: 48px auto;
+  }
+
+  .studyPath__emptyText {
+    line-height: 1.5;
+  }
+
+  .studyPath__emptyButton {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 380px) {
+  .studyPath {
+    padding-inline: 12px;
+  }
+
+  .studyPath__mainCard,
+  .studyPath__finalCard {
+    padding: 12px !important;
+  }
 }

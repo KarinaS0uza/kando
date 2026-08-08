@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { Timeline } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import { PathIcon, CheckCircleIcon, StampIcon } from "@phosphor-icons/react";
 import Header from "../components/layout/Header";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
@@ -23,6 +24,7 @@ const RESOURCE_LABELS = {
 };
 
 export default function StudyPath() {
+  const useAlternatingTimeline = useMediaQuery("(min-width: 701px)");
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
   const [steps, setSteps] = useState([]);
@@ -170,6 +172,7 @@ export default function StudyPath() {
         )}
 
         <Timeline
+          className="studyPath__timeline"
           active={timelineItems.length}
           bulletSize={34}
           lineWidth={2}
@@ -183,11 +186,13 @@ export default function StudyPath() {
                   bullet={<CheckCircleIcon size={20} />}
                   title="Habilidades que você já tem"
                   color="green"
-                  opposite=""
-                  alternate={item.side % 2 === 1}
+                  opposite={useAlternatingTimeline ? "" : undefined}
+                  alternate={useAlternatingTimeline && item.side % 2 === 1}
                   classNames={{
                     itemBody: `studyPath__mainCard studyPath__skillsHeaderCard${
-                      item.side % 2 === 1 ? " studyPath__mainCard--left" : ""
+                      useAlternatingTimeline && item.side % 2 === 1
+                        ? " studyPath__mainCard--left"
+                        : ""
                     }`,
                     itemTitle:
                       "studyPath__skillsHeaderTitle studyPath__mainCardTitle",
@@ -202,8 +207,8 @@ export default function StudyPath() {
                   key={item.id}
                   title={item.skill}
                   color="green"
-                  opposite=""
-                  alternate={item.side % 2 === 1}
+                  opposite={useAlternatingTimeline ? "" : undefined}
+                  alternate={useAlternatingTimeline && item.side % 2 === 1}
                   style={{ "--tl-bullet-size": "14px" }}
                   classNames={{ itemTitle: "studyPath__skillTitle" }}
                 />
@@ -217,11 +222,13 @@ export default function StudyPath() {
                   bullet={<StampIcon size={18} />}
                   title="Passaporte carimbado"
                   color="green"
-                  opposite=""
-                  alternate={item.side % 2 === 1}
+                  opposite={useAlternatingTimeline ? "" : undefined}
+                  alternate={useAlternatingTimeline && item.side % 2 === 1}
                   classNames={{
                     itemBody: `studyPath__mainCard studyPath__finalCard${
-                      item.side % 2 === 1 ? " studyPath__mainCard--left" : ""
+                      useAlternatingTimeline && item.side % 2 === 1
+                        ? " studyPath__mainCard--left"
+                        : ""
                     }`,
                     itemTitle: "studyPath__mainCardTitle",
                   }}
@@ -243,11 +250,13 @@ export default function StudyPath() {
                 key={item.id}
                 bullet={<item.Icon size={17} />}
                 title={item.title}
-                opposite=""
-                alternate={item.side % 2 === 1}
+                opposite={useAlternatingTimeline ? "" : undefined}
+                alternate={useAlternatingTimeline && item.side % 2 === 1}
                 classNames={{
                   itemBody: `studyPath__mainCard${
-                    item.side % 2 === 1 ? " studyPath__mainCard--left" : ""
+                    useAlternatingTimeline && item.side % 2 === 1
+                      ? " studyPath__mainCard--left"
+                      : ""
                   }`,
                   itemTitle: "studyPath__mainCardTitle",
                 }}

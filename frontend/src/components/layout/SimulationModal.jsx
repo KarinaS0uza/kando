@@ -48,11 +48,14 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 350,
+  boxSizing: "border-box",
+  width: { xs: "calc(100% - 32px)", sm: 350 },
+  maxHeight: "calc(100dvh - 32px)",
+  overflowY: "auto",
   bgcolor: "background.paper",
   border: "none",
   boxShadow: 24,
-  p: 4,
+  p: { xs: 2, sm: 4 },
   "padding-top": 0,
 };
 

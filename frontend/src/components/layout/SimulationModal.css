@@ -82,3 +82,29 @@
   text-align: center;
   margin: 12px 0 12px;
 }
+
+@media (max-width: 600px) {
+  .simulationModal {
+    margin-top: 12px;
+  }
+
+  .simulationModal__close_button {
+    top: -6px;
+    right: -6px;
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .simulationModal__subtitle {
+    font-size: 14px;
+  }
+
+  .simulationModal__item {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .simulationModal__button {
+    min-height: 44px;
+  }
+}

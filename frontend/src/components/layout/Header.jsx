@@ -9,6 +9,7 @@ export default function Header({ menuActive }) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [hasCompletedMatch, setHasCompletedMatch] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     if (menuActive) return;
@@ -30,6 +31,17 @@ export default function Header({ menuActive }) {
 
   const showMenu = menuActive || hasCompletedMatch;
 
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const closeOnEscape = (event) => {
+      if (event.key === "Escape") setIsMenuOpen(false);
+    };
+
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [isMenuOpen]);
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("kando_user");
@@ -42,7 +54,26 @@ export default function Header({ menuActive }) {
         <img className="header__tp-icon" src={logo} alt="Kando" />
       </Link>
       {showMenu && (
-        <nav className="header__links">
+        <button
+          className={`header__menu-button ${isMenuOpen ? "header__menu-button--open" : ""}`}
+          type="button"
+          aria-label={isMenuOpen ? "Fechar menu" : "Abrir menu"}
+          aria-controls="header-navigation"
+          aria-expanded={isMenuOpen}
+          onClick={() => setIsMenuOpen((open) => !open)}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+      )}
+      {showMenu && (
+        <nav
+          id="header-navigation"
+          className={`header__links ${isMenuOpen ? "header__links--open" : ""}`}
+          aria-label="Navegação principal"
+          onClick={() => setIsMenuOpen(false)}
+        >
           <Link
             to="/dashboard"
             className={`header__link ${pathname === "/dashboard" ? "header__link--active" : ""}`}
@@ -75,7 +106,7 @@ export default function Header({ menuActive }) {
           </Link>
         </nav>
       )}
-      <button className="header__logoff-button" onClick={handleLogout}>
+      <button className="header__logoff-button" type="button" onClick={handleLogout}>
         <img className="header__logoff-icon" src={logoffIcon} alt="" />
         Sair
       </button>

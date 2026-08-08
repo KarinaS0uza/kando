@@ -151,3 +151,28 @@
 .upload__file_delete-button_icon {
   width: 13px;
 }
+
+@media (max-width: 680px) {
+  .upload__input,
+  .upload__dropzone {
+    width: 100%;
+    max-width: none;
+    min-height: 220px;
+  }
+
+  .upload__dropzone {
+    padding: 32px 16px;
+  }
+
+  .upload__text {
+    max-width: 260px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 380px) {
+  .upload__input,
+  .upload__dropzone {
+    min-height: 200px;
+  }
+}
