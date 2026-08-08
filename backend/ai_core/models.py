@@ -2,7 +2,7 @@
 
 import uuid
 
-from django.db import models
+from django.db import models, transaction
 
 
 class Prompt(models.Model):
@@ -15,15 +15,22 @@ class Prompt(models.Model):
     )
     prompt_description = models.SlugField(
         max_length=100,
-        unique=True,
-        help_text="Unique key used to look up this prompt in code, e.g. 'job_normalization'.",
+        db_index=True,
+        help_text=(
+            "Key used to look up this prompt in code, e.g. 'job_normalization'. "
+            "Not unique on its own: every edit adds a new version row under the "
+            "same key, so multiple rows share a prompt_description."
+        ),
     )
     prompt_detail = models.TextField(
-        help_text="Prompt text, may contain str.format() placeholders.",
+        help_text="Prompt text, may contain string.Template placeholders.",
     )
     version = models.PositiveIntegerField(
         default=1,
-        help_text="Auto-incremented whenever prompt_detail changes.",
+        help_text=(
+            "Version number of this prompt. A new row (version + 1) is created "
+            "on every change; existing versions are never overwritten."
+        ),
     )
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -31,23 +38,62 @@ class Prompt(models.Model):
 
     class Meta:
         db_table = "prompts"
-        ordering = ["prompt_description"]
+        ordering = ["prompt_description", "-version"]
         verbose_name = "Prompt"
         verbose_name_plural = "Prompts"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["prompt_description", "version"],
+                name="unique_prompt_description_version",
+            ),
+            models.UniqueConstraint(
+                fields=["prompt_description"],
+                condition=models.Q(is_active=True),
+                name="unique_active_prompt_per_description",
+            ),
+        ]
 
-    def save(self, *args, **kwargs):
-        if self.pk:
-            previous_detail = (
-                Prompt.objects.filter(pk=self.pk)
-                .values_list("prompt_detail", flat=True)
+    @classmethod
+    def publish(cls, prompt_description, prompt_detail, *, is_active=True):
+        """Store a prompt as a new immutable version, never overwriting old ones.
+
+        If the latest version for ``prompt_description`` already holds the exact
+        same ``prompt_detail``, no new row is created. Otherwise a row is
+        inserted with ``version`` one higher than the current latest. When
+        ``is_active`` is true the new version becomes the sole active one for
+        this description (any previously active version is deactivated first).
+
+        Returns ``(prompt, created)``.
+        """
+        with transaction.atomic():
+            latest = (
+                cls.objects.select_for_update()
+                .filter(prompt_description=prompt_description)
+                .order_by("-version")
                 .first()
             )
-            if previous_detail is not None and previous_detail != self.prompt_detail:
-                self.version += 1
-        super().save(*args, **kwargs)
+            unchanged = latest is not None and latest.prompt_detail == prompt_detail
+            if unchanged and (latest.is_active or not is_active):
+                return latest, False
+            if is_active:
+                cls.objects.filter(
+                    prompt_description=prompt_description, is_active=True
+                ).update(is_active=False)
+            if unchanged:
+                latest.is_active = True
+                latest.save(update_fields=["is_active"])
+                return latest, False
+            next_version = (latest.version + 1) if latest else 1
+            prompt = cls.objects.create(
+                prompt_description=prompt_description,
+                prompt_detail=prompt_detail,
+                version=next_version,
+                is_active=is_active,
+            )
+            return prompt, True
 
     def __str__(self):
-        return self.prompt_description
+        return f"{self.prompt_description} (v{self.version})"
 
 
 class PromptCallMetadata(models.Model):
