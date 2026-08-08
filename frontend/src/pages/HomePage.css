@@ -1,5 +1,6 @@
 .homepage {
   width: 100%;
+  overflow-x: clip;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -78,6 +79,7 @@
 }
 
 .homepage__hero {
+  position: relative;
   display: flex;
   width: 100%;
   height: 380px;
@@ -88,13 +90,14 @@
 }
 
 .homepage__hero-photo {
-  top: 0;
-  right: 0;
+  position: absolute;
+  inset: 0;
   height: 100%;
-  width: auto;
+  width: 100%;
   z-index: 0;
   display: block;
-  align-self: flex-end;
+  object-fit: contain;
+  object-position: right center;
 }
 
 .homepage__hero-content {
@@ -109,10 +112,11 @@
   text-align: start;
   padding: 80px 10% 100px;
   background: linear-gradient(
-    276deg,
-    rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 1) 10%,
-    rgba(38, 33, 92, 1) 31%
+    90deg,
+    #26215c 0%,
+    #26215c calc(100% - 681px),
+    rgba(38, 33, 92, 0.82) calc(100% - 560px),
+    rgba(38, 33, 92, 0) calc(100% - 320px)
   );
   flex: 1;
 }
@@ -196,6 +200,8 @@
 }
 
 .homepage__stepper {
+  box-sizing: border-box;
+  width: min(100%, 550px);
   padding: 15px;
   align-self: center;
 }
@@ -344,30 +350,194 @@
   justify-content: center;
 }
 
-@media (max-width: 640px) {
-  .homepage__footer {
-    padding: 16px 20px;
-    font-size: 13px;
+@media (max-width: 1100px) {
+  .homepage__headline {
+    max-width: 360px;
+    font-size: clamp(24px, 8vw, 38px);
   }
+}
 
+@media (max-width: 900px) {
   .homepage__header {
-    padding: 14px 20px;
+    padding: 10px 24px;
   }
 
-  .homepage__nav-button {
-    padding: 8px 14px;
-    font-size: 14px;
+  .homepage__hero {
+    height: 360px;
   }
 
   .homepage__hero-content {
-    padding: 50px 16px 70px;
+    padding: 60px 6%;
   }
 
   .homepage__headline {
-    font-size: 28px;
+    max-width: 300px;
+    font-size: 30px;
+  }
+
+  .homepage__description {
+    padding: 24px 5% 36px;
+  }
+
+  .homepage__enter {
+    padding: 60px 24px;
+  }
+
+  .homepage__footer_description {
+    flex-wrap: wrap;
+    gap: 8px 20px;
+  }
+}
+
+@media (max-width: 700px) {
+  .homepage__header {
+    padding: 10px 16px;
+  }
+
+  .homepage__logo {
+    gap: 7px;
+  }
+
+  .homepage__logo-icon {
+    width: 38px;
+  }
+
+  .homepage__logo-title {
+    font-size: 16px;
+  }
+
+  .homepage__nav {
+    gap: 8px;
+  }
+
+  .homepage__nav-button {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .homepage__hero {
+    min-height: 430px;
+    height: auto;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+  }
+
+  .homepage__hero-photo {
+    display: none;
+  }
+
+  .homepage__hero-content {
+    min-height: 430px;
+    max-width: fit-content;
+    align-items: center;
+    padding: 48px 20px;
+    background: #26215c;
+    text-align: center;
+  }
+
+  .homepage__headline {
+    max-width: 360px;
+    font-size: clamp(28px, 8vw, 34px);
   }
 
   .homepage__subtext {
+    max-width: 330px;
+    margin-bottom: 26px;
     font-size: 15px;
+  }
+
+  .homepage__cta {
+    box-sizing: border-box;
+    min-height: 46px;
+    padding: 12px 32px;
+    text-align: center;
+  }
+
+  .homepage__description {
+    padding: 20px 12px 32px;
+  }
+
+  .homepage__stepper {
+    padding: 8px 0;
+  }
+
+  .homepage__enter {
+    min-width: 0;
+    padding: 52px 16px 44px;
+  }
+
+  .homepage__enter-title {
+    width: min(100%, 420px);
+  }
+
+  .homepage__enter h2 {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 32px 20px;
+    font-size: 20px;
+  }
+
+  .homepage__enter-stamp {
+    top: -38px;
+    right: -8px;
+    width: 86px;
+  }
+
+  .homepage__enter-cta {
+    box-sizing: border-box;
+    width: min(100%, 420px);
+    min-height: 46px;
+    padding: 12px 24px;
+  }
+
+  .homepage__footer {
+    padding: 20px 16px;
+  }
+
+  .homepage__footer-team-label {
+    flex-basis: 100%;
+  }
+
+  .homepage__footer_description {
+    gap: 6px 12px;
+  }
+}
+
+@media (max-width: 420px) {
+  .homepage__headline {
+    max-width: 340px;
+  }
+  .homepage__logo-title {
+    display: none;
+  }
+
+  .homepage__nav-button {
+    padding-inline: 10px;
+  }
+
+  .homepage__hero,
+  .homepage__hero-content {
+    min-height: 400px;
+  }
+
+  .homepage__hero-content {
+    padding-inline: 16px;
+  }
+
+  .homepage__cta {
+    width: fit-content;
+  }
+
+  .homepage__footer-team a {
+    padding-inline: 12px;
+  }
+
+  .homepage__footer_description {
+    flex-direction: column;
+  }
+
+  .homepage__footer_description p:nth-child(even) {
+    display: none;
   }
 }

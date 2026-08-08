@@ -1,8 +1,7 @@
 import "./HomePage.css";
 import { Link } from "react-router-dom";
-import { User } from "lucide-react";
 import logo from "../assets/logo-indigo.svg";
-import heroPhoto from "../assets/Man_holding_certificate_in_office_2.jpeg";
+import heroPhoto from "../assets/Man_holding_certificate_in_office.jpeg";
 import joinBackground from "../assets/join-background.png";
 import stampHomepage from "../assets/stamp_homepage.png";
 import StepperHomePage from "../components/layout/StepperHomePage";
