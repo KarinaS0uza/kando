@@ -89,6 +89,23 @@ class ResumeListCreateView(APIView):
             validated_data["raw_text"]
         )
 
+        # Content-type gate: when the LLM identifies the text as not a resume
+        # (for example a job posting pasted into the resume field), reject with
+        # 400 and do not persist, so mismatched documents never enter the
+        # database. Only an explicit ``True`` rejects; an absent field or a
+        # technical error falls through unchanged.
+        if normalization_result.get("entrada_invalida") is True:
+            reason = normalization_result.get("motivo_entrada_invalida")
+            return Response(
+                {"raw_text": [
+                    reason or (
+                        "O texto enviado não parece ser um currículo. "
+                        "Verifique se você não colou uma vaga por engano."
+                    )
+                ]},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         with transaction.atomic():
             resume = ResumeSubmission.objects.create(
                 **validated_data
@@ -103,6 +120,9 @@ class ResumeListCreateView(APIView):
                     )
                 )
             else:
+                # Drop the discriminator so it does not leak into the persisted
+                # structured data consumed by matching and question generation.
+                normalization_result.pop("entrada_invalida", None)
                 normalization = (
                     ResumeNormalization.objects.create(
                         resume=resume,
