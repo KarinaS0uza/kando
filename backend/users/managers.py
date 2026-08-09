@@ -1,29 +1,26 @@
-"""Managers do app users.
+"""Managers for the users app.
 
-Define o manager customizado usado pelo modelo User, responsável por
-criar usuários e superusers corretamente (já que o User usa email
-em vez de username).
+Defines the custom manager the User model uses to create users and superusers
+by email instead of username.
 """
 
 from django.contrib.auth.base_user import BaseUserManager
 
 
 class UserManager(BaseUserManager):
-    """Manager customizado para o modelo User baseado em email.
+    """Custom manager for the email-based User model.
 
-    Sobrescreve a criação de usuários para usar email como identificador
-    e lidar corretamente com senha opcional (usuários vindos do Supabase
-    podem não ter senha local).
+    Overrides user creation to use email as the identifier and to handle an
+    optional password (users coming from Supabase may have no local password).
     """
 
     use_in_migrations = True
 
-    def _create_user(self, email, password=None, **extra_fields):
-        """Cria e salva um usuário com o email e senha informados.
+    def create_and_save_user(self, email, password=None, **extra_fields):
+        """Create and save a user with the given email and password.
 
-        Método interno usado por `create_user` e `create_superuser`.
-        Se nenhuma senha for passada, o usuário é criado com senha
-        inutilizável (ex: autenticação feita via Supabase).
+        Shared by create_user and create_superuser. With no password the user is
+        saved with an unusable password (e.g. authentication handled via Supabase).
         """
         if not email:
             raise ValueError("O email é obrigatório.")
@@ -37,13 +34,13 @@ class UserManager(BaseUserManager):
         return user
 
     def create_user(self, email, password=None, **extra_fields):
-        """Cria um usuário comum (não staff, não superuser) por padrão."""
+        """Create a regular user (non-staff, non-superuser) by default."""
         extra_fields.setdefault("is_staff", False)
         extra_fields.setdefault("is_superuser", False)
-        return self._create_user(email, password, **extra_fields)
+        return self.create_and_save_user(email, password, **extra_fields)
 
     def create_superuser(self, email, password=None, **extra_fields):
-        """Cria um superuser, validando as flags e senha obrigatórias."""
+        """Create a superuser, requiring the staff/superuser flags and a password."""
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
 
@@ -54,5 +51,4 @@ class UserManager(BaseUserManager):
         if not password:
             raise ValueError("Superuser precisa de uma senha.")
 
-        return self._create_user(email, password, **extra_fields)
-    
+        return self.create_and_save_user(email, password, **extra_fields)

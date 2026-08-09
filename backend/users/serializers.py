@@ -1,7 +1,6 @@
-"""Serializers do app users.
+"""Serializers for the users app.
 
-Define os serializers usados pelas rotas de autenticação e cadastro
-de usuários.
+Defines the serializers used by the authentication and user-registration routes.
 """
 
 from django.contrib.auth.password_validation import (
@@ -14,18 +13,18 @@ from .models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """Serializer único usado por todas as rotas de users.
+    """Single serializer used by all user routes.
 
-    is_superuser não entra nos fields de propósito: superuser só é criado via
-    `createsuperuser` ou admin do Django. is_staff é somente leitura pelo mesmo
-    motivo - esse serializer também atende o cadastro público (create com
-    AllowAny), então nenhum campo de privilégio pode ser gravável aqui.
+    ``is_superuser`` is deliberately excluded from the fields: a superuser is
+    only created via ``createsuperuser`` or the Django admin. ``is_staff`` is
+    read-only for the same reason — this serializer also handles public
+    registration (create with AllowAny), so no privilege field may be writable.
     """
 
     password = serializers.CharField(write_only=True, required=False, allow_blank=False)
 
     class Meta:
-        """Configuração do serializer: modelo e campos expostos."""
+        """Configure the model and the exposed fields."""
 
         model = User
         fields = [
@@ -59,7 +58,7 @@ class UserSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-        """Cria um novo usuário, definindo senha (ou deixando inutilizável)."""
+        """Create a user, setting the password (or leaving it unusable)."""
         password = validated_data.pop("password", None)
         user = User(**validated_data)
         if password:
@@ -70,7 +69,7 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
     def update(self, instance, validated_data):
-        """Atualiza um usuário existente, trocando a senha se informada."""
+        """Update a user, changing the password when one is provided."""
         password = validated_data.pop("password", None)
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
@@ -81,7 +80,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.Serializer):  # pylint: disable=abstract-method
-    """Serializer usado apenas para validar as credenciais de login."""
+    """Validate login credentials only (email and password)."""
 
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True, trim_whitespace=False)

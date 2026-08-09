@@ -1,8 +1,8 @@
-"""Models do app users.
+"""Models for the users app.
 
-Define o modelo customizado de User usado para autenticação, que suporta
-tanto usuários criados localmente (ex: via createsuperuser) quanto
-usuários autenticados através do Supabase Auth.
+Defines the custom User model used for authentication, supporting both locally
+created users (e.g. via createsuperuser) and users authenticated through
+Supabase Auth.
 """
 
 import uuid
@@ -16,18 +16,17 @@ from .managers import UserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    """Modelo customizado de usuário que autentica via email em vez de username.
+    """Custom user that authenticates by email instead of username.
 
-    Suporta tanto usuários criados localmente (ex: admin do Django/superusers)
-    quanto usuários vinculados a uma conta externa do Supabase Auth através
-    do campo `supabase_uid`.
+    Supports both locally created users (e.g. Django admin/superusers) and users
+    linked to an external Supabase Auth account via ``supabase_uid``.
     """
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=255)
 
-    # Vincula o registro local a um usuário autenticado via Supabase Auth.
-    # Fica nulo para usuários que só existem localmente (ex: criados via createsuperuser).
+    # Links the local record to a user authenticated via Supabase Auth. Null for
+    # users that only exist locally (e.g. created via createsuperuser).
     supabase_uid = models.UUIDField(unique=True, null=True, blank=True)
 
     is_active = models.BooleanField(default=True)
@@ -38,16 +37,16 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    # Diz ao Django para usar "email" como identificador único de login
-    # em vez do campo padrão "username".
+    # Use "email" as the unique login identifier instead of the default
+    # "username" field.
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
     class Meta:
-        """Opções de metadata para o modelo User."""
+        """Metadata options for the User model."""
         verbose_name = "user"
         verbose_name_plural = "users"
 
     def __str__(self):
-        """Retorna o email do usuário como representação legível."""
+        """Return the user's email as the readable representation."""
         return self.email

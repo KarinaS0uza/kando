@@ -1,12 +1,8 @@
-"""App config do users.
-
-Configuração do app users no Django.
-"""
-
+"""App configuration for the users application."""
 from django.apps import AppConfig
 
 
 class UsersConfig(AppConfig):
-    """Configuração do app users."""
+    """Configuration for the users app."""
 
     name = "users"

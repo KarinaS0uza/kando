@@ -12,7 +12,7 @@ from .serializers import PromptSerializer
 
 
 class PromptListView(generics.ListAPIView):
-    """GET /api/prompts/ — list all prompts."""
+    """List all prompts (authenticated only)."""
 
     queryset = Prompt.objects.all()
     serializer_class = PromptSerializer
@@ -20,7 +20,7 @@ class PromptListView(generics.ListAPIView):
 
 
 class PromptCreateView(generics.CreateAPIView):
-    """POST /api/prompts/create/ — create a new prompt."""
+    """Create (publish) a new prompt (authenticated only)."""
 
     queryset = Prompt.objects.all()
     serializer_class = PromptSerializer
@@ -28,7 +28,7 @@ class PromptCreateView(generics.CreateAPIView):
 
 
 class PromptDetailView(generics.RetrieveAPIView):
-    """GET /api/prompts/<pk>/ — retrieve a single prompt."""
+    """Retrieve a single prompt (authenticated only)."""
 
     queryset = Prompt.objects.all()
     serializer_class = PromptSerializer
@@ -36,7 +36,7 @@ class PromptDetailView(generics.RetrieveAPIView):
 
 
 class PromptUpdateView(generics.UpdateAPIView):
-    """PUT/PATCH /api/prompts/<pk>/update/ — update an existing prompt."""
+    """Publish an updated version of a prompt (authenticated only)."""
 
     queryset = Prompt.objects.all()
     serializer_class = PromptSerializer

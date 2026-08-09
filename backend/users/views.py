@@ -1,7 +1,7 @@
-"""Views do app users.
+"""Views for the users app.
 
-Define as views de autenticação (login) e as views CRUD para o
-modelo User (listar, detalhar, criar, atualizar e remover).
+Defines the authentication (login) view and the CRUD views for the User model
+(list, retrieve, create, update, delete).
 """
 
 from django.contrib.auth import authenticate
@@ -14,14 +14,17 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
 from .serializers import UserSerializer, LoginSerializer
 
+# NOTE: the authenticated views below use IsAuthenticated during development;
+# switch to an admin-only permission as the project matures.
+
 
 class LoginView(APIView):
-    """POST /api/login/ — autentica o usuário e retorna os tokens JWT."""
+    """Authenticate a user by email/password and return JWT tokens (public)."""
 
     permission_classes = [AllowAny]
 
     def post(self, request):
-        """Valida as credenciais e retorna tokens JWT se forem válidas."""
+        """Validate the credentials and return JWT tokens when they are valid."""
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -50,29 +53,23 @@ class LoginView(APIView):
 
 
 class UserListView(generics.ListAPIView):
-    """GET /api/users/ — lista todos os usuários."""
+    """List all users, newest first (authenticated only)."""
 
     queryset = User.objects.all().order_by("-date_joined")
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated] 
-"""
-Durante o desenvolvimento permission_classes sera 'isAuthenticated', 
-mas sera alterado para 'IsAdmin' conforme o projeto avance
-"""
+    permission_classes = [IsAuthenticated]
+
 
 class UserDetailView(generics.RetrieveAPIView):
-    """GET /api/users/<pk>/ — detalhe de um usuário."""
+    """Retrieve a single user (authenticated only)."""
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
-"""
-Durante o desenvolvimento permission_classes sera 'isAuthenticated', 
-mas sera alterado para 'IsAdmin' conforme o projeto avance
-"""
+
 
 class UserCreateView(generics.CreateAPIView):
-    """POST /api/users/create/ — cadastro público de usuário."""
+    """Register a new user (public)."""
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -80,23 +77,16 @@ class UserCreateView(generics.CreateAPIView):
 
 
 class UserUpdateView(generics.UpdateAPIView):
-    """PUT/PATCH /api/users/<pk>/update/ — atualização de usuário."""
+    """Update an existing user (authenticated only)."""
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
-"""
-Durante o desenvolvimento permission_classes sera 'isAuthenticated', 
-mas sera alterado para 'IsAdmin' conforme o projeto avance
-"""
+
 
 class UserDeleteView(generics.DestroyAPIView):
-    """DELETE /api/users/<pk>/delete/ — remoção de usuário."""
+    """Delete a user (authenticated only)."""
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
-"""
-Durante o desenvolvimento permission_classes sera 'isAuthenticated', 
-mas sera alterado para 'IsAdmin' conforme o projeto avance
-"""
