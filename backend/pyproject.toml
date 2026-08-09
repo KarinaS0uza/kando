@@ -9,3 +9,7 @@ fail-under = 9.60
 
 [tool.pylint.DJANGO]
 django-settings-module = "config.settings"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+python_files = ["tests.py", "test_*.py"]
