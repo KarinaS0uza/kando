@@ -1,6 +1,6 @@
-"""Admin do app users.
+"""Admin for the users app.
 
-Configura a interface do Django admin para o modelo User customizado.
+Configures the Django admin interface for the custom User model.
 """
 
 from django.contrib import admin
@@ -11,7 +11,7 @@ from .models import User
 
 @admin.register(User)
 class UserAdmin(DjangoUserAdmin):
-    """Configuração do admin para o modelo User baseado em email."""
+    """Admin configuration for the email-based User model."""
 
     ordering = ["email"]
     list_display = ["email", "full_name", "supabase_uid", "is_staff", "is_active"]

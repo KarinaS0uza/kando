@@ -1,6 +1,6 @@
-"""URLs do app users.
+"""URLs for the users app.
 
-Define as rotas de autenticação e do CRUD de usuários.
+Defines the authentication routes and the user CRUD routes.
 """
 
 from django.urls import path

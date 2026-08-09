@@ -1,5 +1,8 @@
+"""App configuration for the ai_core application."""
 from django.apps import AppConfig
 
 
 class AiCoreConfig(AppConfig):
-    name = 'ai_core'
+    """Configuration for the ai_core app."""
+
+    name = "ai_core"
