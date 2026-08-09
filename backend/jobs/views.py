@@ -1,5 +1,10 @@
 """Authenticated API views for creating and accessing job postings."""
 
+# Shares the submission-preprocessing flow (serializer validation, PDF
+# extraction, text validation) with resumes.views by design; suppress the
+# cross-file duplicate-code report until that flow is extracted.
+# pylint: disable=duplicate-code
+
 from django.db import transaction
 from rest_framework import serializers, status
 from rest_framework.permissions import IsAuthenticated
