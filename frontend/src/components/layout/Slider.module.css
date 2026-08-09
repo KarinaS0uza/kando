@@ -1,23 +1,42 @@
 .slider {
+  box-sizing: border-box;
+  width: 100%;
   display: flex;
+  align-items: center;
+  gap: 4px;
   padding-left: 50px;
 }
 
 .value {
+  min-width: 28px;
+  flex-shrink: 0;
   align-self: center;
+}
+
+.sliderRoot {
+  flex: 1;
+  min-width: 0;
+  max-width: 500px;
 }
 
 .Control {
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  width: 500px;
+  width: 100%;
   padding-block: 0.75rem;
   touch-action: none;
   -webkit-user-select: none;
   user-select: none;
   padding-right: 10px;
   padding-left: 10px;
+}
+
+@media (max-width: 700px) {
+  .slider {
+    padding-left: 0;
+  }
+
 }
 
 .Track {

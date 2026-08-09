@@ -9,6 +9,7 @@ export default function Slider() {
     <div className={styles.slider}>
       <label className={styles.value}>{`0`}</label>
       <BaseSlider.Root
+        className={styles.sliderRoot}
         defaultValue={50}
         value={valor}
         onValueChange={setValor}

@@ -75,3 +75,35 @@
   transform: translateY(-2px);
   transition: all 0.2s ease;
 }
+
+@media (max-width: 600px) {
+  .scoreModal {
+    margin-top: 12px;
+    padding-top: 16px;
+  }
+
+  .scoreModal__close_button {
+    top: -6px;
+    right: -6px;
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .scoreModal__title {
+    padding-inline: 28px;
+    font-size: 20px;
+  }
+
+  .scoreModal__subtitle,
+  .scoreModal__item {
+    font-size: 14px;
+  }
+
+  .scoreModal__item {
+    padding: 12px;
+  }
+
+  .scoreModal__button {
+    min-height: 44px;
+  }
+}

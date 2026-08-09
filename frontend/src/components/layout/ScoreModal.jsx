@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import Typography from "@mui/material/Typography";
 import { useSpring, animated } from "@react-spring/web";
 import "./ScoreModal.css";
 import CertificateIcon from "@mui/icons-material/CardMembership";
@@ -18,7 +17,7 @@ const Fade = React.forwardRef(function Fade(props, ref) {
     onClick,
     onEnter,
     onExited,
-    ownerState,
+    ownerState: _ownerState,
     ...other
   } = props;
   const style = useSpring({
@@ -57,11 +56,14 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 350,
+  boxSizing: "border-box",
+  width: { xs: "calc(100% - 32px)", sm: 350 },
+  maxHeight: "calc(100dvh - 32px)",
+  overflowY: "auto",
   bgcolor: "background.paper",
   border: "none",
   boxShadow: 24,
-  p: 4,
+  p: { xs: 2, sm: 4 },
   "padding-top": 0,
 };
 

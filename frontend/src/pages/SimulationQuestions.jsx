@@ -73,6 +73,8 @@ export default function SimulationQuestions() {
         }),
       );
       await simulationService.submitAnswers(formattedAnswers);
+      localStorage.setItem("kando_simulation_completed", "true");
+      window.dispatchEvent(new Event("simulation-completed"));
       setShowCompleteModal(true);
       return;
     }

@@ -1,6 +1,14 @@
+.passport-certificate {
+  width: 100%;
+  min-width: 0;
+}
+
 .talent__main_image {
   width: 100%;
   max-width: 800px;
+  height: auto;
+  display: block;
+  margin-inline: auto;
 }
 
 .passport-certificate__overlay {
@@ -8,7 +16,7 @@
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   z-index: 9999;
   align-content: center;
   backdrop-filter: blur(10px);

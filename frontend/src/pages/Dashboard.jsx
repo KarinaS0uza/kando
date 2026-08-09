@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/layout/Header";
+import { listMatches } from "../services/api";
 import "./Dashboard.css";
 
 const skillScores = [
@@ -28,13 +30,41 @@ function ScoreBar({ label, value }) {
   );
 }
 
-export default function AssessmentDashboard({
+export default function Dashboard({
   score = 62,
   level = "Intermediário",
   bestArea = "Lógica",
   summary = "Você foi bem em lógica e front end, mas errou a maioria das questões de SQL — isso puxou sua média pra baixo.",
 }) {
   const navigate = useNavigate();
+  const [matchingScore, setMatchingScore] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    listMatches()
+      .then((response) => {
+        if (cancelled) return;
+
+        const latestMatch = (response.data || [])[0];
+        const rawScore = latestMatch?.overall_match_score;
+        const latestScore = Number(rawScore);
+
+        if (
+          latestMatch?.success &&
+          rawScore !== null &&
+          rawScore !== undefined &&
+          Number.isFinite(latestScore)
+        ) {
+          setMatchingScore(latestScore);
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <>
@@ -46,6 +76,12 @@ export default function AssessmentDashboard({
           <div className="metric-card">
             <p className="metric-card__label">Score do teste</p>
             <p className="metric-card__value">{score}%</p>
+          </div>
+          <div className="metric-card">
+            <p className="metric-card__label">Compatibilidade da última vaga</p>
+            <p className="metric-card__value">
+              {matchingScore === null ? "—" : `${matchingScore}%`}
+            </p>
           </div>
           <div className="metric-card">
             <p className="metric-card__label">Nível</p>

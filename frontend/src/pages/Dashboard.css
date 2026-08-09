@@ -1,8 +1,10 @@
 /* AssessmentDashboard.css */
 .dashboard {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   width: clamp(300px, 70%, 1000px);
+  padding-bottom: 32px;
 }
 
 .dashboard__title {
@@ -13,7 +15,7 @@
 
 .dashboard__metrics {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
   margin-bottom: 1.25rem;
 }
@@ -34,6 +36,7 @@
   font-size: 22px;
   font-weight: 500;
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
 .dashboard__summary {
@@ -226,4 +229,114 @@
   transform: translateY(-1px);
   transition: all 0.2s ease;
   cursor: pointer;
+}
+
+@media (max-width: 800px) {
+  .dashboard__metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard {
+    width: min(90%, 760px);
+  }
+
+  .dashboard__grid {
+    grid-template-columns: minmax(0, 3fr) minmax(220px, 2fr);
+  }
+
+  .metric-card__value {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 700px) {
+  .dashboard {
+    width: 100%;
+    padding: 0 16px 24px;
+  }
+
+  .dashboard__title {
+    margin: 20px 0;
+    font-size: clamp(26px, 8vw, 32px);
+  }
+
+  .dashboard__grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .dashboard__summary,
+  .panel,
+  .panel__area {
+    padding: 14px 16px;
+  }
+
+  .dashboard__summary {
+    font-size: 14px;
+  }
+
+  .panel--compact {
+    min-height: 120px;
+  }
+
+  .dashboard__actions {
+    margin-top: 4px;
+  }
+
+  .btn {
+    min-height: 46px;
+    padding: 12px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 500px) {
+  .dashboard__actions {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .role-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .role-row__fit {
+    text-align: left;
+  }
+
+  .score-bar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .score-bar__label {
+    width: auto;
+  }
+
+  .score-bar__track {
+    width: 100%;
+    flex: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .dashboard {
+    padding-inline: 12px;
+  }
+
+  .dashboard__metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .metric-card {
+    padding: 14px;
+  }
 }
