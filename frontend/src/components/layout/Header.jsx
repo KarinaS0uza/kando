@@ -5,10 +5,15 @@ import logo from "../../assets/logo.svg";
 import logoffIcon from "../../assets/logoff-icon.svg";
 import { listMatches } from "../../services/api";
 
+const SIMULATION_COMPLETED_KEY = "kando_simulation_completed";
+
 export default function Header({ menuActive }) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [hasCompletedMatch, setHasCompletedMatch] = useState(false);
+  const [hasCompletedSimulation, setHasCompletedSimulation] = useState(
+    () => localStorage.getItem(SIMULATION_COMPLETED_KEY) === "true",
+  );
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -32,6 +37,25 @@ export default function Header({ menuActive }) {
   const showMenu = menuActive || hasCompletedMatch;
 
   useEffect(() => {
+    const updateSimulationStatus = () => {
+      setHasCompletedSimulation(
+        localStorage.getItem(SIMULATION_COMPLETED_KEY) === "true",
+      );
+    };
+
+    window.addEventListener("simulation-completed", updateSimulationStatus);
+    window.addEventListener("storage", updateSimulationStatus);
+
+    return () => {
+      window.removeEventListener(
+        "simulation-completed",
+        updateSimulationStatus,
+      );
+      window.removeEventListener("storage", updateSimulationStatus);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!isMenuOpen) return;
 
     const closeOnEscape = (event) => {
@@ -45,12 +69,16 @@ export default function Header({ menuActive }) {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("kando_user");
+    localStorage.removeItem(SIMULATION_COMPLETED_KEY);
     navigate("/", { replace: true });
   };
 
   return (
     <header className="header">
-      <Link to="/dashboard" className="header__logo-link">
+      <Link
+        to={hasCompletedSimulation ? "/dashboard" : "/upload"}
+        className="header__logo-link"
+      >
         <img className="header__tp-icon" src={logo} alt="Kando" />
       </Link>
       {showMenu && (
