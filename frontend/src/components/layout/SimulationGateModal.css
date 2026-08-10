@@ -7,13 +7,12 @@
   padding: 0;
   text-align: center;
   position: relative;
-  margin-top: 20px;
 }
 
 .simulationGateModal__close_button {
   position: absolute;
-  right: -18px;
-  top: -9px;
+  right: -19px;
+  top: -23px;
   border: none;
   background-color: transparent;
   color: #26215c;

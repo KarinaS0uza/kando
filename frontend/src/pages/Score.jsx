@@ -18,8 +18,8 @@ const CIRCLE_THICKNESS = 3;
 // Keeps each line's touch point within its own side of the circle instead
 // of swinging toward the other label as the score approaches 0% or 100%.
 // Matches stays within [0%, 30%]; gaps stays within [70%, 100%].
-const MATCHES_MAX_FRACTION = 0.25;
-const GAPS_MIN_FRACTION = 0.75;
+const MATCHES_MAX_FRACTION = 0.3;
+const GAPS_MIN_FRACTION = 0.7;
 
 // Point on the ring at `fraction` (0-1) of the way clockwise from the top.
 function pointOnCircle(cx, cy, radius, fraction) {
@@ -32,23 +32,41 @@ function pointOnCircle(cx, cy, radius, fraction) {
 
 const LINE_END_GAP = 8;
 
-// Pulls both ends of a segment inward by `gap` px so the line's tips don't
-// visually touch the elements it connects.
-function shrinkLineEnds(x1, y1, x2, y2, gap) {
+// Pulls the (x1, y1) end of a segment inward toward (x2, y2) by `gap` px, so
+// that end doesn't visually touch the element it starts from. The other end
+// is left untouched since it's an internal elbow corner, not a UI element.
+function shrinkSegmentStart(x1, y1, x2, y2, gap) {
   const dx = x2 - x1;
   const dy = y2 - y1;
   const length = Math.hypot(dx, dy);
-  if (length === 0) return { x1, y1, x2, y2 };
+  if (length === 0) return { x: x1, y: y1 };
 
-  const ux = dx / length;
-  const uy = dy / length;
-  const clampedGap = Math.min(gap, length / 2);
+  const clampedGap = Math.min(gap, length);
+  return {
+    x: x1 + (dx / length) * clampedGap,
+    y: y1 + (dy / length) * clampedGap,
+  };
+}
+
+// Routes a connector from (x1, y1) to (x2, y2) as three segments that are
+// each strictly horizontal or vertical, bending twice (at a shared vertical
+// midline) instead of running diagonally.
+function buildElbowPath(x1, y1, x2, y2, gap) {
+  const midX = (x1 + x2) / 2;
+  const corner1 = { x: midX, y: y1 };
+  const corner2 = { x: midX, y: y2 };
+
+  const start = shrinkSegmentStart(x1, y1, corner1.x, corner1.y, gap);
+  const end = shrinkSegmentStart(x2, y2, corner2.x, corner2.y, gap);
 
   return {
-    x1: x1 + ux * clampedGap,
-    y1: y1 + uy * clampedGap,
-    x2: x2 - ux * clampedGap,
-    y2: y2 - uy * clampedGap,
+    dot: start,
+    corners: [corner1, corner2],
+    segments: [
+      { x1: start.x, y1: start.y, x2: corner1.x, y2: corner1.y },
+      { x1: corner1.x, y1: corner1.y, x2: corner2.x, y2: corner2.y },
+      { x1: corner2.x, y1: corner2.y, x2: end.x, y2: end.y },
+    ],
   };
 }
 
@@ -70,24 +88,39 @@ function progressGradientEndpoint(fraction) {
 }
 
 const COMPATIBILITY_LEVELS = [
-  { label: "baixa", color: "#d64550", background: "rgba(214, 69, 80, 0.12)" },
-  { label: "média", color: "#e08a1e", background: "rgba(224, 138, 30, 0.12)" },
+  { label: "baixa", color: "#aa0101", background: "rgba(214, 69, 80, 0.12)" },
+  {
+    label: "média",
+    color: "#b96709",
+    background: "rgba(224, 138, 30, 0.12)",
+  },
   {
     label: "alta",
-    color: "rgb(79, 122, 79)",
+    color: "#436e35",
     background: "rgb(92%, 95%, 87%)",
   },
 ];
 
+// Lightens (positive amount) or darkens (negative amount) a hex color by
+// shifting each RGB channel, clamped to the valid 0-255 range.
+function shadeColor(hex, amount) {
+  const num = parseInt(hex.replace("#", ""), 16);
+  const r = Math.min(255, Math.max(0, (num >> 16) + amount));
+  const g = Math.min(255, Math.max(0, ((num >> 8) & 0xff) + amount));
+  const b = Math.min(255, Math.max(0, (num & 0xff) + amount));
+  return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+}
+
+const GRADIENT_SHADE_AMOUNT = 35;
+
 function getCompatibilityLevel(percent) {
-  const index = percent >= 70 ? 2 : percent >= 40 ? 1 : 0;
+  const index = percent >= 70 ? 2 : percent >= 30 ? 1 : 0;
   const level = COMPATIBILITY_LEVELS[index];
-  const nextLevel = COMPATIBILITY_LEVELS[index + 1];
 
   return {
     ...level,
-    gradientFrom: level.color,
-    gradientTo: nextLevel ? nextLevel.color : level.color,
+    gradientFrom: shadeColor(level.color, GRADIENT_SHADE_AMOUNT),
+    gradientTo: shadeColor(level.color, -GRADIENT_SHADE_AMOUNT),
   };
 }
 
@@ -144,6 +177,11 @@ export default function ProfileScore() {
           return;
         }
 
+        // Let the Header know a match now exists so it can show the nav
+        // menu without running its own "does the user have a match?" fetch.
+        localStorage.setItem("kando_has_match", "true");
+        window.dispatchEvent(new Event("match-completed"));
+
         setPercent(matchData.overall_match_score ?? 0);
         setMatches(matchData.matches || []);
         setGaps(matchData.gaps || []);
@@ -189,14 +227,14 @@ export default function ProfileScore() {
       const matchesPoint = pointOnCircle(cx, cy, radius, matchesFraction);
       const gapsPoint = pointOnCircle(cx, cy, radius, gapsFraction);
 
-      const gapsLine = shrinkLineEnds(
+      const gapsPath = buildElbowPath(
         gapsTitle.right - wrapper.left,
         gapsTitle.top + gapsTitle.height / 2 - wrapper.top,
         gapsPoint.x,
         gapsPoint.y,
         LINE_END_GAP,
       );
-      const matchesLine = shrinkLineEnds(
+      const matchesPath = buildElbowPath(
         matchesTitle.left - wrapper.left,
         matchesTitle.top + matchesTitle.height / 2 - wrapper.top,
         matchesPoint.x,
@@ -205,8 +243,8 @@ export default function ProfileScore() {
       );
 
       setLines([
-        { ...gapsLine, dotColor: "#c4c4c4" },
-        { ...matchesLine, dotColor: "rgb(79, 122, 79)" },
+        { ...gapsPath, dotColor: "#c4c4c4" },
+        { ...matchesPath, dotColor: getCompatibilityLevel(percent).color },
       ]);
     }
 
@@ -266,17 +304,20 @@ export default function ProfileScore() {
           <svg className="skillCompare__svg">
             {lines.map((l, i) => (
               <g key={i}>
-                <line
-                  x1={l.x1}
-                  y1={l.y1}
-                  x2={l.x2}
-                  y2={l.y2}
-                  stroke="#c4c4c4"
-                  strokeWidth="2"
-                  strokeDasharray="1,6"
-                  strokeLinecap="round"
-                />
-                <circle cx={l.x1} cy={l.y1} r="2" fill="#c4c4c4" />
+                {l.segments.map((seg, j) => (
+                  <line
+                    key={j}
+                    x1={seg.x1}
+                    y1={seg.y1}
+                    x2={seg.x2}
+                    y2={seg.y2}
+                    stroke={l.dotColor}
+                    strokeWidth="2"
+                    strokeDasharray="5,6"
+                    strokeLinecap="round"
+                  />
+                ))}
+                <circle cx={l.dot.x} cy={l.dot.y} r="3" fill={l.dotColor} />
               </g>
             ))}
           </svg>
