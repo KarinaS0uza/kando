@@ -99,7 +99,7 @@ class JobPostingListCreateView(APIView):
         # 400 and do not persist, so mismatched documents never enter the
         # database. Only an explicit ``False`` rejects; an absent field (prompt
         # not yet updated) or a technical error falls through unchanged.
-        if normalization_result.get("documento_e_vaga") is False:
+        if normalization_result.get("is_job_posting") is False:
             return Response(
                 {"raw_text": [
                     "O texto enviado não parece ser uma vaga. "
@@ -124,7 +124,7 @@ class JobPostingListCreateView(APIView):
             else:
                 # Drop the discriminator so it does not leak into the persisted
                 # structured data consumed by matching and question generation.
-                normalization_result.pop("documento_e_vaga", None)
+                normalization_result.pop("is_job_posting", None)
                 normalization = (
                     JobPostingNormalization.objects.create(
                         job_posting=job_posting,
@@ -171,7 +171,7 @@ class JobPostingDetailView(APIView):
 
         if job_posting is None:
             return Response(
-                {"detail": "Job posting não encontrada."},
+                {"detail": "Vaga não encontrada."},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -188,7 +188,7 @@ class JobPostingDetailView(APIView):
 
         if job_posting is None:
             return Response(
-                {"detail": "Job posting não encontrada."},
+                {"detail": "Vaga não encontrada."},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
