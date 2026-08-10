@@ -4,6 +4,7 @@ import { useLocation, useNavigate, Link } from "react-router-dom";
 import logo from "../../assets/logo.svg";
 import logoffIcon from "../../assets/logoff-icon.svg";
 import { listMatches } from "../../services/api";
+import SimulationGateModal from "./SimulationGateModal";
 
 const SIMULATION_COMPLETED_KEY = "kando_simulation_completed";
 
@@ -15,6 +16,7 @@ export default function Header({ menuActive }) {
     () => localStorage.getItem(SIMULATION_COMPLETED_KEY) === "true",
   );
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showSimulationGateModal, setShowSimulationGateModal] = useState(false);
 
   useEffect(() => {
     if (menuActive) return;
@@ -73,6 +75,18 @@ export default function Header({ menuActive }) {
     navigate("/", { replace: true });
   };
 
+  const handleSimulationClick = (event) => {
+    if (hasCompletedSimulation) {
+      event.preventDefault();
+      setShowSimulationGateModal(true);
+    }
+  };
+
+  const handleNewComparison = () => {
+    setShowSimulationGateModal(false);
+    navigate("/upload");
+  };
+
   return (
     <header className="header">
       <Link
@@ -117,6 +131,7 @@ export default function Header({ menuActive }) {
           <Link
             to="/simulation/instructions"
             className={`header__link ${pathname === "/simulation/instructions" ? "header__link--active" : ""}`}
+            onClick={handleSimulationClick}
           >
             Simulado
           </Link>
@@ -138,6 +153,11 @@ export default function Header({ menuActive }) {
         <img className="header__logoff-icon" src={logoffIcon} alt="" />
         Sair
       </button>
+      <SimulationGateModal
+        openModal={showSimulationGateModal}
+        closeModal={() => setShowSimulationGateModal(false)}
+        newComparison={handleNewComparison}
+      />
     </header>
   );
 }

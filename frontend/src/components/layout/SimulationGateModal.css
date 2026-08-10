@@ -1,0 +1,76 @@
+.simulationGateModal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  text-align: center;
+  position: relative;
+  margin-top: 20px;
+}
+
+.simulationGateModal__close_button {
+  position: absolute;
+  right: -18px;
+  top: -9px;
+  border: none;
+  background-color: transparent;
+  color: #26215c;
+}
+
+.simulationGateModal__close_button:hover {
+  cursor: pointer;
+}
+
+.simulationGateModal__title {
+  color: #26215c;
+  font-weight: bold;
+}
+
+.simulationGateModal__subtitle {
+  font-size: 15px;
+  color: rgb(59, 59, 59);
+  margin: 12px 0 8px;
+}
+
+.simulationGateModal__button {
+  border: none;
+  background-color: #26215c;
+  color: white;
+  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+  width: 100%;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.simulationGateModal__button:hover {
+  transform: translateY(-2px);
+  transition: all 0.2s ease;
+}
+
+@media (max-width: 600px) {
+  .simulationGateModal {
+    margin-top: 12px;
+  }
+
+  .simulationGateModal__close_button {
+    top: -6px;
+    right: -6px;
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .simulationGateModal__subtitle {
+    font-size: 14px;
+  }
+
+  .simulationGateModal__button {
+    min-height: 44px;
+  }
+}
