@@ -111,6 +111,8 @@ class PromptCallMetadata(models.Model):
         SUCCESS = "success", "Success"
         INVALID_JSON = "invalid_json", "Invalid JSON"
         PROMPT_MISSING = "prompt_missing", "Prompt Missing"
+        RATE_LIMITED = "rate_limited", "Rate Limited"
+        CONFIG_ERROR = "config_error", "Config Error"
         API_ERROR = "api_error", "API Error"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
