@@ -13,7 +13,7 @@ MAX_SKILL_EVIDENCE = 3
 
 # The evaluation dimensions the LLM scores per question (Portuguese keys are
 # part of the question_answer output contract).
-DIMENSIONS = ("conhecimento_tecnico", "clareza_explicacao", "profundidade_conceitual")
+DIMENSIONS = ("technical_knowledge", "explanation_clarity", "conceptual_depth")
 
 
 def to_number(value) -> float:
@@ -38,8 +38,8 @@ def unique_strings(items: list) -> list:
 
 
 def mean_dimension(valid: list, key: str) -> int:
-    """Return the rounded mean of one ``avaliacao`` dimension over valid items."""
-    values = [to_number(evaluation["avaliacao"].get(key)) for evaluation in valid]
+    """Return the rounded mean of one ``evaluation`` dimension over valid items."""
+    values = [to_number(evaluation["evaluation"].get(key)) for evaluation in valid]
     return round(sum(values) / len(values)) if values else 0
 
 
@@ -54,26 +54,26 @@ def consolidate_skills(valid: list) -> list:
     """
     by_name = {}
     for evaluation in valid:
-        skills = evaluation["avaliacao"].get("skills")
+        skills = evaluation["evaluation"].get("skills")
         if not isinstance(skills, list):
             continue
         for skill in skills:
             if not isinstance(skill, dict):
                 continue
-            name = skill.get("nome")
+            name = skill.get("name")
             if not name:
                 continue
             entry = by_name.setdefault(name, {"scores": [], "evidence": []})
             entry["scores"].append(to_number(skill.get("score")))
-            evidence = skill.get("evidencias")
+            evidence = skill.get("evidence")
             if isinstance(evidence, list):
                 entry["evidence"].extend(evidence)
 
     consolidated = [
         {
-            "nome": name,
+            "name": name,
             "score": round(sum(data["scores"]) / len(data["scores"])),
-            "evidencias": unique_strings(data["evidence"])[:MAX_SKILL_EVIDENCE],
+            "evidence": unique_strings(data["evidence"])[:MAX_SKILL_EVIDENCE],
         }
         for name, data in by_name.items()
         if data["scores"]
@@ -83,9 +83,9 @@ def consolidate_skills(valid: list) -> list:
 
 
 def aggregate_evaluations(evaluations: list) -> dict:
-    """Combine per-question evaluations into one scored ``avaliacao`` summary.
+    """Combine per-question evaluations into one scored ``evaluation`` summary.
 
-    Each item is an evaluation (``{"avaliacao": {...}}``) or a failure
+    Each item is an evaluation (``{"evaluation": {...}}``) or a failure
     (``{"error": ...}``); failures are ignored. Score, dimensions, and per-skill
     scores are averaged; strengths/weaknesses are deduplicated and capped.
     """
@@ -93,51 +93,51 @@ def aggregate_evaluations(evaluations: list) -> dict:
         evaluation
         for evaluation in evaluations
         if "error" not in evaluation
-        and isinstance(evaluation.get("avaliacao"), dict)
+        and isinstance(evaluation.get("evaluation"), dict)
     ]
 
     if not valid:
         return {
-            "avaliacao": {
+            "evaluation": {
                 "score": 0,
-                "conhecimento_tecnico": 0,
-                "clareza_explicacao": 0,
-                "profundidade_conceitual": 0,
+                "technical_knowledge": 0,
+                "explanation_clarity": 0,
+                "conceptual_depth": 0,
                 "skills": [],
-                "pontos_fortes": [],
-                "pontos_fracos": [],
-                "feedback": "Nenhuma avaliação válida",
+                "strengths": [],
+                "weaknesses": [],
+                "feedback": "No valid evaluations were available.",
             }
         }
 
-    scores = [to_number(evaluation["avaliacao"].get("score")) for evaluation in valid]
+    scores = [to_number(evaluation["evaluation"].get("score")) for evaluation in valid]
     mean_score = round(sum(scores) / len(scores))
 
     strengths = []
     weaknesses = []
     for evaluation in valid:
-        pontos_fortes = evaluation["avaliacao"].get("pontos_fortes")
-        pontos_fracos = evaluation["avaliacao"].get("pontos_fracos")
-        if isinstance(pontos_fortes, list):
-            strengths.extend(pontos_fortes)
-        if isinstance(pontos_fracos, list):
-            weaknesses.extend(pontos_fracos)
+        item_strengths = evaluation["evaluation"].get("strengths")
+        item_weaknesses = evaluation["evaluation"].get("weaknesses")
+        if isinstance(item_strengths, list):
+            strengths.extend(item_strengths)
+        if isinstance(item_weaknesses, list):
+            weaknesses.extend(item_weaknesses)
 
     # Deduplicate preserving order, then cap so the summary stays readable.
     strengths = unique_strings(strengths)[:MAX_HIGHLIGHTS]
     weaknesses = unique_strings(weaknesses)[:MAX_HIGHLIGHTS]
 
     return {
-        "avaliacao": {
+        "evaluation": {
             "score": mean_score,
-            "conhecimento_tecnico": mean_dimension(valid, "conhecimento_tecnico"),
-            "clareza_explicacao": mean_dimension(valid, "clareza_explicacao"),
-            "profundidade_conceitual": mean_dimension(valid, "profundidade_conceitual"),
+            "technical_knowledge": mean_dimension(valid, "technical_knowledge"),
+            "explanation_clarity": mean_dimension(valid, "explanation_clarity"),
+            "conceptual_depth": mean_dimension(valid, "conceptual_depth"),
             "skills": consolidate_skills(valid),
-            "pontos_fortes": strengths,
-            "pontos_fracos": weaknesses,
+            "strengths": strengths,
+            "weaknesses": weaknesses,
             "feedback": (
-                f"Média de {len(valid)} de {len(evaluations)} perguntas avaliadas."
+                f"Average based on {len(valid)} of {len(evaluations)} evaluated questions."
             ),
         }
     }
@@ -149,13 +149,13 @@ def resolve_seniority(assessment) -> str:
     if not normalization or not normalization.structured_data:
         return ""
     resume_data = normalization.structured_data
-    candidate = resume_data.get("candidato") or {}
+    candidate = resume_data.get("candidate") or {}
     # Prefer the deterministic seniority computed in Python; fall back to the
     # LLM's qualitative guess for resumes normalized before
-    # senioridade_estimada_por_metricas was stored.
+    # calculated_seniority was stored.
     return (
-        resume_data.get("senioridade_estimada_por_metricas")
-        or candidate.get("senioridade_percebida_pelo_llm")
+        resume_data.get("calculated_seniority")
+        or candidate.get("llm_estimated_seniority")
         or ""
     )
 
@@ -163,8 +163,8 @@ def resolve_seniority(assessment) -> str:
 def flatten_questions(structured_data: dict) -> list:
     """Flatten the generated questions from the challenge blocks, in order."""
     questions = []
-    for block in structured_data.get("blocos") or []:
-        questions.extend(block.get("perguntas") or [])
+    for block in structured_data.get("blocks") or []:
+        questions.extend(block.get("questions") or [])
     return questions
 
 
@@ -178,7 +178,7 @@ def grade_assessment(assessment, submitted_answers: list) -> dict:
     broken prompt (real answers erroring while blanks score 0) can't masquerade
     as a valid score.
     """
-    answers_by_id = {answer["id"]: answer["resposta"] for answer in submitted_answers}
+    answers_by_id = {answer["id"]: answer["answer"] for answer in submitted_answers}
     questions = flatten_questions(assessment.structured_data or {})
     seniority = resolve_seniority(assessment)
 
@@ -190,7 +190,7 @@ def grade_assessment(assessment, submitted_answers: list) -> dict:
         evaluations.append({"id": question.get("id"), **evaluation})
         if (
             "error" not in evaluation
-            and isinstance(evaluation.get("avaliacao"), dict)
+            and isinstance(evaluation.get("evaluation"), dict)
             and answer_text.strip()
         ):
             graded_real = True
@@ -201,7 +201,7 @@ def grade_assessment(assessment, submitted_answers: list) -> dict:
     if graded_real:
         return {
             "success": True,
-            "score": aggregation["avaliacao"]["score"],
+            "score": aggregation["evaluation"]["score"],
             "answers": submitted_answers,
             "structured_data": structured_data,
             "error_message": None,
@@ -211,5 +211,5 @@ def grade_assessment(assessment, submitted_answers: list) -> dict:
         "score": None,
         "answers": submitted_answers,
         "structured_data": structured_data,
-        "error_message": "Nenhuma resposta pôde ser avaliada.",
+        "error_message": "No answer could be evaluated.",
     }

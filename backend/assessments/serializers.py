@@ -15,7 +15,7 @@ class AssessmentResultSerializer(serializers.ModelSerializer):
     the LLM grading service, not submitted directly by the frontend.
     """
 
-    pontos_fortes = serializers.SerializerMethodField()
+    strengths = serializers.SerializerMethodField()
 
     class Meta:
         """Configure the assessment result representation."""
@@ -24,14 +24,14 @@ class AssessmentResultSerializer(serializers.ModelSerializer):
         fields = [
             "success",
             "score",
-            "pontos_fortes",
+            "strengths",
             "answers",
             "study_track",
             "structured_data",
             "error_message",
             "created_at",
         ]
-        # pontos_fortes is a SerializerMethodField (already read-only); listing a
+        # strengths is a SerializerMethodField (already read-only); listing a
         # declared field in read_only_fields raises, so keep it out of this list.
         read_only_fields = [
             "success",
@@ -43,19 +43,19 @@ class AssessmentResultSerializer(serializers.ModelSerializer):
             "created_at",
         ]
 
-    def get_pontos_fortes(self, result):
+    def get_strengths(self, result):
         """Surface the aggregation strengths at the top level for the dashboard.
 
         The strengths are computed by ``score_aggregation`` and stored nested
-        under ``structured_data['aggregation']['avaliacao']['pontos_fortes']``;
+        under ``structured_data['aggregation']['evaluation']['strengths']``;
         exposing them directly saves the frontend from traversing the full
         evaluation payload. Returns an empty list when the result has no
         aggregation yet (e.g. a failed grading).
         """
         data = result.structured_data or {}
         aggregation = data.get("aggregation") or {}
-        avaliacao = aggregation.get("avaliacao") or {}
-        return avaliacao.get("pontos_fortes", [])
+        evaluation = aggregation.get("evaluation") or {}
+        return evaluation.get("strengths", [])
 
 
 class AssessmentSerializer(serializers.ModelSerializer):
@@ -94,14 +94,14 @@ class AssessmentSerializer(serializers.ModelSerializer):
     def get_questions(self, assessment):
         """Return all questions flattened from the challenge blocks, in order.
 
-        The LLM output groups questions under ``blocos[].perguntas``; this
+        The LLM output groups questions under ``blocks[].questions``; this
         flattens them into a single ordered list for consumers that iterate
         over questions without caring about the block structure.
         """
         structured_data = assessment.structured_data or {}
         questions = []
-        for block in structured_data.get("blocos") or []:
-            questions.extend(block.get("perguntas") or [])
+        for block in structured_data.get("blocks") or []:
+            questions.extend(block.get("questions") or [])
         return questions
 
 
@@ -157,7 +157,7 @@ class AnswerSerializer(serializers.Serializer):  # pylint: disable=abstract-meth
     """Validate one submitted answer, tied to a generated question by its id."""
 
     id = serializers.CharField()
-    resposta = serializers.CharField(allow_blank=True, trim_whitespace=False)
+    answer = serializers.CharField(allow_blank=True, trim_whitespace=False)
 
 
 class AssessmentGradeRequestSerializer(serializers.Serializer):  # pylint: disable=abstract-method
@@ -173,5 +173,5 @@ class AssessmentGradeRequestSerializer(serializers.Serializer):  # pylint: disab
     def validate_answers(self, value):
         """Require at least one answer in the submission."""
         if not value:
-            raise serializers.ValidationError("Envie ao menos uma resposta.")
+            raise serializers.ValidationError("Envie pelo menos uma resposta.")
         return value

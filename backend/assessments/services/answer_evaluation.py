@@ -7,6 +7,7 @@ GROQ_API_KEY. Results are combined in :mod:`score_aggregation`.
 import json
 
 from ai_core.llm import run_prompt_safe
+from ai_core.json_contracts import canonicalize_json
 
 PROMPT_KEY = "question_answer"
 
@@ -18,13 +19,13 @@ REQUEST_TIMEOUT_SECONDS = 30
 def build_evaluation_variables(question: dict, answer_text: str, seniority: str) -> dict:
     """Return the Template substitution values for the evaluation prompt."""
     return {
-        "pergunta": question.get("enunciado", ""),
-        "criterio": question.get("criterio_avaliacao", ""),
-        "senioridade": seniority,
-        "skills_avaliadas": json.dumps(
-            question.get("skills_avaliadas", []), ensure_ascii=False
+        "question": question.get("prompt", ""),
+        "evaluation_criteria": question.get("evaluation_criteria", ""),
+        "seniority": seniority,
+        "evaluated_skills": json.dumps(
+            question.get("evaluated_skills", []), ensure_ascii=False
         ),
-        "resposta": answer_text,
+        "answer": answer_text,
     }
 
 
@@ -39,20 +40,21 @@ def evaluate_answer(question: dict, answer_text: str, seniority: str) -> dict:
         # a 0-score entry for each of this question's skills so the skill's mean
         # reflects the unanswered question instead of silently ignoring it.
         skills = [
-            {"nome": name, "score": 0, "evidencias": []}
-            for name in question.get("skills_avaliadas") or []
+            {"name": name, "score": 0, "evidence": []}
+            for name in question.get("evaluated_skills") or []
         ]
         return {
-            "avaliacao": {
+            "evaluation": {
                 "score": 0,
                 "skills": skills,
-                "feedback": "Resposta vazia",
+                "feedback": "Resposta em branco",
             },
-            "metadata": {"confianca_avaliacao": 1.0},
+            "metadata": {"evaluation_confidence": 1.0},
         }
-    return run_prompt_safe(
+    result = run_prompt_safe(
         PROMPT_KEY,
         build_evaluation_variables(question, answer_text, seniority),
-        missing_prompt_message="Prompt de avaliação não configurado",
+        missing_prompt_message="Prompt de avaliação de respostas não configurado",
         timeout=REQUEST_TIMEOUT_SECONDS,
     )
+    return result if "error" in result else canonicalize_json(result)
