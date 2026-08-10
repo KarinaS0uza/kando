@@ -108,17 +108,15 @@ export default function SimulationQuestions() {
     setQuestionText(answers[questions[prevIndex].id] || "");
   };
 
-  const handleClickNext = async () => {
-    if (getTextError(questionText)) return;
-
-    const updatedAnswers = { ...answers, [currentQuestion.id]: questionText };
+  const saveAnswerAndContinue = async (answer) => {
+    const updatedAnswers = { ...answers, [currentQuestion.id]: answer };
     setAnswers(updatedAnswers);
 
     if (isLastQuestion) {
       const formattedAnswers = Object.entries(updatedAnswers).map(
-        ([questionId, resposta]) => ({
+        ([questionId, answer]) => ({
           id: questionId,
-          resposta,
+          answer,
         }),
       );
 
@@ -144,6 +142,15 @@ export default function SimulationQuestions() {
     setQuestionText(answers[questions[nextIndex].id] || "");
   };
 
+  const handleClickNext = async () => {
+    if (!isTextValid(questionText)) return;
+    await saveAnswerAndContinue(questionText);
+  };
+
+  const handleSkipQuestion = async () => {
+    await saveAnswerAndContinue("");
+  };
+
   if (loading || !currentQuestion) {
     return (
       <>
@@ -159,16 +166,26 @@ export default function SimulationQuestions() {
       <div className="simulation">
         <h1 className="simulation__title">Simulado</h1>
         <h2 className="simulation__question">Questão {currentIndex + 1}</h2>
-        <p className="simulation__text">{currentQuestion.enunciado}</p>
+        <p className="simulation__text">{currentQuestion.prompt}</p>
         <div className="simulation__input">
           <textarea
             className="simulation__input-txt"
             value={questionText}
             onChange={(e) => setQuestionText(e.target.value)}
           ></textarea>
-          <p className="simulation__input-error">
-            {getTextError(questionText)}
-          </p>
+          <div className="simulation__input-footer">
+            <p className="simulation__input-error">
+              {getTextError(questionText)}
+            </p>
+            <button
+              type="button"
+              className="simulation__skip-button"
+              onClick={handleSkipQuestion}
+              disabled={submitting}
+            >
+              Pular pergunta
+            </button>
+          </div>
         </div>
         <div className="simulation__buttons">
           <button className="simulation__button_back" onClick={handleClickBack}>
