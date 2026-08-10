@@ -6,8 +6,25 @@ import pytest
 from django.urls import reverse
 
 from .models import JobPostingSubmission
+from .services.job_llm_normalization import normalize_job_posting
 
 LIST_URL = reverse("jobs:job-posting-list-create")
+
+
+def test_normalization_canonicalizes_legacy_nested_job_title(monkeypatch):
+    """An older prompt response is persisted with only the canonical title key."""
+    monkeypatch.setattr(
+        "jobs.services.job_llm_normalization.run_prompt_safe",
+        lambda *args, **kwargs: {
+            "vaga": {"titulo": "Backend Developer", "empresa": "Acme"}
+        },
+    )
+
+    result = normalize_job_posting("valid job posting")
+
+    assert result["job_title"] == "Backend Developer"
+    assert "title" not in result["job"]
+    assert "job_posting_title" not in result
 
 
 def detail_url(pk):
@@ -60,7 +77,7 @@ def test_create_persists_successful_normalization(auth_client, user, monkeypatch
     """A valid submission is saved with its normalization result."""
     monkeypatch.setattr(
         "jobs.views.normalize_job_posting",
-        lambda text: {"documento_e_vaga": True, "job_posting_title": "Backend Developer"},
+        lambda text: {"is_job_posting": True, "job_title": "Backend Developer"},
     )
 
     response = auth_client.post(
@@ -75,10 +92,10 @@ def test_create_persists_successful_normalization(auth_client, user, monkeypatch
 
 @pytest.mark.django_db
 def test_create_rejects_text_misclassified_as_not_a_job_posting(auth_client, monkeypatch):
-    """A negative documento_e_vaga verdict returns 400 and persists nothing."""
+    """A negative is_job_posting verdict returns 400 and persists nothing."""
     monkeypatch.setattr(
         "jobs.views.normalize_job_posting",
-        lambda text: {"documento_e_vaga": False},
+        lambda text: {"is_job_posting": False},
     )
 
     response = auth_client.post(

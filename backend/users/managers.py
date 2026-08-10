@@ -23,7 +23,7 @@ class UserManager(BaseUserManager):
         saved with an unusable password (e.g. authentication handled via Supabase).
         """
         if not email:
-            raise ValueError("O email é obrigatório.")
+            raise ValueError("Email is required.")
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         if password:
@@ -45,10 +45,10 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault("is_superuser", True)
 
         if extra_fields.get("is_staff") is not True:
-            raise ValueError("Superuser precisa ter is_staff=True.")
+            raise ValueError("A superuser must have is_staff=True.")
         if extra_fields.get("is_superuser") is not True:
-            raise ValueError("Superuser precisa ter is_superuser=True.")
+            raise ValueError("A superuser must have is_superuser=True.")
         if not password:
-            raise ValueError("Superuser precisa de uma senha.")
+            raise ValueError("A superuser must have a password.")
 
         return self.create_and_save_user(email, password, **extra_fields)

@@ -14,18 +14,18 @@ class MatchResultSerializer(serializers.ModelSerializer):
     Read-only because match results are generated internally by the
     application, not submitted directly by the frontend.
 
-    resume_title, job_posting_title, matches, gaps, strengths, and
+    resume_title, job_title, matches, gaps, strengths, and
     weaknesses are all derived from structured_data (resume_title,
-    job_posting_title, skills_compativeis, skills_faltantes, pontos_fortes,
-    pontos_melhoria) rather than stored as separate columns, since they
+    job_title, matching_skills, missing_skills, strengths,
+    improvement_areas) rather than stored as separate columns, since they
     don't need to be queried/filtered on their own. The matching LLM call
-    copies resume_title/job_posting_title from its own input, so the match
+    copies resume_title/job_title from its own input, so the match
     result stays a self-contained snapshot even if the underlying resume or
     job posting is renormalized later.
     """
 
     resume_title = serializers.SerializerMethodField()
-    job_posting_title = serializers.SerializerMethodField()
+    job_title = serializers.SerializerMethodField()
     matches = serializers.SerializerMethodField()
     gaps = serializers.SerializerMethodField()
     strengths = serializers.SerializerMethodField()
@@ -40,7 +40,7 @@ class MatchResultSerializer(serializers.ModelSerializer):
             "resume",
             "resume_title",
             "job_posting",
-            "job_posting_title",
+            "job_title",
             "success",
             "overall_match_score",
             "seniority_compatible",
@@ -59,25 +59,26 @@ class MatchResultSerializer(serializers.ModelSerializer):
         """Return the candidate's desired role, as copied by the matching LLM call."""
         return (match_result.structured_data or {}).get("resume_title")
 
-    def get_job_posting_title(self, match_result):
-        """Return the job title, as copied by the matching LLM call."""
-        return (match_result.structured_data or {}).get("job_posting_title")
+    def get_job_title(self, match_result):
+        """Return the job title, using job_posting_title as a fallback key."""
+        data = match_result.structured_data or {}
+        return data.get("job_title") or data.get("job_posting_title")
 
     def get_matches(self, match_result):
         """Return skills present in both the resume and the job posting."""
-        return (match_result.structured_data or {}).get("skills_compativeis")
+        return (match_result.structured_data or {}).get("matching_skills")
 
     def get_gaps(self, match_result):
         """Return skills the job posting requires but the resume lacks."""
-        return (match_result.structured_data or {}).get("skills_faltantes")
+        return (match_result.structured_data or {}).get("missing_skills")
 
     def get_strengths(self, match_result):
         """Return the candidate's strong points for this job posting."""
-        return (match_result.structured_data or {}).get("pontos_fortes")
+        return (match_result.structured_data or {}).get("strengths")
 
     def get_weaknesses(self, match_result):
         """Return the candidate's improvement points for this job posting."""
-        return (match_result.structured_data or {}).get("pontos_melhoria")
+        return (match_result.structured_data or {}).get("improvement_areas")
 
 
 class MatchRequestSerializer(serializers.Serializer):

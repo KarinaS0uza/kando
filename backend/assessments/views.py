@@ -103,7 +103,7 @@ class AssessmentDetailView(APIView):
 
         if assessment is None:
             return Response(
-                {"detail": "Teste não encontrado."},
+                {"detail": "Avaliação não encontrada."},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -120,7 +120,7 @@ class AssessmentDetailView(APIView):
 
         if assessment is None:
             return Response(
-                {"detail": "Teste não encontrado."},
+                {"detail": "Avaliação não encontrada."},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -153,13 +153,13 @@ class AssessmentResultCreateView(APIView):
 
         if assessment is None:
             return Response(
-                {"detail": "Teste não encontrado."},
+                {"detail": "Avaliação não encontrada."},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
         if not assessment.success or not assessment.structured_data:
             return Response(
-                {"detail": "O teste ainda não foi gerado com sucesso."},
+                {"detail": "A avaliação ainda não foi gerada com sucesso."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

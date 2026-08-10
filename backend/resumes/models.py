@@ -1,4 +1,10 @@
-"""Models for the resumes application."""
+"""Models for the resumes application.
+
+Stores a candidate's resume submission (pasted text or PDF) and the
+structured data an LLM extracts from it. ResumeNormalization is the input
+matching, assessments, and passports read from — no other app re-parses the
+raw text.
+"""
 import uuid
 
 from django.conf import settings

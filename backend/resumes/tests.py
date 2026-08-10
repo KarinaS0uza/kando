@@ -60,7 +60,7 @@ def test_create_persists_successful_normalization(auth_client, user, monkeypatch
     """A valid submission is saved with its normalization result."""
     monkeypatch.setattr(
         "resumes.views.normalize_resume",
-        lambda text: {"resume_title": "Backend Developer", "skills_tecnicas": []},
+        lambda text: {"resume_title": "Backend Developer", "technical_skills": []},
     )
 
     response = auth_client.post(
@@ -75,10 +75,10 @@ def test_create_persists_successful_normalization(auth_client, user, monkeypatch
 
 @pytest.mark.django_db
 def test_create_rejects_text_misclassified_as_not_a_resume(auth_client, monkeypatch):
-    """A positive entrada_invalida verdict returns 400 and persists nothing."""
+    """A positive invalid_input verdict returns 400 and persists nothing."""
     monkeypatch.setattr(
         "resumes.views.normalize_resume",
-        lambda text: {"entrada_invalida": True, "motivo_entrada_invalida": "Parece uma vaga."},
+        lambda text: {"invalid_input": True, "motivo_invalid_input": "Parece uma vaga."},
     )
 
     response = auth_client.post(

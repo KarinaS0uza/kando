@@ -1,4 +1,10 @@
-"""Models for the assessments application."""
+"""Models for the assessments application.
+
+Stores the LLM-generated technical questions for one (resume, job posting)
+pair (Assessment) and the graded outcome once the candidate answers them
+(AssessmentResult), including the aggregated score and per-question
+evaluations.
+"""
 import uuid
 
 from django.db import models
@@ -60,8 +66,8 @@ class AssessmentResult(models.Model):
     The graded outcome of an Assessment, produced by the grading service after
     the candidate answers the generated questions.
 
-    Holds the aggregated score ("nota dos testes") derived from the answers. The
-    study track ("trilha de estudos") field is reserved but not yet populated.
+    Holds the aggregated assessment score derived from the answers. The study
+    track field is reserved but not yet populated.
     """
     id = models.UUIDField(
         primary_key=True,
@@ -79,7 +85,7 @@ class AssessmentResult(models.Model):
         null=True,
         help_text=(
             "Aggregated score (0-100) from "
-            "structured_data['aggregation']['avaliacao']['score'], promoted "
+            "structured_data['aggregation']['evaluation']['score'], promoted "
             "for sorting/filtering."
         ),
     )
@@ -92,8 +98,8 @@ class AssessmentResult(models.Model):
         blank=True,
         null=True,
         help_text=(
-            "Reserved for the study track ('trilha de estudos'); not yet "
-            "populated by grading."
+            "Unused. StudyTrack in the passports app is the current source of "
+            "truth for the candidate's study track."
         ),
     )
     structured_data = models.JSONField(

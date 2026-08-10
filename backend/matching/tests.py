@@ -83,8 +83,8 @@ def test_create_succeeds_and_rerun_upserts(
     monkeypatch.setattr(
         "matching.views.analyze_match",
         lambda resume_data, job_data: {
-            "score_compatibilidade": 80,
-            "senioridade_compativel": True,
+            "compatibility_score": 80,
+            "seniority_compatible": True,
         },
     )
     resume = normalized_resume_factory(user)

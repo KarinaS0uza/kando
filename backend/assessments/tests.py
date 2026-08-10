@@ -87,7 +87,7 @@ def test_create_succeeds_and_rerun_upserts(
     """A successful generation is created once, then updated in place on rerun."""
     monkeypatch.setattr(
         "assessments.views.generate_assessment",
-        lambda resume_data, job_data: {"blocos": [{"perguntas": [{"id": "B1Q1"}]}]},
+        lambda resume_data, job_data: {"blocks": [{"questions": [{"id": "B1Q1"}]}]},
     )
     resume = normalized_resume_factory(user)
     job = normalized_job_posting_factory(user)
@@ -143,7 +143,7 @@ def test_delete_removes_owned_assessment(
 def test_result_returns_404_for_unknown_assessment(auth_client):
     """A nonexistent assessment id returns 404."""
     response = auth_client.post(
-        result_url(uuid.uuid4()), {"answers": [{"id": "B1Q1", "resposta": "x"}]}, format="json"
+        result_url(uuid.uuid4()), {"answers": [{"id": "B1Q1", "answer": "x"}]}, format="json"
     )
 
     assert response.status_code == 404
@@ -159,7 +159,7 @@ def test_result_requires_a_generated_assessment(
     assessment = Assessment.objects.create(resume=resume, job_posting=job, success=False)
 
     response = auth_client.post(
-        result_url(assessment.id), {"answers": [{"id": "B1Q1", "resposta": "x"}]}, format="json"
+        result_url(assessment.id), {"answers": [{"id": "B1Q1", "answer": "x"}]}, format="json"
     )
 
     assert response.status_code == 400
@@ -173,7 +173,7 @@ def test_result_rejects_empty_answers(
     resume = normalized_resume_factory(user)
     job = normalized_job_posting_factory(user)
     assessment = Assessment.objects.create(
-        resume=resume, job_posting=job, success=True, structured_data={"blocos": []}
+        resume=resume, job_posting=job, success=True, structured_data={"blocks": []}
     )
 
     response = auth_client.post(result_url(assessment.id), {"answers": []}, format="json")
@@ -202,9 +202,9 @@ def test_result_grades_answers_and_upserts(
         resume=resume,
         job_posting=job,
         success=True,
-        structured_data={"blocos": [{"perguntas": [{"id": "B1Q1"}]}]},
+        structured_data={"blocks": [{"questions": [{"id": "B1Q1"}]}]},
     )
-    payload = {"answers": [{"id": "B1Q1", "resposta": "minha resposta"}]}
+    payload = {"answers": [{"id": "B1Q1", "answer": "minha answer"}]}
 
     first_response = auth_client.post(result_url(assessment.id), payload, format="json")
     assert first_response.status_code == 201
