@@ -18,6 +18,10 @@
   text-align: start;
 }
 
+.instructions__text > p {
+  font-weight: normal;
+}
+
 .instructions__buttons {
   width: 100%;
   height: min-content;
