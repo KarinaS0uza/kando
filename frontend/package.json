@@ -22,6 +22,7 @@
     "@phosphor-icons/react": "^2.1.10",
     "@react-spring/web": "^10.1.2",
     "axios": "^1.19.0",
+    "devicon": "^2.17.0",
     "jspdf": "^4.2.1",
     "lucide-react": "^1.25.0",
     "prop-types": "^15.8.1",

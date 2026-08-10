@@ -21,17 +21,85 @@ import lock from "../../assets/lock.svg";
 import globe from "../../assets/globe.svg";
 
 //tech icons
-import react from "../../assets/tech_icons/react.svg";
-import css from "../../assets/tech_icons/css3.svg";
-import tailwind from "../../assets/tech_icons/tailwind.svg";
-import github from "../../assets/tech_icons/github.svg";
-import html from "../../assets/tech_icons/html.svg";
-import git from "../../assets/tech_icons/git.svg";
-import angular from "../../assets/tech_icons/angular.svg";
-import javascript from "../../assets/tech_icons/javascript.svg";
-import next from "../../assets/tech_icons/next.svg";
-import node from "../../assets/tech_icons/node.svg";
-import vue from "../../assets/tech_icons/vue.svg";
+import react from "devicon/icons/react/react-original.svg";
+import css from "devicon/icons/css3/css3-plain.svg";
+import tailwind from "devicon/icons/tailwindcss/tailwindcss-original.svg";
+import github from "devicon/icons/github/github-original.svg";
+import html from "devicon/icons/html5/html5-plain.svg";
+import git from "devicon/icons/git/git-plain.svg";
+import angular from "devicon/icons/angularjs/angularjs-plain.svg";
+import javascript from "devicon/icons/javascript/javascript-plain.svg";
+import next from "devicon/icons/nextjs/nextjs-plain.svg";
+import node from "devicon/icons/nodejs/nodejs-plain.svg";
+import vue from "devicon/icons/vuejs/vuejs-plain.svg";
+
+// linguagens
+import python from "devicon/icons/python/python-plain.svg";
+import java from "devicon/icons/java/java-plain.svg";
+import csharp from "devicon/icons/csharp/csharp-plain.svg";
+import cplusplus from "devicon/icons/cplusplus/cplusplus-plain.svg";
+import c from "devicon/icons/c/c-original.svg";
+import php from "devicon/icons/php/php-plain.svg";
+import ruby from "devicon/icons/ruby/ruby-plain.svg";
+import go from "devicon/icons/go/go-plain.svg";
+import typescript from "devicon/icons/typescript/typescript-plain.svg";
+import kotlin from "devicon/icons/kotlin/kotlin-plain.svg";
+import swift from "devicon/icons/swift/swift-plain.svg";
+import rust from "devicon/icons/rust/rust-original.svg";
+
+// frameworks/libs adicionais
+import sass from "devicon/icons/sass/sass-original.svg";
+import bootstrap from "devicon/icons/bootstrap/bootstrap-plain.svg";
+import materialui from "devicon/icons/materialui/materialui-plain.svg";
+import redux from "devicon/icons/redux/redux-original.svg";
+import django from "devicon/icons/django/django-plain.svg";
+import flask from "devicon/icons/flask/flask-original.svg";
+import spring from "devicon/icons/spring/spring-original.svg";
+import laravel from "devicon/icons/laravel/laravel-original.svg";
+import dotnetcore from "devicon/icons/dotnetcore/dotnetcore-plain.svg";
+
+// bancos de dados
+import postgresql from "devicon/icons/postgresql/postgresql-plain.svg";
+import mysql from "devicon/icons/mysql/mysql-original.svg";
+import mongodb from "devicon/icons/mongodb/mongodb-plain.svg";
+import redis from "devicon/icons/redis/redis-plain.svg";
+import sqlite from "devicon/icons/sqlite/sqlite-plain.svg";
+
+// cloud/devops
+import docker from "devicon/icons/docker/docker-plain.svg";
+import kubernetes from "devicon/icons/kubernetes/kubernetes-plain.svg";
+import amazonwebservices from "devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg";
+import azure from "devicon/icons/azure/azure-plain.svg";
+import googlecloud from "devicon/icons/googlecloud/googlecloud-plain.svg";
+import nginx from "devicon/icons/nginx/nginx-original.svg";
+import linux from "devicon/icons/linux/linux-plain.svg";
+import bash from "devicon/icons/bash/bash-plain.svg";
+import jenkins from "devicon/icons/jenkins/jenkins-plain.svg";
+import gitlab from "devicon/icons/gitlab/gitlab-plain.svg";
+
+// ferramentas
+import figma from "devicon/icons/figma/figma-plain.svg";
+import jira from "devicon/icons/jira/jira-plain.svg";
+import npmIcon from "devicon/icons/npm/npm-plain.svg";
+import webpack from "devicon/icons/webpack/webpack-plain.svg";
+import vitejs from "devicon/icons/vitejs/vitejs-plain.svg";
+import jest from "devicon/icons/jest/jest-plain.svg";
+
+// dados/data science (SQL, Seaborn, PySpark, Power BI, Tableau, Looker,
+// Excel, BigQuery, Snowflake, Redshift e dbt não têm ícone no pacote
+// devicon — ficam no fallback genérico)
+import r from "devicon/icons/r/r-plain.svg";
+import pandas from "devicon/icons/pandas/pandas-plain.svg";
+import numpy from "devicon/icons/numpy/numpy-plain.svg";
+import matplotlib from "devicon/icons/matplotlib/matplotlib-plain.svg";
+import scikitlearn from "devicon/icons/scikitlearn/scikitlearn-plain.svg";
+import apachespark from "devicon/icons/apachespark/apachespark-original.svg";
+import hadoop from "devicon/icons/hadoop/hadoop-plain.svg";
+import apacheairflow from "devicon/icons/apacheairflow/apacheairflow-plain.svg";
+import apachekafka from "devicon/icons/apachekafka/apachekafka-original.svg";
+import jupyter from "devicon/icons/jupyter/jupyter-plain.svg";
+import googlecolab from "devicon/icons/googlecolab/googlecolab-plain.svg";
+import anaconda from "devicon/icons/anaconda/anaconda-original.svg";
 
 import "./PassportCertificate.css";
 
@@ -81,6 +149,106 @@ const ICONS_BY_SKILL = {
   nextjs: next,
   vue: vue,
   "vue.js": vue,
+
+  // linguagens
+  python: python,
+  py: python,
+  r: r,
+  java: java,
+  csharp: csharp,
+  "c#": csharp,
+  "c++": cplusplus,
+  cplusplus: cplusplus,
+  cpp: cplusplus,
+  c: c,
+  php: php,
+  ruby: ruby,
+  go: go,
+  golang: go,
+  typescript: typescript,
+  ts: typescript,
+  kotlin: kotlin,
+  swift: swift,
+  rust: rust,
+
+  // frameworks/libs adicionais
+  sass: sass,
+  scss: sass,
+  bootstrap: bootstrap,
+  "material ui": materialui,
+  materialui: materialui,
+  mui: materialui,
+  redux: redux,
+  django: django,
+  flask: flask,
+  spring: spring,
+  "spring boot": spring,
+  springboot: spring,
+  laravel: laravel,
+  dotnet: dotnetcore,
+  ".net": dotnetcore,
+  dotnetcore: dotnetcore,
+
+  // bancos de dados
+  postgresql: postgresql,
+  postgres: postgresql,
+  mysql: mysql,
+  mongodb: mongodb,
+  mongo: mongodb,
+  redis: redis,
+  sqlite: sqlite,
+
+  // cloud/devops
+  docker: docker,
+  kubernetes: kubernetes,
+  k8s: kubernetes,
+  aws: amazonwebservices,
+  "amazon web services": amazonwebservices,
+  amazonwebservices: amazonwebservices,
+  azure: azure,
+  "google cloud": googlecloud,
+  gcp: googlecloud,
+  googlecloud: googlecloud,
+  nginx: nginx,
+  linux: linux,
+  bash: bash,
+  shell: bash,
+  jenkins: jenkins,
+  gitlab: gitlab,
+
+  // ferramentas
+  figma: figma,
+  jira: jira,
+  npm: npmIcon,
+  webpack: webpack,
+  vite: vitejs,
+  vitejs: vitejs,
+  jest: jest,
+
+  // dados/data science
+  pandas: pandas,
+  numpy: numpy,
+  matplotlib: matplotlib,
+  "scikit-learn": scikitlearn,
+  scikitlearn: scikitlearn,
+  sklearn: scikitlearn,
+  "apache spark": apachespark,
+  apachespark: apachespark,
+  spark: apachespark,
+  hadoop: hadoop,
+  airflow: apacheairflow,
+  "apache airflow": apacheairflow,
+  apacheairflow: apacheairflow,
+  kafka: apachekafka,
+  "apache kafka": apachekafka,
+  apachekafka: apachekafka,
+  jupyter: jupyter,
+  "jupyter notebook": jupyter,
+  "google colab": googlecolab,
+  colab: googlecolab,
+  googlecolab: googlecolab,
+  anaconda: anaconda,
+  conda: anaconda,
 };
 
 function resolverIcone(skill) {
