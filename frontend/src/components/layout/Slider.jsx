@@ -1,18 +1,14 @@
 import { Slider as BaseSlider } from "@base-ui/react/slider";
 import styles from "./Slider.module.css";
-import { useState } from "react";
 
-export default function Slider() {
-  const [valor, setValor] = useState(50);
-
+export default function Slider({ value, onChange }) {
   return (
     <div className={styles.slider}>
       <label className={styles.value}>{`0`}</label>
       <BaseSlider.Root
         className={styles.sliderRoot}
-        defaultValue={50}
-        value={valor}
-        onValueChange={setValor}
+        value={value}
+        onValueChange={onChange}
         min={0}
         max={100}
       >
@@ -23,7 +19,7 @@ export default function Slider() {
           </BaseSlider.Track>
         </BaseSlider.Control>
       </BaseSlider.Root>
-      <label className={styles.value}>{`${valor}%`}</label>
+      <label className={styles.value}>{`${value}%`}</label>
     </div>
   );
 }

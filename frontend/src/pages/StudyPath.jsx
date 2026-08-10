@@ -6,7 +6,8 @@ import { useMediaQuery } from "@mantine/hooks";
 import { PathIcon, CheckCircleIcon, StampIcon } from "@phosphor-icons/react";
 import Header from "../components/layout/Header";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
-import { listMatches, getStudyTrack } from "../services/api";
+import { listMatches } from "../services/api";
+import { listPassports, createPassport } from "../services/talentPassportService";
 import { buildStudySteps } from "../utils/studyPath";
 import certificatePhoto from "../assets/TP-image_homepage.png";
 import "./StudyPath.css";
@@ -18,9 +19,9 @@ const DEFAULT_TRACK_INFO = {
 
 const RESOURCE_LABELS = {
   curso: "Curso sugerido",
-  documentacao: "Documentação",
-  video: "Vídeo sugerido",
-  artigo: "Artigo sugerido",
+  certification: "Certificação sugerida",
+  documentation: "Documentação",
+  project_practice: "Prática de projeto sugerida",
 };
 
 export default function StudyPath() {
@@ -34,12 +35,9 @@ export default function StudyPath() {
   useEffect(() => {
     let cancelled = false;
 
-    async function fetchLatestMatch() {
+    async function fetchStudyPath() {
       try {
-        const [matchesResponse, trackResponse] = await Promise.all([
-          listMatches(),
-          getStudyTrack(),
-        ]);
+        const matchesResponse = await listMatches();
         if (cancelled) return;
 
         const results = matchesResponse.data || [];
@@ -54,15 +52,39 @@ export default function StudyPath() {
           return;
         }
 
-        const structuredData = latest.structured_data || {};
-        setDevelopedSkills(structuredData.skills_compativeis || []);
+        setDevelopedSkills(latest.matches || []);
 
-        const trackData = trackResponse.data || {};
-        setSteps(buildStudySteps(trackData));
-        if (trackData.titulo_trilha) {
+        // The latest match defines "the current comparison" - find its
+        // Talent Passport (generating one if it doesn't exist yet) rather
+        // than trusting whichever passport happens to be most recent.
+        const passportsResponse = await listPassports();
+        if (cancelled) return;
+        let passport = (passportsResponse.data || []).find(
+          (item) =>
+            item.resume === latest.resume &&
+            item.job_posting === latest.job_posting,
+        );
+
+        if (!passport) {
+          const createResponse = await createPassport(
+            latest.resume,
+            latest.job_posting,
+          );
+          if (cancelled) return;
+          passport = createResponse.data;
+        }
+
+        const studyTrack = passport.study_track;
+        if (!passport.success || !studyTrack?.success) {
+          setLoadError("failed");
+          return;
+        }
+
+        setSteps(buildStudySteps(studyTrack));
+        if (studyTrack.title) {
           setTrackInfo({
-            titulo: trackData.titulo_trilha,
-            introducao: trackData.introducao || "",
+            titulo: studyTrack.title,
+            introducao: studyTrack.introduction || "",
           });
         }
       } catch (error) {
@@ -76,7 +98,7 @@ export default function StudyPath() {
       }
     }
 
-    fetchLatestMatch();
+    fetchStudyPath();
 
     return () => {
       cancelled = true;

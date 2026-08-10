@@ -14,16 +14,16 @@ const STEP_ICONS = [
   LightbulbIcon,
 ];
 
-export function buildStudySteps(trackData) {
-  const itens = Array.isArray(trackData?.itens) ? trackData.itens : [];
+export function buildStudySteps(studyTrack) {
+  const items = Array.isArray(studyTrack?.items) ? studyTrack.items : [];
 
-  return itens.map((item, i) => ({
-    id: item.posicao ?? i,
+  return items.map((item, i) => ({
+    id: item.position ?? i,
     title: item.skill,
-    description: item.motivacao ?? "",
+    description: item.motivation ?? "",
     recurso:
-      item.sugestao_recurso && item.tipo_recurso
-        ? { tipo: item.tipo_recurso, sugestao: item.sugestao_recurso }
+      item.resource_suggestion && item.resource_type
+        ? { tipo: item.resource_type, sugestao: item.resource_suggestion }
         : null,
     Icon: STEP_ICONS[i % STEP_ICONS.length],
   }));
