@@ -7,11 +7,14 @@ import { listMatches } from "../../services/api";
 import SimulationGateModal from "./SimulationGateModal";
 
 const SIMULATION_COMPLETED_KEY = "kando_simulation_completed";
+const MATCH_COMPLETED_KEY = "kando_has_match";
 
 export default function Header({ menuActive }) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const [hasCompletedMatch, setHasCompletedMatch] = useState(false);
+  const [hasCompletedMatch, setHasCompletedMatch] = useState(
+    () => localStorage.getItem(MATCH_COMPLETED_KEY) === "true",
+  );
   const [hasCompletedSimulation, setHasCompletedSimulation] = useState(
     () => localStorage.getItem(SIMULATION_COMPLETED_KEY) === "true",
   );
@@ -19,7 +22,10 @@ export default function Header({ menuActive }) {
   const [showSimulationGateModal, setShowSimulationGateModal] = useState(false);
 
   useEffect(() => {
-    if (menuActive) return;
+    // Once a match is known to exist (from this check or from Score/StudyPath
+    // reporting one via "match-completed"), skip re-fetching it on every
+    // page navigation - it never goes back to false.
+    if (menuActive || hasCompletedMatch) return;
 
     let cancelled = false;
 
@@ -27,14 +33,17 @@ export default function Header({ menuActive }) {
       .then((response) => {
         if (cancelled) return;
         const results = response.data || [];
-        setHasCompletedMatch(results.some((match) => match.success));
+        if (results.some((match) => match.success)) {
+          localStorage.setItem(MATCH_COMPLETED_KEY, "true");
+          setHasCompletedMatch(true);
+        }
       })
       .catch(() => {});
 
     return () => {
       cancelled = true;
     };
-  }, [menuActive]);
+  }, [menuActive, hasCompletedMatch]);
 
   const showMenu = menuActive || hasCompletedMatch;
 
@@ -44,16 +53,25 @@ export default function Header({ menuActive }) {
         localStorage.getItem(SIMULATION_COMPLETED_KEY) === "true",
       );
     };
+    const updateMatchStatus = () => {
+      if (localStorage.getItem(MATCH_COMPLETED_KEY) === "true") {
+        setHasCompletedMatch(true);
+      }
+    };
 
     window.addEventListener("simulation-completed", updateSimulationStatus);
+    window.addEventListener("match-completed", updateMatchStatus);
     window.addEventListener("storage", updateSimulationStatus);
+    window.addEventListener("storage", updateMatchStatus);
 
     return () => {
       window.removeEventListener(
         "simulation-completed",
         updateSimulationStatus,
       );
+      window.removeEventListener("match-completed", updateMatchStatus);
       window.removeEventListener("storage", updateSimulationStatus);
+      window.removeEventListener("storage", updateMatchStatus);
     };
   }, []);
 
@@ -72,6 +90,7 @@ export default function Header({ menuActive }) {
     localStorage.removeItem("token");
     localStorage.removeItem("kando_user");
     localStorage.removeItem(SIMULATION_COMPLETED_KEY);
+    localStorage.removeItem(MATCH_COMPLETED_KEY);
     navigate("/", { replace: true });
   };
 
