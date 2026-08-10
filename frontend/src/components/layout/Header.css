@@ -3,8 +3,9 @@
   background-color: rgb(15%, 13%, 36%);
   height: 50px;
   width: 100%;
-  display: flex;
-  justify-content: space-between;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: 100px minmax(0, 1fr) 100px;
   align-items: center;
   right: 0;
   margin: 0;
@@ -15,9 +16,10 @@
 }
 
 .header__logo-link {
+  grid-column: 1;
+  justify-self: start;
   display: flex;
   align-items: center;
-  margin-left: 40px;
 }
 
 .header__tp-icon {
@@ -25,6 +27,8 @@
 }
 
 .header__links {
+  grid-column: 2;
+  justify-self: center;
   display: flex;
   gap: 40px;
 }
@@ -51,9 +55,10 @@
 }
 
 .header__logoff-button {
+  grid-column: 3;
+  justify-self: end;
   width: 100px;
   height: 25px;
-  margin-right: 40px;
   background-color: transparent;
   color: white;
   border: 2px solid #dadce0;
@@ -78,8 +83,8 @@
 }
 
 @media (max-width: 1100px) {
-  .header__logo-link {
-    margin-left: 24px;
+  .header {
+    padding: 0 24px;
   }
 
   .header__links {
@@ -92,7 +97,6 @@
 
   .header__logoff-button {
     width: 80px;
-    margin-right: 24px;
   }
 }
 
@@ -100,6 +104,7 @@
   .header {
     height: 56px;
     padding: 0 16px;
+    display: flex;
   }
 
   .header__logo-link {
