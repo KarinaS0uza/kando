@@ -201,19 +201,21 @@ export default function Dashboard() {
 
             <div className="panel">
               <h3 className="panel__title">Cargos recomendados</h3>
-              {suggestedRoles.map((role, i) => (
-                <div
-                  key={role.title}
-                  className={`role-row ${i < suggestedRoles.length - 1 ? "role-row--divider" : ""}`}
-                >
-                  <span className="role-row__title">{role.title}</span>
-                  <span
-                    className={`role-row__fit ${role.highlight ? "role-row__fit--highlight" : ""}`}
+              <div className="role-list">
+                {suggestedRoles.map((role, i) => (
+                  <div
+                    key={role.title}
+                    className={`role-row ${i < suggestedRoles.length - 1 ? "role-row--divider" : ""}`}
                   >
-                    {role.fit}
-                  </span>
-                </div>
-              ))}
+                    <span className="role-row__title">{role.title}</span>
+                    <span
+                      className={`role-row__fit ${role.highlight ? "role-row__fit--highlight" : ""}`}
+                    >
+                      {role.fit}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 

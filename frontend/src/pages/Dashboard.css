@@ -24,6 +24,11 @@
   background: #f4f4f2;
   border-radius: 12px;
   padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .metric-card__label {
@@ -50,6 +55,11 @@
   line-height: 1.5;
 }
 
+.dashboard__summary p {
+  text-align: center;
+  text-wrap: balance;
+}
+
 .dashboard__grid {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -64,6 +74,7 @@
 }
 
 .dashboard__column > .panel {
+  flex: 1;
   margin-bottom: 0;
 }
 
@@ -122,6 +133,8 @@
   border: none;
   padding: 5px 10px;
   border-radius: 10px;
+  text-align: center;
+  text-wrap: balance;
   transition:
     background-color 0.2s ease,
     box-shadow 0.2s ease;
@@ -153,7 +166,7 @@
 }
 
 .score-bar__label {
-  width: 70px;
+  flex: 0 0 130px;
   font-size: 13px;
   color: #757474;
 }
@@ -178,6 +191,11 @@
   padding: 8px 0;
 }
 
+.role-list {
+  display: grid;
+  grid-auto-rows: 1fr;
+}
+
 .role-row--divider {
   border-bottom: 0.5px solid #ddd;
 }
@@ -190,6 +208,8 @@
 }
 
 .role-row__fit {
+  flex: 0 1 60%;
+  max-width: 60%;
   font-size: 13px;
   color: #757474;
 }
@@ -308,6 +328,8 @@
   }
 
   .role-row__fit {
+    flex: none;
+    max-width: 100%;
     text-align: left;
   }
 
@@ -318,6 +340,7 @@
   }
 
   .score-bar__label {
+    flex-basis: auto;
     width: auto;
   }
 
