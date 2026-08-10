@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/layout/Header";
-import simulationService from "../services/simulationService";
+import { gradeAnswers, listAssessments } from "../services/simulationService";
+import { waitForQuestions } from "../utils/uploadTracker";
+import { toast } from "react-hot-toast";
 import "./SimulationQuestions.css";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import SimulationModal from "../components/layout/SimulationModal";
@@ -10,11 +12,13 @@ const MIN_LENGTH = 120;
 const MAX_LENGTH = 1700;
 
 export default function SimulationQuestions() {
+  const [assessmentId, setAssessmentId] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [questionText, setQuestionText] = useState("");
   const [answers, setAnswers] = useState({});
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
   const navigate = useNavigate();
 
@@ -35,11 +39,56 @@ export default function SimulationQuestions() {
   }
 
   useEffect(() => {
-    simulationService.getQuestions().then((data) => {
-      setQuestions(data);
-      setLoading(false);
-    });
-  }, []);
+    let cancelled = false;
+
+    async function fetchQuestions() {
+      try {
+        // If Reliability already kicked off the assessment generation, await
+        // that same in-flight request instead of firing a new one.
+        const pending = waitForQuestions();
+        let assessmentData;
+
+        if (pending) {
+          const response = await pending;
+          if (cancelled) return;
+          assessmentData = response.data;
+        } else {
+          // Otherwise (direct link, refresh, nav from the header) fall back
+          // to the most recently generated assessment on record.
+          const response = await listAssessments();
+          if (cancelled) return;
+          const results = response.data || [];
+          if (results.length === 0) {
+            toast.error("Nenhum teste disponível ainda.");
+            navigate("/simulation/instructions");
+            return;
+          }
+          assessmentData = results[0];
+        }
+
+        if (!assessmentData.success) {
+          toast.error(
+            assessmentData.error_message || "Não foi possível gerar o teste.",
+          );
+          navigate("/simulation/instructions");
+          return;
+        }
+
+        setAssessmentId(assessmentData.id);
+        setQuestions(assessmentData.questions || []);
+      } catch (error) {
+        console.log(error);
+        toast.error("Algo deu errado ao carregar as questões.");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    fetchQuestions();
+    return () => {
+      cancelled = true;
+    };
+  }, [navigate]);
 
   const currentQuestion = questions[currentIndex];
   const isLastQuestion = currentIndex === questions.length - 1;
@@ -68,11 +117,22 @@ export default function SimulationQuestions() {
     if (isLastQuestion) {
       const formattedAnswers = Object.entries(updatedAnswers).map(
         ([questionId, resposta]) => ({
-          questionId,
+          id: questionId,
           resposta,
         }),
       );
-      await simulationService.submitAnswers(formattedAnswers);
+
+      setSubmitting(true);
+      try {
+        await gradeAnswers(assessmentId, formattedAnswers);
+      } catch (error) {
+        console.log(error);
+        toast.error("Algo deu errado ao enviar suas respostas.");
+        return;
+      } finally {
+        setSubmitting(false);
+      }
+
       localStorage.setItem("kando_simulation_completed", "true");
       window.dispatchEvent(new Event("simulation-completed"));
       setShowCompleteModal(true);
@@ -122,12 +182,17 @@ export default function SimulationQuestions() {
           <button
             className="simulation__button_foward"
             onClick={handleClickNext}
-            disabled={!isTextValid(questionText)}
+            disabled={!isTextValid(questionText) || submitting}
           >
             {isLastQuestion ? "Finalizar" : "Avançar"}
           </button>
         </div>
       </div>
+      {submitting && (
+        <div className="rely__overlay">
+          <LoadingSpinner />
+        </div>
+      )}
       <SimulationModal
         openModal={showCompleteModal}
         closeModal={() => setShowCompleteModal(false)}

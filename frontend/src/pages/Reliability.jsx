@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import "./Reliability.css";
 import { useState } from "react";
-import { waitForUploads, startMatch } from "../utils/uploadTracker";
+import { waitForUploads, startMatch, startQuestions } from "../utils/uploadTracker";
 import { toast } from "react-hot-toast";
 
 export default function Reliability() {
@@ -21,7 +21,7 @@ export default function Reliability() {
 
       const [jobResult, resumeResult] = await waitForUploads();
       const hasError = [jobResult, resumeResult].some(
-        (r) => r.status === "rejected"
+        (r) => r.status === "rejected",
       );
 
       if (hasError) {
@@ -31,6 +31,7 @@ export default function Reliability() {
       }
 
       startMatch(resumeResult.value.data.id, jobResult.value.data.id);
+      startQuestions(resumeResult.value.data.id, jobResult.value.data.id);
 
       navigate("/score/");
     } catch (error) {
