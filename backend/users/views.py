@@ -5,7 +5,9 @@ Defines the authentication (login) view and the CRUD views for the User model
 """
 
 from django.contrib.auth import authenticate
+from django.http import Http404
 from rest_framework import generics, status
+from rest_framework.exceptions import NotFound
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -16,6 +18,17 @@ from .serializers import UserSerializer, LoginSerializer
 
 # NOTE: the authenticated views below use IsAuthenticated during development;
 # switch to an admin-only permission as the project matures.
+
+
+class UserNotFoundMixin:
+    """Raise a Portuguese not-found message instead of DRF's default detail."""
+
+    def get_object(self):
+        """Return the user or raise NotFound with the project's standard message."""
+        try:
+            return super().get_object()
+        except Http404 as exc:
+            raise NotFound("Usuário não encontrado.") from exc
 
 
 class LoginView(APIView):
@@ -60,7 +73,7 @@ class UserListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
 
-class UserDetailView(generics.RetrieveAPIView):
+class UserDetailView(UserNotFoundMixin, generics.RetrieveAPIView):
     """Retrieve a single user (authenticated only)."""
 
     queryset = User.objects.all()
@@ -76,7 +89,7 @@ class UserCreateView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
 
-class UserUpdateView(generics.UpdateAPIView):
+class UserUpdateView(UserNotFoundMixin, generics.UpdateAPIView):
     """Update an existing user (authenticated only)."""
 
     queryset = User.objects.all()
@@ -84,7 +97,7 @@ class UserUpdateView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
 
 
-class UserDeleteView(generics.DestroyAPIView):
+class UserDeleteView(UserNotFoundMixin, generics.DestroyAPIView):
     """Delete a user (authenticated only)."""
 
     queryset = User.objects.all()
