@@ -38,7 +38,7 @@ def normalize_job_posting(text: str) -> dict:
         return {"error": "O texto da vaga está vazio", "retryable": False}
     result = run_prompt_safe(
         PROMPT_KEY,
-        {"job_text": text},
+        {"job": text},
         missing_prompt_message="Prompt de normalização da vaga não configurado",
     )
     if "error" in result:
