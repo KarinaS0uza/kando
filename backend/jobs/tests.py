@@ -77,7 +77,7 @@ def test_create_persists_successful_normalization(auth_client, user, monkeypatch
     """A valid submission is saved with its normalization result."""
     monkeypatch.setattr(
         "jobs.views.normalize_job_posting",
-        lambda text: {"is_job_posting": True, "job_title": "Backend Developer"},
+        lambda text: {"job_title": "Backend Developer"},
     )
 
     response = auth_client.post(
@@ -92,10 +92,10 @@ def test_create_persists_successful_normalization(auth_client, user, monkeypatch
 
 @pytest.mark.django_db
 def test_create_rejects_text_misclassified_as_not_a_job_posting(auth_client, monkeypatch):
-    """A negative is_job_posting verdict returns 400 and persists nothing."""
+    """A positive invalid_input verdict returns 400 and persists nothing."""
     monkeypatch.setattr(
         "jobs.views.normalize_job_posting",
-        lambda text: {"is_job_posting": False},
+        lambda text: {"invalid_input": True, "invalid_input_reason": "Parece um currículo."},
     )
 
     response = auth_client.post(

@@ -97,13 +97,16 @@ class JobPostingListCreateView(APIView):
         # Content-type gate: when the LLM identifies the text as not a job
         # posting (for example a resume pasted into the job field), reject with
         # 400 and do not persist, so mismatched documents never enter the
-        # database. Only an explicit ``False`` rejects; an absent field (prompt
-        # not yet updated) or a technical error falls through unchanged.
-        if normalization_result.get("is_job_posting") is False:
+        # database. Only an explicit ``True`` rejects; an absent field or a
+        # technical error falls through unchanged.
+        if normalization_result.get("invalid_input") is True:
+            reason = normalization_result.get("invalid_input_reason")
             return Response(
                 {"raw_text": [
-                    "O texto enviado não parece ser uma vaga. "
-                    "Verifique se você não colou um currículo por engano."
+                    reason or (
+                        "O texto enviado não parece ser uma vaga. "
+                        "Verifique se você não colou um currículo por engano."
+                    )
                 ]},
                 status=status.HTTP_400_BAD_REQUEST,
             )
@@ -124,7 +127,7 @@ class JobPostingListCreateView(APIView):
             else:
                 # Drop the discriminator so it does not leak into the persisted
                 # structured data consumed by matching and question generation.
-                normalization_result.pop("is_job_posting", None)
+                normalization_result.pop("invalid_input", None)
                 normalization = (
                     JobPostingNormalization.objects.create(
                         job_posting=job_posting,
