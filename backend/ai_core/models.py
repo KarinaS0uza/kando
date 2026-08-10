@@ -1,4 +1,10 @@
-"""Models for the ai_core application."""
+"""Models for the ai_core application.
+
+Stores versioned LLM prompt templates (Prompt) that every app's LLM calls
+resolve at runtime instead of hardcoding prompt text, plus a
+PromptCallMetadata audit row per call (status, token usage, duration) for
+observability.
+"""
 
 import uuid
 
