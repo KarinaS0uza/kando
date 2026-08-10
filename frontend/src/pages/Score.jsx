@@ -119,8 +119,8 @@ function getCompatibilityLevel(percent) {
 
   return {
     ...level,
-    gradientFrom: shadeColor(level.color, GRADIENT_SHADE_AMOUNT),
-    gradientTo: shadeColor(level.color, -GRADIENT_SHADE_AMOUNT),
+    gradientFrom: shadeColor(level.color, -GRADIENT_SHADE_AMOUNT),
+    gradientTo: shadeColor(level.color, GRADIENT_SHADE_AMOUNT),
   };
 }
 
