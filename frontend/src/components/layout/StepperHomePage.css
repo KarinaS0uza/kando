@@ -8,7 +8,7 @@
 .scrollStepper__steps {
   min-width: 0;
   position: relative;
-  --scroll-step-height: 48vh;
+  --scroll-step-height: 34vh;
   --scroll-card-offset: 40px;
 }
 
@@ -30,14 +30,14 @@
 }
 
 .scrollStepper__step {
-  min-height: 48vh;
+  min-height: var(--scroll-step-height);
   position: relative;
   transform: translateY(14px);
   transition: transform 0.5s ease;
 }
 
 .scrollStepper__step.Mui-completed {
-  min-height: 48vh;
+  min-height: var(--scroll-step-height);
 }
 
 .scrollStepper__step:not(:last-child)::before {
@@ -255,15 +255,15 @@
   }
 
   .scrollStepper__step {
-    min-height: 40vh;
+    min-height: var(--scroll-step-height);
   }
 
   .scrollStepper__steps {
-    --scroll-step-height: 40vh;
+    --scroll-step-height: 36vh;
   }
 
   .scrollStepper__step.Mui-completed {
-    min-height: 40vh;
+    min-height: var(--scroll-step-height);
   }
 
   .scrollStepper__step .MuiStepLabel-label {
