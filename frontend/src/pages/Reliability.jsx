@@ -1,7 +1,7 @@
 import Header from "../components/layout/Header";
 import Slider from "../components/layout/Slider";
 import { useNavigate } from "react-router-dom";
-import LoadingSpinner from "../components/ui/LoadingSpinner";
+import LoadingOverlay from "../components/ui/LoadingOverlay";
 import "./Reliability.css";
 import { useState } from "react";
 import { waitForUploads, startMatch, startQuestions } from "../utils/uploadTracker";
@@ -78,11 +78,7 @@ export default function Reliability() {
           <button className="rely__compare-button">Comparar</button>
         </form>
       </div>
-      {isLoading && (
-        <div className="rely__overlay">
-          <LoadingSpinner />
-        </div>
-      )}
+      {isLoading && <LoadingOverlay />}
     </>
   );
 }

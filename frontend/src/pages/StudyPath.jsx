@@ -5,7 +5,7 @@ import { Timeline } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { PathIcon, CheckCircleIcon, StampIcon } from "@phosphor-icons/react";
 import Header from "../components/layout/Header";
-import LoadingSpinner from "../components/ui/LoadingSpinner";
+import LoadingOverlay from "../components/ui/LoadingOverlay";
 import { listMatches } from "../services/api";
 import { listPassports, createPassport } from "../services/talentPassportService";
 import { buildStudySteps } from "../utils/studyPath";
@@ -137,9 +137,7 @@ export default function StudyPath() {
     return (
       <>
         <Header menuActive={true} />
-        <div className="studyPath">
-          <LoadingSpinner />
-        </div>
+        <LoadingOverlay />
       </>
     );
   }

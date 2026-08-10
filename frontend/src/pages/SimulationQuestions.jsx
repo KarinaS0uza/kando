@@ -5,7 +5,7 @@ import { gradeAnswers, listAssessments } from "../services/simulationService";
 import { waitForQuestions } from "../utils/uploadTracker";
 import { toast } from "react-hot-toast";
 import "./SimulationQuestions.css";
-import LoadingSpinner from "../components/ui/LoadingSpinner";
+import LoadingOverlay from "../components/ui/LoadingOverlay";
 import SimulationModal from "../components/layout/SimulationModal";
 
 const MIN_LENGTH = 120;
@@ -148,9 +148,7 @@ export default function SimulationQuestions() {
     return (
       <>
         <Header />
-        <div className="rely__overlay">
-          <LoadingSpinner />
-        </div>
+        <LoadingOverlay />
       </>
     );
   }
@@ -188,11 +186,7 @@ export default function SimulationQuestions() {
           </button>
         </div>
       </div>
-      {submitting && (
-        <div className="rely__overlay">
-          <LoadingSpinner />
-        </div>
-      )}
+      {submitting && <LoadingOverlay />}
       <SimulationModal
         openModal={showCompleteModal}
         closeModal={() => setShowCompleteModal(false)}

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import Header from "../components/layout/Header";
-import LoadingSpinner from "../components/ui/LoadingSpinner";
+import LoadingOverlay from "../components/ui/LoadingOverlay";
 import { listMatches } from "../services/api";
 import {
   createPassport,
@@ -146,9 +146,7 @@ export default function Dashboard() {
     return (
       <>
         <Header menuActive={true} />
-        <div className="dashboard">
-          <LoadingSpinner />
-        </div>
+        <LoadingOverlay />
       </>
     );
   }

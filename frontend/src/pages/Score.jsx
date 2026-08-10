@@ -5,7 +5,7 @@ import { toast } from "react-hot-toast";
 
 import "./Score.css";
 import ScoreModal from "../components/layout/ScoreModal";
-import LoadingSpinner from "../components/ui/LoadingSpinner";
+import LoadingOverlay from "../components/ui/LoadingOverlay";
 import { waitForMatch } from "../utils/uploadTracker";
 import { listMatches } from "../services/api";
 import Box from "@mui/material/Box";
@@ -283,9 +283,7 @@ export default function ProfileScore() {
     return (
       <>
         <Header />
-        <div className="resultsPage">
-          <LoadingSpinner />
-        </div>
+        <LoadingOverlay />
       </>
     );
   }
