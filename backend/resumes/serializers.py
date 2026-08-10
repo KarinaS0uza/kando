@@ -39,14 +39,12 @@ def validate_resume_text(text):
 
     if len(cleaned_text) < MIN_RAW_TEXT_LENGTH:
         raise serializers.ValidationError(
-            f"O currículo deve ter no mínimo "
-            f"{MIN_RAW_TEXT_LENGTH} caracteres."
+            f"O currículo deve conter pelo menos {MIN_RAW_TEXT_LENGTH} caracteres."
         )
 
     if len(cleaned_text) > MAX_RAW_TEXT_LENGTH:
         raise serializers.ValidationError(
-            f"O currículo não pode exceder "
-            f"{MAX_RAW_TEXT_LENGTH} caracteres."
+            f"O currículo não pode exceder {MAX_RAW_TEXT_LENGTH} caracteres."
         )
 
     return cleaned_text
@@ -197,7 +195,7 @@ class ResumeSerializer(serializers.ModelSerializer):
             if not pdf:
                 raise serializers.ValidationError({
                     "pdf": (
-                        "Um arquivo PDF é obrigatório quando source='pdf'."
+                        "É necessário um arquivo PDF quando source='pdf'."
                     )
                 })
 

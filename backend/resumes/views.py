@@ -99,8 +99,8 @@ class ResumeListCreateView(APIView):
         # 400 and do not persist, so mismatched documents never enter the
         # database. Only an explicit ``True`` rejects; an absent field or a
         # technical error falls through unchanged.
-        if normalization_result.get("entrada_invalida") is True:
-            reason = normalization_result.get("motivo_entrada_invalida")
+        if normalization_result.get("invalid_input") is True:
+            reason = normalization_result.get("invalid_input_reason")
             return Response(
                 {"raw_text": [
                     reason or (
@@ -127,7 +127,7 @@ class ResumeListCreateView(APIView):
             else:
                 # Drop the discriminator so it does not leak into the persisted
                 # structured data consumed by matching and question generation.
-                normalization_result.pop("entrada_invalida", None)
+                normalization_result.pop("invalid_input", None)
                 normalization = (
                     ResumeNormalization.objects.create(
                         resume=resume,
