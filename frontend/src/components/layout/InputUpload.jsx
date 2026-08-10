@@ -109,7 +109,7 @@ export default function InputUpload({ onFileChange }) {
                   alt="Upload image"
                 />
                 <p className="upload__text">
-                  Arraste seu PDF ou clique aqui para selecioná-lo
+                  Arraste seu PDF ou clique aqui para selecioná‑lo
                 </p>
               </>
             ) : (
@@ -134,11 +134,11 @@ export default function InputUpload({ onFileChange }) {
                 className="upload__preview_page"
                 renderTextLayer={false}
               />
-              {numPages && numPages > 1 && (
-                <p className="upload__preview_pages">
-                  +{numPages - 1} página{numPages > 1 ? "s" : ""}
-                </p>
-              )}
+                {numPages && numPages > 1 && (
+                  <p className="upload__preview_pages">
+                    +{numPages - 1} página{numPages - 1 > 1 ? "s" : ""}
+                  </p>
+                )}
             </Document>
           </div>
         )}
