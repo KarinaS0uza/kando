@@ -1,4 +1,9 @@
-"""Models for the matching application."""
+"""Models for the matching application.
+
+Stores the LLM-generated compatibility analysis between one normalized
+resume and one normalized job posting: an overall score, matching/missing
+skills, and seniority fit. Runs after both submissions are normalized.
+"""
 import uuid
 
 from django.db import models
@@ -35,12 +40,12 @@ class MatchResult(models.Model):
     overall_match_score = models.PositiveIntegerField(
         blank=True,
         null=True,
-        help_text="Snapshot of structured_data['score_compatibilidade'], promoted for sorting/filtering.",
+        help_text="Snapshot of structured_data['compatibility_score'], promoted for sorting/filtering.",
     )
     seniority_compatible = models.BooleanField(
         blank=True,
         null=True,
-        help_text="Snapshot of structured_data['senioridade_compativel'], promoted for filtering.",
+        help_text="Snapshot of structured_data['seniority_compatible'], promoted for filtering.",
     )
     structured_data = models.JSONField(
         blank=True,

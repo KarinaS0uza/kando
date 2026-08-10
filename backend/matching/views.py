@@ -62,8 +62,8 @@ class MatchListCreateView(APIView):
         else:
             defaults = {
                 "success": True,
-                "overall_match_score": analysis_result.get("score_compatibilidade"),
-                "seniority_compatible": analysis_result.get("senioridade_compativel"),
+                "overall_match_score": analysis_result.get("compatibility_score"),
+                "seniority_compatible": analysis_result.get("seniority_compatible"),
                 "structured_data": analysis_result,
                 "error_message": None,
             }
@@ -103,7 +103,7 @@ class MatchDetailView(APIView):
 
         if match_result is None:
             return Response(
-                {"detail": "Match não encontrado."},
+                {"detail": "Compatibilidade não encontrada."},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -120,7 +120,7 @@ class MatchDetailView(APIView):
 
         if match_result is None:
             return Response(
-                {"detail": "Match não encontrado."},
+                {"detail": "Compatibilidade não encontrada."},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
