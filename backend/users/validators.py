@@ -19,14 +19,14 @@ class MaximumLengthValidator:
         """Reject passwords longer than the configured maximum length."""
         if len(password) > self.max_length:
             raise ValidationError(
-                f"A senha não pode ter mais de {self.max_length} caracteres.",
+                f"A senha não pode exceder {self.max_length} caracteres.",
                 code="password_too_long",
                 params={"max_length": self.max_length},
             )
 
     def get_help_text(self):
         """Return the human-readable requirement for this validator."""
-        return f"Sua senha não pode ter mais de {self.max_length} caracteres."
+        return f"Sua senha não pode exceder {self.max_length} caracteres."
 
 
 class ComplexityValidator:
