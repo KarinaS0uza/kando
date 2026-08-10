@@ -26,4 +26,5 @@ urlpatterns = [
     path("api/", include("resumes.urls")),
     path("api/", include("matching.urls")),
     path("api/", include("assessments.urls")),
+    path("api/", include("passports.urls")),
 ]
