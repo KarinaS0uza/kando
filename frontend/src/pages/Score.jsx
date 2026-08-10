@@ -10,10 +10,12 @@ import { waitForMatch } from "../utils/uploadTracker";
 import { listMatches } from "../services/api";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
+import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
 
 const CIRCLE_SIZE = 250;
 const CIRCLE_THICKNESS = 3;
+const VISIBLE_SKILLS_LIMIT = 6;
 
 // Keeps each line's touch point within its own side of the circle instead
 // of swinging toward the other label as the score approaches 0% or 100%.
@@ -131,6 +133,11 @@ export default function ProfileScore() {
   const [matches, setMatches] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [lines, setLines] = useState([]);
+  const [skillsPopover, setSkillsPopover] = useState({
+    anchorEl: null,
+    skills: [],
+    type: "gaps",
+  });
 
   const navigate = useNavigate();
 
@@ -275,6 +282,14 @@ export default function ProfileScore() {
     setOpenModal(false);
   }
 
+  function handleOpenSkillsPopover(event, skills, type) {
+    setSkillsPopover({ anchorEl: event.currentTarget, skills, type });
+  }
+
+  function handleCloseSkillsPopover() {
+    setSkillsPopover((current) => ({ ...current, anchorEl: null }));
+  }
+
   function handleClick() {
     navigate("/simulation/instructions");
   }
@@ -327,7 +342,7 @@ export default function ProfileScore() {
                 <span className="skillCompare__columnCount">{gaps.length}</span>
               </h2>
               <span className="results__divider"></span>
-              {gaps.map((skill, i) => (
+              {gaps.slice(0, VISIBLE_SKILLS_LIMIT).map((skill, i) => (
                 <div
                   key={`gap-${i}`}
                   className="skillCompare__item skillCompare__item_gaps"
@@ -335,6 +350,22 @@ export default function ProfileScore() {
                   {skill}
                 </div>
               ))}
+              {gaps.length > VISIBLE_SKILLS_LIMIT && (
+                <button
+                  type="button"
+                  className="skillCompare__item skillCompare__item_gaps skillCompare__moreButton"
+                  onClick={(event) =>
+                    handleOpenSkillsPopover(
+                      event,
+                      gaps.slice(VISIBLE_SKILLS_LIMIT),
+                      "gaps",
+                    )
+                  }
+                >
+                  Ver mais (+{gaps.length - VISIBLE_SKILLS_LIMIT} habilidade
+                  {gaps.length - VISIBLE_SKILLS_LIMIT > 1 ? "s" : ""})
+                </button>
+              )}
             </div>
 
             <div className="skillCompare__circleWrap">
@@ -444,7 +475,7 @@ export default function ProfileScore() {
                 · Habilidades compatíveis
               </h2>
               <span className="results__divider results__divider_right"></span>
-              {matches.map((skill, i) => (
+              {matches.slice(0, VISIBLE_SKILLS_LIMIT).map((skill, i) => (
                 <div
                   key={`match-${i}`}
                   className="skillCompare__item skillCompare__item_matches"
@@ -452,9 +483,50 @@ export default function ProfileScore() {
                   {skill}
                 </div>
               ))}
+              {matches.length > VISIBLE_SKILLS_LIMIT && (
+                <button
+                  type="button"
+                  className="skillCompare__item skillCompare__item_matches skillCompare__moreButton"
+                  onClick={(event) =>
+                    handleOpenSkillsPopover(
+                      event,
+                      matches.slice(VISIBLE_SKILLS_LIMIT),
+                      "matches",
+                    )
+                  }
+                >
+                  Ver mais (+{matches.length - VISIBLE_SKILLS_LIMIT} habilidade
+                  {matches.length - VISIBLE_SKILLS_LIMIT > 1 ? "s" : ""})
+                </button>
+              )}
             </div>
           </div>
         </div>
+
+        <Popover
+          open={Boolean(skillsPopover.anchorEl)}
+          anchorEl={skillsPopover.anchorEl}
+          onClose={handleCloseSkillsPopover}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          transformOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+        >
+          <div className="skillCompare__popover">
+            {skillsPopover.skills.map((skill, index) => (
+              <div
+                key={`${skillsPopover.type}-popover-${index}`}
+                className={`skillCompare__item skillCompare__item_${skillsPopover.type}`}
+              >
+                {skill}
+              </div>
+            ))}
+          </div>
+        </Popover>
 
         <button className="results__viewMore" onClick={handleOpenModal}>
           Ver mais
