@@ -25,5 +25,5 @@ node_modules/
 dist/.DS_Store
 dist/
 
-# Colinha pra lembrar como inicia backend
-iniciar-backend.txt
+# How to start backend
+start-backend.txt
