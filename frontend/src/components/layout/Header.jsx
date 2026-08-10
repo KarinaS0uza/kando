@@ -88,6 +88,7 @@ export default function Header({ menuActive }) {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user_id");
     localStorage.removeItem("kando_user");
     localStorage.removeItem(SIMULATION_COMPLETED_KEY);
     localStorage.removeItem(MATCH_COMPLETED_KEY);

@@ -93,10 +93,12 @@ export default function JoinForm({
       if (formType == "login") {
         const user = await login(userInfo);
         localStorage.setItem("token", user.data.access);
+        localStorage.setItem("user_id", user.data.user_id);
       } else {
         await createUser(userInfo);
         const user = await login(userInfo);
         localStorage.setItem("token", user.data.access);
+        localStorage.setItem("user_id", user.data.user_id);
       }
       navigate("/upload");
     } catch (err) {
