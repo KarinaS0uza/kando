@@ -7,7 +7,10 @@ import { PathIcon, CheckCircleIcon, StampIcon } from "@phosphor-icons/react";
 import Header from "../components/layout/Header";
 import LoadingOverlay from "../components/ui/LoadingOverlay";
 import { listMatches } from "../services/api";
-import { listPassports, createPassport } from "../services/talentPassportService";
+import {
+  listPassports,
+  createPassport,
+} from "../services/talentPassportService";
 import { buildStudySteps } from "../utils/studyPath";
 import certificatePhoto from "../assets/TP-image_homepage.png";
 import "./StudyPath.css";
@@ -186,10 +189,14 @@ export default function StudyPath() {
     <>
       <Header menuActive={true} />
       <div className="studyPath">
-        <h1 className="studyPath__title">{trackInfo.titulo}</h1>
-        {trackInfo.introducao && (
-          <p className="studyPath__subtitle">{trackInfo.introducao}</p>
-        )}
+        <h1 className="studyPath__title">Sua Trilha de Estudos</h1>
+
+        <p className="studyPath__subtitle">
+          Essa trilha foi montada para ajudar você a desenvolver as habilidades
+          essenciais para o cargo desejado. Com ela, você estará preparado para
+          lidar com as ferramentas, conceitos e desafios técnicos exigidos pela
+          vaga.
+        </p>
 
         <Timeline
           className="studyPath__timeline"

@@ -7,14 +7,14 @@
 }
 
 .studyPath__title {
-  align-self: flex-start;
+  align-self: center;
   font-size: 35px;
   color: #26215c;
   margin-bottom: 5px;
 }
 
 .studyPath__subtitle {
-  align-self: flex-start;
+  align-self: center;
   color: #757474;
   font-size: 15px;
   margin-bottom: 30px;
