@@ -138,6 +138,7 @@ const ICONS_BY_SKILL = {
   html: html,
   html5: html,
   git: git,
+  "git/github": github,
   angular: angular,
   javascript: javascript,
   js: javascript,
@@ -256,7 +257,7 @@ function resolverIcone(skill) {
 }
 
 // quando `validado` for false, o carimbo usa o cinza padrão e ganha um cadeado no canto superior direito
-function aplicarValidacao(validado, corOriginal) {
+function aplicarValidacao(validado, corOriginal, nivelOriginal) {
   return {
     cor: validado ? corOriginal : CINZA_NAO_VALIDADO,
     filtro: validado ? "none" : "grayscale(1) brightness(1.5)",
@@ -271,6 +272,7 @@ function aplicarValidacao(validado, corOriginal) {
             largura: 40,
           },
         ],
+    nivel: validado ? nivelOriginal : "blocked",
   };
 }
 
@@ -454,9 +456,10 @@ function construirLayoutsDeCarimbo() {
 }
 
 function montarCarimbo(layout, competencia) {
-  const { cor, filtro, elementosExtras } = aplicarValidacao(
+  const { cor, filtro, elementosExtras, nivel } = aplicarValidacao(
     competencia.validado,
     layout.corOriginal,
+    competencia.nivel,
   );
 
   return {
@@ -481,7 +484,7 @@ function montarCarimbo(layout, competencia) {
       },
       {
         tipo: "texto",
-        texto: `★ ${PROFICIENCY_LABELS[competencia.nivel] || (competencia.nivel || "").toUpperCase()} ★`,
+        texto: `★ ${PROFICIENCY_LABELS[nivel]} ★`,
         xPercent: 0.5,
         yPercent: layout.nivelYPercent,
         tamanho: 18,

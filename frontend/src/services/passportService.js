@@ -1,4 +1,4 @@
-import { getUser, listMatches } from "./api";
+import { getUser } from "./api";
 import { listPassports } from "./talentPassportService";
 
 // professional_profile.overall_level values (junior/mid_level/senior/expert).
@@ -9,26 +9,32 @@ const OVERALL_LEVEL_LABELS = {
   expert: "ESPECIALISTA",
 };
 
-// professional_profile.competencies[].proficiency_level values, computed by
-// the backend from the resume's confidence_level (beginner/intermediate/advanced/expert).
+// Stamp proficiency labels. "blocked" is applied by PassportCertificate.jsx
+// itself whenever a stamp isn't validated, regardless of the score-derived
+// bucket below.
 export const PROFICIENCY_LABELS = {
   beginner: "INICIANTE",
   intermediate: "INTERMEDIÁRIO",
   advanced: "AVANÇADO",
   expert: "EXPERT",
+  blocked: "A CONQUISTAR",
 };
 
 // Must match the number of stamp layouts in PassportCertificate.jsx.
 const MAX_CARIMBOS = 6;
 
-// Splits `total` stamps into (unlocked, locked) proportional to how many of
-// the job's required skills the candidate matches vs. is missing, rounding
-// so the two counts always add up to `total` (e.g. 8 matches / 2 gaps over 6
-// stamps -> 5 unlocked, 1 locked).
-function calcularDesbloqueados(total, quantidadeCompletas, quantidadeFaltantes) {
-  const totalSkills = quantidadeCompletas + quantidadeFaltantes;
-  if (totalSkills === 0) return total;
-  return Math.round(total * (quantidadeCompletas / totalSkills));
+// A stamp is only unlocked once the candidate has demonstrated that skill in
+// the assessment (dashboard_summary.performance_by_skill), not merely
+// claimed it on the resume.
+const SKILL_VALIDATION_THRESHOLD = 40;
+
+// dashboard_summary.performance_by_skill score (0-100) -> proficiency bucket
+// shown on the stamp when it's validated.
+function nivelPorNota(nota) {
+  if (nota >= 85) return "expert";
+  if (nota >= 70) return "advanced";
+  if (nota >= 50) return "intermediate";
+  return "beginner";
 }
 
 export async function buscarDadosPassaporte() {
@@ -44,29 +50,23 @@ export async function buscarDadosPassaporte() {
 
   const level = passport.professional_profile?.overall_level;
   const bestArea = passport.dashboard_summary?.best_area || "";
-  const competencias = (
-    passport.professional_profile?.competencies || []
-  ).slice(0, MAX_CARIMBOS);
 
-  const matchesResponse = await listMatches();
-  const match = (matchesResponse.data || []).find(
-    (item) =>
-      item.resume === passport.resume && item.job_posting === passport.job_posting,
-  );
-  const desbloqueados = calcularDesbloqueados(
-    competencias.length,
-    match?.matches?.length || 0,
-    match?.gaps?.length || 0,
-  );
+  // Already sorted highest-to-lowest by the backend
+  // (assessments/services/score_aggregation.consolidate_skills), so slicing
+  // to MAX_CARIMBOS naturally keeps the best-demonstrated skills.
+  const performanceBySkill = passport.dashboard_summary?.performance_by_skill || {};
+  const carimbos = Object.entries(performanceBySkill)
+    .slice(0, MAX_CARIMBOS)
+    .map(([skill, nota]) => ({
+      skill,
+      nivel: nivelPorNota(nota),
+      validado: nota >= SKILL_VALIDATION_THRESHOLD,
+    }));
 
   return {
     nome: nome || "",
     role: bestArea.toUpperCase(),
     title: OVERALL_LEVEL_LABELS[level] || level?.toUpperCase() || "",
-    carimbos: competencias.map((competencia, index) => ({
-      skill: competencia.skill,
-      nivel: competencia.proficiency_level,
-      validado: index < desbloqueados,
-    })),
+    carimbos,
   };
 }
