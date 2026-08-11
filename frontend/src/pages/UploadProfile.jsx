@@ -17,7 +17,7 @@ export default function UploadProfile() {
   const navigate = useNavigate();
 
   function isTextInvalid(text) {
-    return !text || text.length < 150 || text.length > 3500;
+    return !text || text.length < 150 || text.length > 20000;
   }
 
   function getTextError(text) {
@@ -25,8 +25,8 @@ export default function UploadProfile() {
     if (text.length < 150) {
       return `Mínimo de 150 caracteres (${text.length}/150)`;
     }
-    if (text.length > 3500) {
-      return `Máximo de 3500 caracteres excedido (${text.length}/3500)`;
+    if (text.length > 20000) {
+      return `Máximo de 20.000 caracteres excedido (${text.length}/20000)`;
     }
     return null;
   }
