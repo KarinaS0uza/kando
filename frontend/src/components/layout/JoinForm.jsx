@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import authService from "../../services/authService";
 import { createUser, login } from "../../services/api";
 import useAuth from "../../hooks/useAuth";
 import "./JoinForm.css";
+import PopoverSignup from "../ui/PopoverSignup";
 
 export default function JoinForm({
   pathTo,
@@ -24,6 +25,18 @@ export default function JoinForm({
   const [errorClassFullName, setErrorClassFullName] = useState(false);
   const [errorClassEmail, setErrorClassEmail] = useState(false);
   const [errorClassPassword, setErrorClassPassword] = useState(false);
+
+  const fullNameInputRef = useRef(null);
+  const [fullNameAnchorEl, setFullNameAnchorEl] = useState(null);
+  const [fullNamePopoverOpen, setFullNamePopoverOpen] = useState(true);
+
+  // The ref only points at the <input> after the signup form mounts it, so
+  // the popover's anchorEl is picked up here instead of at render time.
+  useEffect(() => {
+    if (formType === "signup") {
+      setFullNameAnchorEl(fullNameInputRef.current);
+    }
+  }, [formType]);
 
   function checkFullName(value) {
     if (value == "") {
@@ -118,14 +131,22 @@ export default function JoinForm({
     <form action="" className="join__form_inputs" onSubmit={handleSubmit}>
       {formType === "signup" && (
         <div className="join__form_input-email">
+          <PopoverSignup
+            anchorEl={fullNameAnchorEl}
+            open={fullNamePopoverOpen && Boolean(fullNameAnchorEl)}
+            onClose={() => setFullNamePopoverOpen(false)}
+          />
           <input
+            ref={fullNameInputRef}
             type="text"
             className={`join__form_email ${errorClassFullName ? "join__form_input-error" : ""}`}
             placeholder="Nome completo"
             required
             value={fullName}
             onChange={(e) => handleFullNameChange(e)}
+            onFocus={() => setFullNamePopoverOpen(false)}
           />
+
           {errorFullName && <p className="join__form-error">{errorFullName}</p>}
         </div>
       )}
