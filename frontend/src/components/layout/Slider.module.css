@@ -46,20 +46,12 @@
   -webkit-user-select: none;
   user-select: none;
   border-radius: 15px;
-
-  @media (prefers-color-scheme: dark) {
-    background-color: oklch(26.9% 0 0deg);
-  }
 }
 
 .Indicator {
   background-color: oklch(14.5% 0 0deg);
   -webkit-user-select: none;
   user-select: none;
-
-  @media (prefers-color-scheme: dark) {
-    background-color: white;
-  }
 }
 
 .Thumb {
@@ -72,17 +64,8 @@
   -webkit-user-select: none;
   user-select: none;
 
-  @media (prefers-color-scheme: dark) {
-    border: 1px solid white;
-    background-color: oklch(14.5% 0 0deg);
-  }
-
   &:has(:focus-visible) {
     outline: 2px solid oklch(14.5% 0 0deg);
     outline-offset: 2px;
-
-    @media (prefers-color-scheme: dark) {
-      outline-color: white;
-    }
   }
 }
