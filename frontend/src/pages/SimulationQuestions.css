@@ -23,6 +23,7 @@
   text-align: start;
 }
 
+/* Dead CSS, unused in JSX (flagged, not renamed/removed per plan). */
 .simulation__questions_list {
   list-style-type: circle;
   list-style-type: none;
@@ -34,6 +35,7 @@
   padding: 0;
 }
 
+/* Dead CSS, unused in JSX and empty (flagged, not renamed/removed per plan). */
 .simulation__answer {
 }
 .simulation__buttons {
@@ -46,7 +48,7 @@
   justify-content: space-between;
   align-items: flex-end;
 }
-.simulation__button_foward {
+.simulation__button--forward {
   border: none;
   background-color: #26215c;
   color: white;
@@ -61,7 +63,7 @@
   height: fit-content;
 }
 
-.simulation__button_foward:hover {
+.simulation__button--forward:hover {
   box-shadow:
     0 4px 8px rgba(0, 0, 0, 0.12),
     0 1px 3px rgba(0, 0, 0, 0.08);
@@ -70,13 +72,13 @@
   cursor: pointer;
 }
 
-.simulation__button_foward:disabled {
+.simulation__button--forward:disabled {
   background-color: #e2e2e2;
   color: #adadad;
   font-weight: 500;
 }
 
-.simulation__button_back {
+.simulation__button--back {
   border: none;
   background-color: #ffffff;
   color: rgb(77, 77, 77);
@@ -90,7 +92,7 @@
   padding: 15px 100px;
 }
 
-.simulation__button_back:hover {
+.simulation__button--back:hover {
   box-shadow:
     0 4px 8px rgba(0, 0, 0, 0.12),
     0 1px 3px rgba(0, 0, 0, 0.08);
@@ -128,7 +130,7 @@
   resize: none;
 }
 
-.simulation__progress_counter {
+.simulation__progress-counter {
   color: rgb(173, 171, 171);
   align-self: center;
   font-size: 15px;
@@ -184,8 +186,8 @@
     width: min(90%, 760px);
   }
 
-  .simulation__button_back,
-  .simulation__button_foward {
+  .simulation__button--back,
+  .simulation__button--forward {
     min-width: 200px;
     padding: 14px 48px;
   }
@@ -226,15 +228,15 @@
     gap: 12px 24px;
   }
 
-  .simulation__button_back,
-  .simulation__button_foward {
+  .simulation__button--back,
+  .simulation__button--forward {
     width: 100%;
     min-width: 0;
     min-height: 44px;
     padding: 12px 8px;
   }
 
-  .simulation__progress_counter {
+  .simulation__progress-counter {
     grid-column: 1 / -1;
     grid-row: 1;
     flex-shrink: 0;

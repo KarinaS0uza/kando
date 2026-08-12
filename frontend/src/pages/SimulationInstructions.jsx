@@ -45,13 +45,13 @@ export default function SimulationInstructions() {
         </div>
         <div className="instructions__buttons">
           <button
-            className="instructions__button_back"
+            className="instructions__button--back"
             onClick={handleClickBack}
           >
             Voltar
           </button>
           <button
-            className="instructions__button_foward"
+            className="instructions__button--forward"
             onClick={handleClickNext}
           >
             Começar

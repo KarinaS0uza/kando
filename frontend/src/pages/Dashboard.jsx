@@ -8,6 +8,7 @@ import {
   createPassport,
   listPassports,
 } from "../services/talentPassportService";
+import { extractErrorMessage } from "../utils/errors";
 import "./Dashboard.css";
 
 const LEVEL_LABELS = {
@@ -22,25 +23,12 @@ const LEVEL_LABELS = {
 // compatibilidade" threshold used for the overall score elsewhere in the app.
 const ROLE_HIGHLIGHT_THRESHOLD = 70;
 
-// Surfaces DRF's actual validation message (e.g. "A avaliação técnica ainda
-// não foi gerada com sucesso.") instead of a generic fallback, since
-// passport generation can legitimately fail while upstream steps (match,
-// assessment) haven't been completed yet for the latest comparison.
-function extractErrorMessage(error) {
-  const data = error.response?.data;
-  if (!data) return null;
-  if (typeof data.detail === "string") return data.detail;
-  const firstValue = Object.values(data)[0];
-  if (Array.isArray(firstValue)) return firstValue[0];
-  return typeof firstValue === "string" ? firstValue : null;
-}
-
 function ScoreBar({ label, value }) {
   return (
-    <div className="score-bar">
-      <span className="score-bar__label">{label}</span>
-      <div className="score-bar__track">
-        <div className="score-bar__fill" style={{ width: `${value}%` }} />
+    <div className="dashboard__score-bar">
+      <span className="dashboard__score-bar-label">{label}</span>
+      <div className="dashboard__score-bar-track">
+        <div className="dashboard__score-bar-fill" style={{ width: `${value}%` }} />
       </div>
     </div>
   );
@@ -158,25 +146,25 @@ export default function Dashboard() {
         <h1 className="dashboard__title">Dashboard</h1>
 
         <div className="dashboard__metrics">
-          <div className="metric-card">
-            <p className="metric-card__label">Score do teste</p>
-            <p className="metric-card__value">
+          <div className="dashboard__metric-card">
+            <p className="dashboard__metric-card-label">Score do teste</p>
+            <p className="dashboard__metric-card-value">
               {technicalScore === null ? "—" : `${technicalScore}%`}
             </p>
           </div>
-          <div className="metric-card">
-            <p className="metric-card__label">Compatibilidade da última vaga</p>
-            <p className="metric-card__value">
+          <div className="dashboard__metric-card">
+            <p className="dashboard__metric-card-label">Compatibilidade da última vaga</p>
+            <p className="dashboard__metric-card-value">
               {matchScore === null ? "—" : `${matchScore}%`}
             </p>
           </div>
-          <div className="metric-card">
-            <p className="metric-card__label">Nível</p>
-            <p className="metric-card__value">{level || "—"}</p>
+          <div className="dashboard__metric-card">
+            <p className="dashboard__metric-card-label">Nível</p>
+            <p className="dashboard__metric-card-value">{level || "—"}</p>
           </div>
-          <div className="metric-card">
-            <p className="metric-card__label">Melhor área</p>
-            <p className="metric-card__value">{bestArea || "—"}</p>
+          <div className="dashboard__metric-card">
+            <p className="dashboard__metric-card-label">Melhor área</p>
+            <p className="dashboard__metric-card-value">{bestArea || "—"}</p>
           </div>
         </div>
 
@@ -188,8 +176,8 @@ export default function Dashboard() {
 
         <div className="dashboard__grid">
           <div className="dashboard__column">
-            <div className="panel__area">
-              <h3 className="panel__title">Desempenho por área</h3>
+            <div className="dashboard__panel-area">
+              <h3 className="dashboard__panel-title">Desempenho por área</h3>
               {areaPerformance.map((skill) => (
                 <ScoreBar
                   key={skill.label}
@@ -199,17 +187,17 @@ export default function Dashboard() {
               ))}
             </div>
 
-            <div className="panel">
-              <h3 className="panel__title">Cargos recomendados</h3>
-              <div className="role-list">
+            <div className="dashboard__panel">
+              <h3 className="dashboard__panel-title">Cargos recomendados</h3>
+              <div className="dashboard__role-list">
                 {suggestedRoles.map((role, i) => (
                   <div
                     key={role.title}
-                    className={`role-row ${i < suggestedRoles.length - 1 ? "role-row--divider" : ""}`}
+                    className={`dashboard__role-row ${i < suggestedRoles.length - 1 ? "dashboard__role-row--divider" : ""}`}
                   >
-                    <span className="role-row__title">{role.title}</span>
+                    <span className="dashboard__role-row-title">{role.title}</span>
                     <span
-                      className={`role-row__fit ${role.highlight ? "role-row__fit--highlight" : ""}`}
+                      className={`dashboard__role-row-fit ${role.highlight ? "dashboard__role-row-fit--highlight" : ""}`}
                     >
                       {role.fit}
                     </span>
@@ -220,31 +208,31 @@ export default function Dashboard() {
           </div>
 
           <div className="dashboard__column">
-            <div className="panel panel--compact">
-              <h3 className="panel__title">
+            <div className="dashboard__panel dashboard__panel--compact">
+              <h3 className="dashboard__panel-title">
                 <i
-                  className="ti ti-check panel__icon panel__icon--positive"
+                  className="ti ti-check dashboard__panel-icon dashboard__panel-icon--positive"
                   aria-hidden="true"
                 />
                 Pontos fortes
               </h3>
               {strengths.map((item) => (
-                <p key={item} className="panel__item panel__item--positive">
+                <p key={item} className="dashboard__panel-item dashboard__panel-item--positive">
                   {item}
                 </p>
               ))}
             </div>
 
-            <div className="panel panel--compact">
-              <h3 className="panel__title">
+            <div className="dashboard__panel dashboard__panel--compact">
+              <h3 className="dashboard__panel-title">
                 <i
-                  className="ti ti-alert-triangle panel__icon panel__icon--warning"
+                  className="ti ti-alert-triangle dashboard__panel-icon dashboard__panel-icon--warning"
                   aria-hidden="true"
                 />
                 Pra estudar
               </h3>
               {developmentAreas.map((item) => (
-                <p key={item} className="panel__item panel__item--warning">
+                <p key={item} className="dashboard__panel-item dashboard__panel-item--warning">
                   {item}
                 </p>
               ))}
@@ -253,11 +241,11 @@ export default function Dashboard() {
         </div>
 
         <div className="dashboard__actions">
-          <button className="btn" onClick={() => navigate("/study-path")}>
+          <button className="dashboard__btn" onClick={() => navigate("/study-path")}>
             Ver trilha de estudo
             <i className="ti ti-arrow-right" aria-hidden="true" />
           </button>
-          <button className="btn" onClick={() => navigate("/talent-passport")}>
+          <button className="dashboard__btn" onClick={() => navigate("/talent-passport")}>
             <i className="ti ti-stamp" aria-hidden="true" />
             Ver passaporte
           </button>

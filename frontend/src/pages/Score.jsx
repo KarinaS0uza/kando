@@ -310,11 +310,11 @@ export default function ProfileScore() {
   return (
     <>
       <Header />
-      <div className="resultsPage">
-        <h1 className="resultsPage__title">Estou pronto para essa vaga?</h1>
+      <div className="score">
+        <h1 className="score__title">Estou pronto para essa vaga?</h1>
 
-        <div ref={wrapperRef} className="skillCompare__wrapper">
-          <svg className="skillCompare__svg">
+        <div ref={wrapperRef} className="skill-compare__wrapper">
+          <svg className="skill-compare__svg">
             {lines.map((l, i) => (
               <g key={i}>
                 {l.segments.map((seg, j) => (
@@ -335,17 +335,17 @@ export default function ProfileScore() {
             ))}
           </svg>
 
-          <div className="skillCompare">
-            <div className="skillCompare__column">
-              <h2 ref={gapsTitleRef} className="skillCompare__columnTitle">
+          <div className="skill-compare">
+            <div className="skill-compare__column">
+              <h2 ref={gapsTitleRef} className="skill-compare__column-title">
                 Habilidades faltantes ·{" "}
-                <span className="skillCompare__columnCount">{gaps.length}</span>
+                <span className="skill-compare__column-count">{gaps.length}</span>
               </h2>
-              <span className="results__divider"></span>
+              <span className="skill-compare__divider"></span>
               {gaps.slice(0, VISIBLE_SKILLS_LIMIT).map((skill, i) => (
                 <div
                   key={`gap-${i}`}
-                  className="skillCompare__item skillCompare__item_gaps"
+                  className="skill-compare__item skill-compare__item--gaps"
                 >
                   {skill}
                 </div>
@@ -353,7 +353,7 @@ export default function ProfileScore() {
               {gaps.length > VISIBLE_SKILLS_LIMIT && (
                 <button
                   type="button"
-                  className="skillCompare__item skillCompare__item_gaps skillCompare__moreButton"
+                  className="skill-compare__item skill-compare__item--gaps skill-compare__more-button"
                   onClick={(event) =>
                     handleOpenSkillsPopover(
                       event,
@@ -368,7 +368,7 @@ export default function ProfileScore() {
               )}
             </div>
 
-            <div className="skillCompare__circleWrap">
+            <div className="skill-compare__circle-wrap">
               <Box
                 ref={circleRef}
                 sx={{ position: "relative", display: "inline-flex" }}
@@ -464,21 +464,21 @@ export default function ProfileScore() {
               </Box>
             </div>
 
-            <div className="skillCompare__column">
-              <h2 className="skillCompare__columnTitle skillCompare__columnTitle_right">
+            <div className="skill-compare__column">
+              <h2 className="skill-compare__column-title skill-compare__column-title--right">
                 <span
-                  className="skillCompare__columnCount"
+                  className="skill-compare__column-count"
                   ref={matchesTitleRef}
                 >
                   {matches.length}
                 </span>{" "}
                 · Habilidades compatíveis
               </h2>
-              <span className="results__divider results__divider_right"></span>
+              <span className="skill-compare__divider skill-compare__divider--right"></span>
               {matches.slice(0, VISIBLE_SKILLS_LIMIT).map((skill, i) => (
                 <div
                   key={`match-${i}`}
-                  className="skillCompare__item skillCompare__item_matches"
+                  className="skill-compare__item skill-compare__item--matches"
                 >
                   {skill}
                 </div>
@@ -486,7 +486,7 @@ export default function ProfileScore() {
               {matches.length > VISIBLE_SKILLS_LIMIT && (
                 <button
                   type="button"
-                  className="skillCompare__item skillCompare__item_matches skillCompare__moreButton"
+                  className="skill-compare__item skill-compare__item--matches skill-compare__more-button"
                   onClick={(event) =>
                     handleOpenSkillsPopover(
                       event,
@@ -516,11 +516,11 @@ export default function ProfileScore() {
             horizontal: "left",
           }}
         >
-          <div className="skillCompare__popover">
+          <div className="skill-compare__popover">
             {skillsPopover.skills.map((skill, index) => (
               <div
                 key={`${skillsPopover.type}-popover-${index}`}
-                className={`skillCompare__item skillCompare__item_${skillsPopover.type}`}
+                className={`skill-compare__item skill-compare__item--${skillsPopover.type}`}
               >
                 {skill}
               </div>
@@ -528,7 +528,7 @@ export default function ProfileScore() {
           </div>
         </Popover>
 
-        <button className="results__viewMore" onClick={handleOpenModal}>
+        <button className="score__view-more" onClick={handleOpenModal}>
           Ver mais
         </button>
 
@@ -540,12 +540,12 @@ export default function ProfileScore() {
           />
         )}
       </div>
-      <footer className="footer">
-        <p className="footer__text">
+      <footer className="score__footer">
+        <p className="score__footer-text">
           Faça o teste para um resultado mais preciso e desbloquear outros
           recursos
         </p>
-        <button className="footer__button" onClick={handleClick}>
+        <button className="score__footer-button" onClick={handleClick}>
           Começar teste
         </button>
       </footer>

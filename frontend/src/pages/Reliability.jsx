@@ -62,14 +62,14 @@ export default function Reliability() {
       <div className="rely">
         <h1 className="rely__title">Compare suas habilidades</h1>
         <form className="rely__form" onSubmit={handleSubmit}>
-          <div className="rely__question-1">
-            <p className="rely__question_title">
+          <div className="rely__question--1">
+            <p className="rely__question-title">
               1. O quão preparado você se sente para essa vaga?
             </p>
             <Slider value={perceivedPreparation} onChange={setPerceivedPreparation} />
           </div>
-          <div className="rely__question-2">
-            <p className="rely__question_title">
+          <div className="rely__question--2">
+            <p className="rely__question-title">
               2. Qual o percentual de requisitos da vaga você acha que deve
               alcançar antes de aplicar?
             </p>

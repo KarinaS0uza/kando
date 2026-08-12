@@ -188,14 +188,14 @@ export default function SimulationQuestions() {
           </div>
         </div>
         <div className="simulation__buttons">
-          <button className="simulation__button_back" onClick={handleClickBack}>
+          <button className="simulation__button--back" onClick={handleClickBack}>
             Voltar
           </button>
-          <p className="simulation__progress_counter">
+          <p className="simulation__progress-counter">
             {currentIndex + 1}/{questions.length}
           </p>
           <button
-            className="simulation__button_foward"
+            className="simulation__button--forward"
             onClick={handleClickNext}
             disabled={!isTextValid(questionText) || submitting}
           >

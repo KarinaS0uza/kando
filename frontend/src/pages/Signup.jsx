@@ -23,7 +23,7 @@ export default function Signup() {
           formType="signup"
         />
         <div className="signup__divider">
-          <span className="signup__divider_text">ou</span>
+          <span className="signup__divider-text">ou</span>
         </div>
         <GoogleButton />
       </section>

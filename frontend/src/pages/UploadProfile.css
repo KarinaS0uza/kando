@@ -50,14 +50,14 @@
     flex-grow 0.35s ease;
 }
 
-.upload__pdf-collapse_collapsed {
+.upload__pdf-collapse--collapsed {
   grid-template-rows: 0fr;
   opacity: 0;
   flex-grow: 0;
   pointer-events: none;
 }
 
-.upload__pdf-collapse__inner {
+.upload__pdf-collapse-inner {
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -82,7 +82,7 @@
   letter-spacing: inherit;
 }
 
-.upload__input-text_solid {
+.upload__input-text--solid {
   border: 1px solid rgb(173, 171, 171);
 }
 
@@ -136,7 +136,7 @@
   display: none;
 }
 
-.vertical-line {
+.upload__vertical-line {
   width: 1px; /* Controls line thickness */
   height: 600px; /* Controls line length */
   background-color: #ebebeb;
@@ -232,7 +232,7 @@
     margin: 12px;
   }
 
-  .vertical-line {
+  .upload__vertical-line {
     width: 100%;
     height: 1px;
   }

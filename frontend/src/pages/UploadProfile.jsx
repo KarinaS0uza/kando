@@ -52,25 +52,25 @@ export default function UploadProfile() {
             <p className="upload__input-title">Meu currículo</p>
             <div
               className={`upload__pdf-collapse${
-                resumeText ? " upload__pdf-collapse_collapsed" : ""
+                resumeText ? " upload__pdf-collapse--collapsed" : ""
               }`}
             >
-              <div className="upload__pdf-collapse__inner">
+              <div className="upload__pdf-collapse-inner">
                 <InputUpload onFileChange={setResumeFile} />
               </div>
             </div>
             <div
               className={`upload__pdf-collapse${
-                resumeFile ? " upload__pdf-collapse_collapsed" : ""
+                resumeFile ? " upload__pdf-collapse--collapsed" : ""
               }`}
             >
-              <div className="upload__pdf-collapse__inner">
+              <div className="upload__pdf-collapse-inner">
                 {!resumeText && <p className="upload__ou">ou</p>}
                 <div className="upload__txt-wrap">
                   <textarea
                     className={
                       resumeText
-                        ? "upload__input-txt upload__input-text_solid"
+                        ? "upload__input-txt upload__input-text--solid"
                         : "upload__input-txt"
                     }
                     placeholder="Cole aqui seu currículo"
@@ -91,30 +91,30 @@ export default function UploadProfile() {
               </div>
             </div>
           </div>
-          <div className="vertical-line"></div>
+          <div className="upload__vertical-line"></div>
           <div className="upload__inputs-pdf">
             <p className="upload__input-title">Descrição da vaga</p>
             <div
               className={`upload__pdf-collapse${
-                jobText ? " upload__pdf-collapse_collapsed" : ""
+                jobText ? " upload__pdf-collapse--collapsed" : ""
               }`}
             >
-              <div className="upload__pdf-collapse__inner">
+              <div className="upload__pdf-collapse-inner">
                 <InputUpload onFileChange={setJobFile} />
               </div>
             </div>
             <div
               className={`upload__pdf-collapse${
-                jobFile ? " upload__pdf-collapse_collapsed" : ""
+                jobFile ? " upload__pdf-collapse--collapsed" : ""
               }`}
             >
-              <div className="upload__pdf-collapse__inner">
+              <div className="upload__pdf-collapse-inner">
                 {!jobText && <p className="upload__ou">ou</p>}
                 <div className="upload__txt-wrap">
                   <textarea
                     className={
                       jobText
-                        ? "upload__input-txt upload__input-text_solid"
+                        ? "upload__input-txt upload__input-text--solid"
                         : "upload__input-txt"
                     }
                     placeholder="Cole aqui a descrição da vaga"

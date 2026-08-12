@@ -1,4 +1,4 @@
-.studyPath {
+.study-path {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -6,14 +6,14 @@
   padding-bottom: 60px;
 }
 
-.studyPath__title {
+.study-path__title {
   align-self: center;
   font-size: 35px;
   color: #26215c;
   margin-bottom: 5px;
 }
 
-.studyPath__subtitle {
+.study-path__subtitle {
   align-self: center;
   color: #757474;
   font-size: 15px;
@@ -22,7 +22,7 @@
   text-align: start;
 }
 
-.studyPath__empty {
+.study-path__empty {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -31,13 +31,13 @@
   margin: 80px auto;
 }
 
-.studyPath__emptyText {
+.study-path__empty-text {
   color: #757474;
   font-size: 15px;
   max-width: 480px;
 }
 
-.studyPath__emptyButton {
+.study-path__empty-button {
   background-color: #26215c;
   color: #fff;
   padding: 12px 30px;
@@ -48,32 +48,32 @@
     transform 0.2s ease;
 }
 
-.studyPath__emptyButton:hover {
+.study-path__empty-button:hover {
   box-shadow:
     0 4px 8px rgba(0, 0, 0, 0.12),
     0 1px 3px rgba(0, 0, 0, 0.08);
   transform: translateY(-1px);
 }
 
-.timeline__cardDescription {
+.study-path__card-description {
   font-size: 14px;
   color: #757474;
   margin: 8px 0 0;
 }
 
-.timeline__cardResource {
+.study-path__card-resource {
   font-size: 13px;
   color: #26215c;
   margin: 8px 0 0;
 }
 
-.studyPath__skillTitle {
+.study-path__skill-title {
   font-size: 13px;
   font-weight: 500;
   color: #4a4a4a;
 }
 
-.studyPath__mainCard {
+.study-path__main-card {
   border: 1px solid #e4e2f0;
   max-width: 60%;
   border-radius: 12px;
@@ -82,11 +82,11 @@
   box-shadow: 0 2px 6px rgba(38, 33, 92, 0.06);
 }
 
-.studyPath__mainCard.studyPath__mainCard--left {
+.study-path__main-card.study-path__main-card--left {
   justify-self: end;
 }
 
-.studyPath__skillsHeaderCard {
+.study-path__skills-header-card {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -94,19 +94,19 @@
   padding: 16px 20px !important;
 }
 
-.studyPath__skillsHeaderTitle {
+.study-path__skills-header-title {
   margin-bottom: 0 !important;
 }
 
-.studyPath__mainCardTitle {
+.study-path__main-card-title {
   line-height: 1.4 !important;
 }
 
-.studyPath__finalCard {
+.study-path__final-card {
   max-width: 320px;
 }
 
-.studyPath__finalImage {
+.study-path__final-image {
   width: 100%;
   border-radius: 8px;
   display: block;
@@ -114,22 +114,22 @@
 }
 
 @media (max-width: 900px) {
-  .studyPath {
+  .study-path {
     width: min(90%, 760px);
   }
 
-  .studyPath__mainCard {
+  .study-path__main-card {
     max-width: 70%;
   }
 }
 
 @media (max-width: 700px) {
-  .studyPath {
+  .study-path {
     width: 100%;
     padding: 0 16px 40px;
   }
 
-  .studyPath__title {
+  .study-path__title {
     width: 100%;
     margin: 20px 0 6px;
     font-size: clamp(24px, 8vw, 30px);
@@ -137,20 +137,20 @@
     text-align: left;
   }
 
-  .studyPath__subtitle {
+  .study-path__subtitle {
     max-width: none;
     margin-bottom: 20px;
     line-height: 1.5;
   }
 
-  .studyPath__timeline {
+  .study-path__timeline {
     width: min(calc(100% - 16px), 480px);
     margin-inline: auto;
     align-self: center;
   }
 
-  .studyPath__mainCard,
-  .studyPath__finalCard {
+  .study-path__main-card,
+  .study-path__final-card {
     box-sizing: border-box;
     width: calc(100% - 10px);
     max-width: none;
@@ -158,24 +158,24 @@
     padding: 14px 16px !important;
   }
 
-  .studyPath__mainCardTitle,
-  .timeline__cardDescription,
-  .timeline__cardResource,
-  .studyPath__skillTitle {
+  .study-path__main-card-title,
+  .study-path__card-description,
+  .study-path__card-resource,
+  .study-path__skill-title {
     overflow-wrap: anywhere;
     text-align: left;
   }
 
-  .studyPath__empty {
+  .study-path__empty {
     width: 100%;
     margin: 48px auto;
   }
 
-  .studyPath__emptyText {
+  .study-path__empty-text {
     line-height: 1.5;
   }
 
-  .studyPath__emptyButton {
+  .study-path__empty-button {
     box-sizing: border-box;
     width: 100%;
     min-height: 44px;
@@ -183,12 +183,12 @@
 }
 
 @media (max-width: 380px) {
-  .studyPath {
+  .study-path {
     padding-inline: 12px;
   }
 
-  .studyPath__mainCard,
-  .studyPath__finalCard {
+  .study-path__main-card,
+  .study-path__final-card {
     padding: 12px !important;
   }
 }

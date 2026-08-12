@@ -28,7 +28,7 @@ export default function Login() {
           formType="login"
         />
         <div className="login__divider">
-          <span className="login__divider_text">ou</span>
+          <span className="login__divider-text">ou</span>
         </div>
         <GoogleButton />
       </section>

@@ -1,4 +1,4 @@
-.resultsPage {
+.score {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -7,19 +7,19 @@
   padding-bottom: 120px;
 }
 
-.resultsPage__title {
+.score__title {
   align-self: flex-start;
   font-size: 35px;
   color: #26215c;
   margin-bottom: 30px;
 }
 
-.skillCompare__wrapper {
+.skill-compare__wrapper {
   position: relative;
   margin-top: 20px;
 }
 
-.skillCompare__svg {
+.skill-compare__svg {
   position: absolute;
   top: 0;
   left: 0;
@@ -29,7 +29,7 @@
   z-index: 1;
 }
 
-.skillCompare {
+.skill-compare {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -46,18 +46,19 @@
   box-shadow: 0 2px 6px rgba(38, 33, 92, 0.06);
 }
 
-.skillCompare__column {
+.skill-compare__column {
   display: flex;
   flex-direction: column;
   flex: 1;
   min-width: 0;
 }
 
+/* Dead CSS, unused in JSX (flagged, not renamed/removed per plan). */
 .skillCompare__column_right {
   justify-content: flex-end;
 }
 
-.skillCompare__columnTitle {
+.skill-compare__column-title {
   align-self: flex-start;
   font-size: 16px;
   font-weight: 600;
@@ -66,23 +67,23 @@
   padding-bottom: 3px;
 }
 
-.skillCompare__columnTitle_right {
+.skill-compare__column-title--right {
   align-self: end;
   color: rgb(79, 122, 79);
 }
 
-.skillCompare__columnCount {
+.skill-compare__column-count {
   display: inline-block;
   background-color: rgb(88%, 88%, 88%);
   padding: 2px 8px;
   border-radius: 999px;
 }
 
-.skillCompare__columnTitle_right .skillCompare__columnCount {
+.skill-compare__column-title--right .skill-compare__column-count {
   background-color: rgb(92%, 95%, 87%);
 }
 
-.skillCompare__item {
+.skill-compare__item {
   font-weight: bold;
   margin-top: 20px;
   padding: 4px 0;
@@ -96,39 +97,39 @@
     box-shadow 0.2s ease;
 }
 
-.skillCompare__item:hover {
+.skill-compare__item:hover {
   transform: translateY(-2px);
   transition: all 0.2s ease;
 }
 
-.skillCompare__item_matches {
+.skill-compare__item--matches {
   color: rgb(79, 122, 79);
   background-color: rgb(92%, 95%, 87%);
   align-self: end;
 }
 
-.skillCompare__item_gaps {
+.skill-compare__item--gaps {
   color: rgb(80, 80, 80);
   background-color: rgb(88%, 88%, 88%);
 }
 
-.skillCompare__moreButton {
+.skill-compare__more-button {
   border: 0;
   box-shadow: 0 2px 5px rgb(0 0 0 / 12%);
   cursor: pointer;
 }
 
-.skillCompare__moreButton:hover {
+.skill-compare__more-button:hover {
   filter: brightness(0.96);
   box-shadow: 0 4px 8px rgb(0 0 0 / 18%);
 }
 
-.skillCompare__moreButton:focus-visible {
+.skill-compare__more-button:focus-visible {
   outline: 2px solid #534ab7;
   outline-offset: 3px;
 }
 
-.skillCompare__popover {
+.skill-compare__popover {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -136,14 +137,14 @@
   padding: 8px 12px 18px;
 }
 
-.skillCompare__popover .skillCompare__item {
+.skill-compare__popover .skill-compare__item {
   align-self: flex-start;
   max-width: 100%;
   overflow-wrap: anywhere;
   text-align: left;
 }
 
-.skillCompare__circleWrap {
+.skill-compare__circle-wrap {
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -151,7 +152,7 @@
   padding: 0 20px;
 }
 
-.results__divider {
+.skill-compare__divider {
   display: flex;
   align-items: center;
   text-align: center;
@@ -159,27 +160,27 @@
   margin: 0;
 }
 
-.results__divider::after,
-.results__divider::before {
+.skill-compare__divider::after,
+.skill-compare__divider::before {
   content: "";
   flex: 1;
   max-width: 33%;
   border-bottom: 1px solid #cccccc;
 }
 
-.results__divider_right {
+.skill-compare__divider--right {
   flex-direction: row-reverse;
 }
 
-.results__divider_right::after,
-.results__divider_right::before {
+.skill-compare__divider--right::after,
+.skill-compare__divider--right::before {
   content: "";
   flex: 1;
   max-width: 38%;
   border-bottom: 1px solid #cccccc;
 }
 
-.results__viewMore {
+.score__view-more {
   align-self: center;
   margin-top: 40px;
   border: none;
@@ -194,7 +195,7 @@
     box-shadow 0.2s ease;
 }
 
-.results__viewMore:hover {
+.score__view-more:hover {
   box-shadow:
     0 4px 8px rgba(0, 0, 0, 0.12),
     0 1px 3px rgba(0, 0, 0, 0.08);
@@ -203,7 +204,7 @@
   cursor: pointer;
 }
 
-.footer {
+.score__footer {
   background-color: rgba(38, 33, 92, 0.137);
   height: 80px;
   display: flex;
@@ -218,12 +219,12 @@
   padding: 0 35px;
 }
 
-.footer__text {
+.score__footer-text {
   color: #00000070;
   font-size: 15px;
 }
 
-.footer__button {
+.score__footer-button {
   border: none;
   background-color: #26215c;
   color: white;
@@ -235,7 +236,7 @@
     box-shadow 0.2s ease;
 }
 
-.footer__button:hover {
+.score__footer-button:hover {
   box-shadow:
     0 4px 8px rgba(0, 0, 0, 0.12),
     0 1px 3px rgba(0, 0, 0, 0.08);
@@ -245,57 +246,57 @@
 }
 
 @media (max-width: 1200px) {
-  .resultsPage {
+  .score {
     width: min(90%, 1000px);
   }
 }
 
 @media (max-width: 1050px) {
-  .resultsPage {
+  .score {
     padding-bottom: 32px;
   }
 
-  .skillCompare__svg {
+  .skill-compare__svg {
     display: none;
   }
 
-  .skillCompare {
+  .skill-compare {
     flex-direction: column;
     gap: 28px;
   }
 
-  .skillCompare__column,
+  .skill-compare__column,
   .skillCompare__column_right {
     width: 100%;
   }
 
-  .skillCompare__circleWrap {
+  .skill-compare__circle-wrap {
     box-sizing: border-box;
     width: 100%;
     order: -1;
     padding: 4px 0;
   }
 
-  .skillCompare__columnTitle,
-  .skillCompare__columnTitle_right {
+  .skill-compare__column-title,
+  .skill-compare__column-title--right {
     align-self: flex-start;
     text-align: left;
   }
 
-  .skillCompare__item,
-  .skillCompare__item_matches {
+  .skill-compare__item,
+  .skill-compare__item--matches {
     align-self: flex-start;
     max-width: 100%;
     overflow-wrap: anywhere;
     text-align: left;
   }
 
-  .results__divider,
-  .results__divider_right {
+  .skill-compare__divider,
+  .skill-compare__divider--right {
     flex-direction: row;
   }
 
-  .footer {
+  .score__footer {
     box-sizing: border-box;
     width: 100%;
     height: auto;
@@ -305,96 +306,96 @@
     gap: 20px;
   }
 
-  .footer__text {
+  .score__footer-text {
     margin: 0;
     text-align: left;
     line-height: 1.45;
   }
 
-  .footer__button {
+  .score__footer-button {
     flex-shrink: 0;
     padding-inline: 48px;
   }
 }
 
 @media (max-width: 900px) {
-  .resultsPage {
+  .score {
     width: min(90%, 760px);
   }
 
-  .skillCompare {
+  .skill-compare {
     gap: 20px;
     padding: 24px 20px;
   }
 
-  .skillCompare__circleWrap {
+  .skill-compare__circle-wrap {
     padding-inline: 8px;
   }
 
-  .footer__button {
+  .score__footer-button {
     padding-inline: 48px;
   }
 }
 
 @media (max-width: 700px) {
-  .resultsPage {
+  .score {
     width: 100%;
     padding: 0 16px 32px;
   }
 
-  .resultsPage__title {
+  .score__title {
     margin: 20px 0;
     font-size: clamp(25px, 8vw, 31px);
     line-height: 1.2;
     text-align: left;
   }
 
-  .skillCompare__wrapper {
+  .skill-compare__wrapper {
     margin-top: 8px;
   }
 
-  .skillCompare__svg {
+  .skill-compare__svg {
     display: none;
   }
 
-  .skillCompare {
+  .skill-compare {
     flex-direction: column;
     gap: 28px;
     padding: 20px 16px;
   }
 
-  .skillCompare__column,
+  .skill-compare__column,
   .skillCompare__column_right {
     width: 100%;
   }
 
-  .skillCompare__circleWrap {
+  .skill-compare__circle-wrap {
     width: 100%;
     box-sizing: border-box;
     order: -1;
     padding: 4px 0;
   }
 
-  .skillCompare__columnTitle,
-  .skillCompare__columnTitle_right {
+  .skill-compare__column-title,
+  .skill-compare__column-title--right {
     align-self: flex-start;
     text-align: left;
   }
 
-  .skillCompare__item,
-  .skillCompare__item_matches {
+  .skill-compare__item,
+  .skill-compare__item--matches {
     align-self: flex-start;
     max-width: 100%;
     overflow-wrap: anywhere;
     text-align: left;
   }
 
-  .results__divider,
-  .results__divider_right {
+  .skill-compare__divider,
+  .skill-compare__divider--right {
     flex-direction: row;
   }
 
-  .results__viewMore {
+  .score__view-more {
     box-sizing: border-box;
     width: 100%;
     min-height: 46px;
@@ -402,7 +403,7 @@
     padding: 12px 20px;
   }
 
-  .footer {
+  .score__footer {
     box-sizing: border-box;
     width: 100%;
     height: auto;
@@ -412,13 +413,13 @@
     gap: 14px;
   }
 
-  .footer__text {
+  .score__footer-text {
     margin: 0;
     text-align: center;
     line-height: 1.45;
   }
 
-  .footer__button {
+  .score__footer-button {
     width: 100%;
     min-height: 46px;
     padding: 12px 20px;
@@ -426,11 +427,11 @@
 }
 
 @media (max-width: 380px) {
-  .resultsPage {
+  .score {
     padding-inline: 12px;
   }
 
-  .skillCompare {
+  .skill-compare {
     padding-inline: 12px;
   }
 }

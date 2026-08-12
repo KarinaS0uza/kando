@@ -149,14 +149,14 @@ export default function StudyPath() {
     return (
       <>
         <Header menuActive={true} />
-        <div className="studyPath">
-          <div className="studyPath__empty">
+        <div className="study-path">
+          <div className="study-path__empty">
             <PathIcon size={48} color="#26215c" />
-            <p className="studyPath__emptyText">
+            <p className="study-path__empty-text">
               Você ainda não comparou seu currículo com nenhuma vaga. Envie um
               currículo e uma vaga pra gerar sua trilha de estudo.
             </p>
-            <Link to="/upload" className="studyPath__emptyButton">
+            <Link to="/upload" className="study-path__empty-button">
               Comparar vaga
             </Link>
           </div>
@@ -169,14 +169,14 @@ export default function StudyPath() {
     return (
       <>
         <Header menuActive={true} />
-        <div className="studyPath">
-          <div className="studyPath__empty">
+        <div className="study-path">
+          <div className="study-path__empty">
             <PathIcon size={48} color="#26215c" />
-            <p className="studyPath__emptyText">
+            <p className="study-path__empty-text">
               Não conseguimos montar sua trilha de estudo a partir da última
               análise. Tente rodar a comparação de novo.
             </p>
-            <Link to="/dashboard" className="studyPath__emptyButton">
+            <Link to="/dashboard" className="study-path__empty-button">
               Voltar ao dashboard
             </Link>
           </div>
@@ -188,10 +188,10 @@ export default function StudyPath() {
   return (
     <>
       <Header menuActive={true} />
-      <div className="studyPath">
-        <h1 className="studyPath__title">Sua Trilha de Estudos</h1>
+      <div className="study-path">
+        <h1 className="study-path__title">Sua Trilha de Estudos</h1>
 
-        <p className="studyPath__subtitle">
+        <p className="study-path__subtitle">
           Essa trilha foi montada para ajudar você a desenvolver as habilidades
           essenciais para o cargo desejado. Com ela, você estará preparado para
           lidar com as ferramentas, conceitos e desafios técnicos exigidos pela
@@ -199,7 +199,7 @@ export default function StudyPath() {
         </p>
 
         <Timeline
-          className="studyPath__timeline"
+          className="study-path__timeline"
           active={timelineItems.length}
           bulletSize={34}
           lineWidth={2}
@@ -216,13 +216,13 @@ export default function StudyPath() {
                   opposite={useAlternatingTimeline ? "" : undefined}
                   alternate={useAlternatingTimeline && item.side % 2 === 1}
                   classNames={{
-                    itemBody: `studyPath__mainCard studyPath__skillsHeaderCard${
+                    itemBody: `study-path__main-card study-path__skills-header-card${
                       useAlternatingTimeline && item.side % 2 === 1
-                        ? " studyPath__mainCard--left"
+                        ? " study-path__main-card--left"
                         : ""
                     }`,
                     itemTitle:
-                      "studyPath__skillsHeaderTitle studyPath__mainCardTitle",
+                      "study-path__skills-header-title study-path__main-card-title",
                   }}
                 />
               );
@@ -237,7 +237,7 @@ export default function StudyPath() {
                   opposite={useAlternatingTimeline ? "" : undefined}
                   alternate={useAlternatingTimeline && item.side % 2 === 1}
                   style={{ "--tl-bullet-size": "14px" }}
-                  classNames={{ itemTitle: "studyPath__skillTitle" }}
+                  classNames={{ itemTitle: "study-path__skill-title" }}
                 />
               );
             }
@@ -252,20 +252,20 @@ export default function StudyPath() {
                   opposite={useAlternatingTimeline ? "" : undefined}
                   alternate={useAlternatingTimeline && item.side % 2 === 1}
                   classNames={{
-                    itemBody: `studyPath__mainCard studyPath__finalCard${
+                    itemBody: `study-path__main-card study-path__final-card${
                       useAlternatingTimeline && item.side % 2 === 1
-                        ? " studyPath__mainCard--left"
+                        ? " study-path__main-card--left"
                         : ""
                     }`,
-                    itemTitle: "studyPath__mainCardTitle",
+                    itemTitle: "study-path__main-card-title",
                   }}
                 >
                   <img
-                    className="studyPath__finalImage"
+                    className="study-path__final-image"
                     src={certificatePhoto}
                     alt="Passaporte de talento carimbado"
                   />
-                  <p className="timeline__cardDescription">
+                  <p className="study-path__card-description">
                     Complete os passos acima e garanta seus carimbos.
                   </p>
                 </Timeline.Item>
@@ -280,21 +280,21 @@ export default function StudyPath() {
                 opposite={useAlternatingTimeline ? "" : undefined}
                 alternate={useAlternatingTimeline && item.side % 2 === 1}
                 classNames={{
-                  itemBody: `studyPath__mainCard${
+                  itemBody: `study-path__main-card${
                     useAlternatingTimeline && item.side % 2 === 1
-                      ? " studyPath__mainCard--left"
+                      ? " study-path__main-card--left"
                       : ""
                   }`,
-                  itemTitle: "studyPath__mainCardTitle",
+                  itemTitle: "study-path__main-card-title",
                 }}
               >
                 {item.description && (
-                  <p className="timeline__cardDescription">
+                  <p className="study-path__card-description">
                     {item.description}
                   </p>
                 )}
                 {item.recurso && (
-                  <p className="timeline__cardResource">
+                  <p className="study-path__card-resource">
                     <strong>
                       {RESOURCE_LABELS[item.recurso.tipo] || "Recurso sugerido"}
                       :
