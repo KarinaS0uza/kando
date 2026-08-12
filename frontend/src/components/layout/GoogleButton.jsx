@@ -4,6 +4,11 @@ import authService from "../../services/authService";
 import useAuth from "../../hooks/useAuth";
 import "./GoogleButton.css";
 
+// "Continuar com o Google" button, rendered by both Login and Signup. No
+// props. There is no real Google OAuth integration behind it: it calls
+// `authService.loginWithGoogle()`, which is a permanent mock that always
+// resolves to the same fake user - there's no real flow to eventually swap
+// it for.
 export default function GoogleButton() {
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();

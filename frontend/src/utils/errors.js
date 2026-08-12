@@ -1,6 +1,11 @@
-// Surfaces DRF's actual validation/error message (e.g. "Credenciais
-// inválidas.", "user with this email already exists.") instead of the
-// generic axios "Request failed with status code NNN" text.
+/**
+ * Surfaces DRF's actual validation/error message (e.g. "Credenciais
+ * inválidas.", "user with this email already exists.") instead of the
+ * generic axios "Request failed with status code NNN" text.
+ * @param {*} error - an Axios error (reads `error.response.data`)
+ * @returns {string|null} the first usable error message found, or null if
+ *   the error has no DRF-shaped response body
+ */
 export function extractErrorMessage(error) {
   const data = error.response?.data;
   if (!data) return null;

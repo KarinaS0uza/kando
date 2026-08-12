@@ -103,6 +103,12 @@ import anaconda from "devicon/icons/anaconda/anaconda-original.svg";
 
 import "./PassportCertificate.css";
 
+// Generates the Talent Passport certificate image (canvas-based, via
+// useImageComposer) from the candidate's real assessment results. Props:
+// - onImagemGerada(dataUrl: string): called once the canvas render
+//   finishes, so the parent page can show/download the final image.
+// No other props - all certificate data (name, role, stamps) comes from
+// buscarDadosPassaporte(), fetched internally on mount.
 const CINZA_NAO_VALIDADO = "rgb(64%, 60%, 56%)";
 
 // SVG string for the fallback icon, built once so it can be loaded as a

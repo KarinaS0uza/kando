@@ -10,6 +10,11 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import tpImageHomepage from "../../assets/TP-image_homepage.png";
 import "./StepperHomePage.css";
 
+// Scroll-driven vertical stepper on the landing page (HomePage), walking
+// through the 4 product steps as the user scrolls past them. No props -
+// content is fixed. Active step is derived from an IntersectionObserver
+// rather than scroll-position math, so it stays correct regardless of
+// step height.
 const steps = [
   {
     label: "Envie seu perfil",

@@ -1,6 +1,11 @@
 import { getUser } from "./api";
 import { listPassports } from "./talentPassportService";
 
+// Aggregator/view-model for the Talent Passport certificate: combines
+// listPassports() (talentPassportService.js) with getUser() (api.js) into
+// the shape PassportCertificate.jsx consumes. Not to be confused with
+// talentPassportService.js, which is the raw API client this file wraps.
+
 // professional_profile.overall_level values (junior/mid_level/senior/expert).
 const OVERALL_LEVEL_LABELS = {
   junior: "JÚNIOR",
@@ -37,6 +42,13 @@ function nivelPorNota(nota) {
   return "beginner";
 }
 
+/**
+ * Fetches and reshapes the data PassportCertificate.jsx needs to render
+ * the certificate: candidate name, best area, overall level label, and up
+ * to MAX_CARIMBOS stamps (skill + proficiency + validated flag).
+ * @returns {Promise<{nome: string, role: string, title: string, carimbos: Array<{skill: string, nivel: string, validado: boolean}>}>}
+ * @throws {Error} if the user has no successful passport yet
+ */
 export async function buscarDadosPassaporte() {
   const passportsResponse = await listPassports();
   const passport = (passportsResponse.data || []).find((item) => item.success);

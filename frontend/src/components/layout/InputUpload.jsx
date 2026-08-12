@@ -11,6 +11,11 @@ import deleteIcon from "../../assets/delete-icon.svg";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
+// PDF dropzone with inline preview, used twice on the same page
+// (UploadProfile) for the resume and the job posting. Props:
+// - onFileChange(file: File | null): called with the accepted file, or
+//   null when the user removes it. UploadProfile uses this to decide
+//   between sending the file or the pasted-text alternative on submit.
 export default function InputUpload({ onFileChange }) {
   const [file, setFile] = useState(null);
   const [numPages, setNumPages] = useState(null);

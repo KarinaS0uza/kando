@@ -1,6 +1,11 @@
 import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
 
+// Hint tooltip anchored to Signup's full-name field, open by default and
+// dismissed when the field gains focus (see JoinForm.jsx). Props:
+// - anchorEl (HTMLElement | null): the input to anchor to
+// - open (bool)
+// - onClose (fn)
 export default function PopoverSignup({ anchorEl, open, onClose }) {
   return (
     <Popover

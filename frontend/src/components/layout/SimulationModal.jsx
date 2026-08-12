@@ -10,6 +10,11 @@ import RouteIcon from "@mui/icons-material/Route";
 import LeaderboardIcon from "@mui/icons-material/Leaderboard";
 import CloseIcon from "@mui/icons-material/Close";
 
+// One of 3 near-identical onboarding modals (this one, ScoreModal,
+// SimulationGateModal) - see ScoreModal.jsx for the shared-Fade-pattern
+// note. Shown after the technical simulation completes, celebrating the
+// newly unlocked features. Props: openModal (bool), closeModal (fn),
+// viewResults (fn, "Ver resultados" button).
 const Fade = React.forwardRef(function Fade(props, ref) {
   const { children, in: open, onClick, onEnter, onExited, ...other } = props;
   const style = useSpring({

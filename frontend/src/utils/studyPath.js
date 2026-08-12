@@ -14,6 +14,14 @@ const STEP_ICONS = [
   LightbulbIcon,
 ];
 
+/**
+ * Maps a backend study-track payload into the step list StudyPath.jsx
+ * renders in its Mantine Timeline.
+ * @param {{items?: Array<{position?: number, skill: string, motivation?: string, resource_suggestion?: string, resource_type?: string}>}} studyTrack
+ * @returns {Array<{id: number, title: string, description: string, recurso: {tipo: string, sugestao: string}|null, Icon: React.ComponentType}>}
+ *   `Icon` cycles round-robin through a fixed 5-icon set by position in the
+ *   list - it has no semantic link to the skill/step type.
+ */
 export function buildStudySteps(studyTrack) {
   const items = Array.isArray(studyTrack?.items) ? studyTrack.items : [];
 

@@ -6,6 +6,16 @@ import logoffIcon from "../../assets/logoff-icon.svg";
 import { listMatches } from "../../services/api";
 import SimulationGateModal from "./SimulationGateModal";
 
+// Global nav, rendered at the top of every authenticated page.
+// Props: `menuActive` (bool, optional) - forces the full nav menu to show
+// even before a match exists (used by pages that are themselves part of
+// the pre-match flow). Without it, the menu only appears once the user has
+// a completed match (`hasCompletedMatch`, backed by localStorage +
+// `listMatches()`), since most of the links it contains (Dashboard, Trilha
+// de estudo, Talent Passport) lead nowhere useful before that.
+// The "Simulado" link is intercepted (via SimulationGateModal) once a
+// simulation is already completed, since redoing it requires a fresh
+// resume/job comparison rather than just clicking the link again.
 const SIMULATION_COMPLETED_KEY = "kando_simulation_completed";
 const MATCH_COMPLETED_KEY = "kando_has_match";
 

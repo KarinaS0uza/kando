@@ -1,5 +1,10 @@
 import axios from "axios";
 
+// Base URL is hardcoded rather than read from import.meta.env.VITE_API_URL
+// - that env var exists in .env/.env.example but nothing in the frontend
+// actually reads it. This same axios.create + Bearer-token interceptor
+// pattern is duplicated (not shared) in simulationService.js and
+// talentPassportService.js.
 const apiClient = axios.create({
   baseURL: "http://localhost:8000/api",
 });
@@ -14,20 +19,31 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
+/** Creates a user account. @param {{email: string, password: string, full_name: string}} userInfo */
 export const createUser = (userInfo) => {
   return apiClient.post(`/users/create/`, userInfo);
 };
 
+/** Logs in with email/password, returning the JWT access token + user id. @param {{email: string, password: string}} userInfo */
 export const login = (userInfo) => {
   return apiClient.post(`/login/`, userInfo);
 };
 
+/** Fetches a user's profile (used for the full name shown on the certificate). @param {string|number} userId */
 export const getUser = (userId) => {
   return apiClient.get(`/users/${userId}/`);
 };
 
-// Monta o payload no formato { source: "text", raw_text } ou
-// FormData com { source: "pdf", file } quando content é um File
+/**
+ * Builds the request body for createJobPosting/createResume in whichever
+ * shape the backend expects for that input: a JSON `{ source: "text",
+ * raw_text }` body for pasted text, or a `source: "pdf"` FormData body
+ * (field name "pdf") when `content` is a File - letting both callers
+ * accept either a File or raw text transparently.
+ * @param {string|File} content
+ * @param {object} [extraFields]
+ * @returns {{data: object|FormData, isFormData: boolean}}
+ */
 function buildSourcePayload(content, extraFields = {}) {
   const isFile = content instanceof File;
 
@@ -47,6 +63,7 @@ function buildSourcePayload(content, extraFields = {}) {
   };
 }
 
+/** Submits a job posting (PDF File or pasted text) for the AI to parse. @param {string|File} content */
 export const createJobPosting = (content, extraFields = {}) => {
   const { data, isFormData } = buildSourcePayload(content, extraFields);
 
@@ -55,6 +72,7 @@ export const createJobPosting = (content, extraFields = {}) => {
   });
 };
 
+/** Submits a resume (PDF File or pasted text) for the AI to parse. @param {string|File} content */
 export const createResume = (content, extraFields = {}) => {
   const { data, isFormData } = buildSourcePayload(content, extraFields);
 
@@ -63,6 +81,7 @@ export const createResume = (content, extraFields = {}) => {
   });
 };
 
+/** Triggers the AI compatibility match between a resume and a job posting. @param {string|number} resumeId @param {string|number} jobId */
 export const createMatch = (resumeId, jobId) => {
   return apiClient.post(`/matching/`, {
     resume_id: resumeId,
@@ -70,6 +89,7 @@ export const createMatch = (resumeId, jobId) => {
   });
 };
 
+/** Lists the current user's matches, most recent first. */
 export const listMatches = () => {
   return apiClient.get(`/matching/`);
 };

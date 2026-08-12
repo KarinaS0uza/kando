@@ -1,5 +1,7 @@
 import "./WelcomePanel.css";
 
+// Static intro panel (logo + pitch + 3-step instructions) shown next to
+// JoinForm on both Login and Signup. No props - content is fixed.
 export default function WelcomePanel() {
   return (
     <section className="welcome-panel">

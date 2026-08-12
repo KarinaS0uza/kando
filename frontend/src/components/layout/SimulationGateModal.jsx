@@ -7,6 +7,12 @@ import { useSpring, animated } from "@react-spring/web";
 import "./SimulationGateModal.css";
 import CloseIcon from "@mui/icons-material/Close";
 
+// One of 3 near-identical onboarding modals (this one, ScoreModal,
+// SimulationModal) - see ScoreModal.jsx for the shared-Fade-pattern note.
+// Shown by Header when the user clicks "Simulado" after already completing
+// one, since redoing it requires a fresh resume/job comparison.
+// Props: openModal (bool), closeModal (fn), newComparison (fn, navigates
+// to /upload).
 const Fade = React.forwardRef(function Fade(props, ref) {
   const {
     children,

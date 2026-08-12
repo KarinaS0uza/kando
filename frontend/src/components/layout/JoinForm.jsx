@@ -7,6 +7,15 @@ import { extractErrorMessage } from "../../utils/errors";
 import "./JoinForm.css";
 import PopoverSignup from "../ui/PopoverSignup";
 
+// Login/signup form, shared by both pages via `formType`. Props:
+// - pathTo: link target for the "don't have an account?"/"already have
+//   one?" footer link
+// - accountText, linkText: footer copy for that link
+// - buttonText: submit button label
+// - formType: "login" | "signup" - toggles the full-name field and which
+//   API calls run on submit
+// On signup it also anchors PopoverSignup to the full-name field.
+
 // DRF's built-in unique-email validator only half-translates under
 // LANGUAGE_CODE=pt-br: the template is localized but the interpolated model
 // name stays "user" (e.g. "user com este email já existe."), instead of a

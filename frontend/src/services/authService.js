@@ -1,4 +1,11 @@
 // MOCK TEMPORÁRIO - substituir pela chamada real de API quando o backend existir
+//
+// Of the 3 methods below, only loginWithGoogle is actually called anywhere
+// (by GoogleButton.jsx) - and unlike the "temporário" label implies, it's
+// a permanent mock: there's no real Google OAuth flow in the app to
+// eventually swap it for. `login`/`signup` are unused; the real
+// email/password flow goes through services/api.js's login/createUser
+// (called from JoinForm.jsx) instead, bypassing this file entirely.
 const MOCK_DELAY = 600;
 const EXISTING_EMAILS = ["teste@kando.com", "joao@kando.com"];
 
