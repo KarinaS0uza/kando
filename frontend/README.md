@@ -70,7 +70,7 @@ VITE_API_URL=http://localhost:8000
 **Atenção:** hoje essa variável não é lida em nenhum lugar do código — os
 3 clientes Axios do projeto (`src/services/api.js`,
 `simulationService.js`, `talentPassportService.js`) usam
-`http://localhost:8000/api` **hardcoded** na criação do `axios.create()`,
+`import.meta.env.VITE_API_URL` **hardcoded** na criação do `axios.create()`,
 em vez de `import.meta.env.VITE_API_URL`. Ou seja, mudar `.env` não muda
 para onde o frontend aponta — para rodar contra um backend em outro host,
 hoje é preciso editar essas 3 URLs diretamente no código.
