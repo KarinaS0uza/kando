@@ -56,7 +56,7 @@ export default function HomePage() {
         </section>
         <div className="homepage__enter">
           <div
-            className="login__form-background"
+            className="homepage__enter-background"
             style={{ backgroundImage: `url(${joinBackground})` }}
           />
           <div className="homepage__enter-title">
@@ -94,7 +94,7 @@ export default function HomePage() {
           </a>
         </div>
         <hr className="homepage__footer-divider" />
-        <div className="homepage__footer_description">
+        <div className="homepage__footer-description">
           <p>Time KANdo</p>
           <p>|</p>
           <p>Projeto Talent Passport</p>
