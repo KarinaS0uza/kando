@@ -85,23 +85,23 @@ export default function SimulationGateModal({
       >
         <Fade in={openModal}>
           <Box sx={style}>
-            <div className="simulationGateModal">
+            <div className="simulation-gate-modal">
               <button
-                className="simulationGateModal__close_button"
+                className="simulation-gate-modal__close-button"
                 onClick={closeModal}
               >
                 <CloseIcon sx={{ width: "20px" }} />
               </button>
 
-              <h2 className="simulationGateModal__title">
+              <h2 className="simulation-gate-modal__title">
                 Simulado já realizado
               </h2>
-              <p className="simulationGateModal__subtitle">
+              <p className="simulation-gate-modal__subtitle">
                 Você já concluiu o seu simulado. Para gerar um novo, compare
                 seu currículo com uma nova vaga.
               </p>
               <button
-                className="simulationGateModal__button"
+                className="simulation-gate-modal__button"
                 onClick={newComparison}
               >
                 Nova comparação

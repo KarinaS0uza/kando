@@ -11,13 +11,13 @@
     outline-color 0.2s ease;
 }
 
-.upload__input-onDrag {
+.upload__input--on-drag {
   border: none;
   outline: 4px dashed rgb(175, 175, 175);
   outline-offset: -10px;
 }
 
-.upload__input-hasFile {
+.upload__input--has-file {
   border: none;
 }
 
@@ -42,7 +42,7 @@
   }
 }
 
-.upload__preview_content {
+.upload__preview-content {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -53,13 +53,13 @@
   width: 100%;
 }
 
-.upload__preview_page {
+.upload__preview-page {
   /* react-pdf sets min-width/min-height: min-content inline, which blocks shrinking */
   min-height: 0 !important;
   min-width: 0 !important;
 }
 
-.upload__preview_page canvas {
+.upload__preview-page canvas {
   max-width: 100% !important;
   max-height: 100% !important;
   width: auto !important;
@@ -68,7 +68,7 @@
   object-fit: contain;
 }
 
-.upload__preview_pages {
+.upload__preview-pages {
   position: absolute;
   right: 0;
   bottom: 4px;
@@ -102,7 +102,7 @@
   height: auto;
 }
 
-.upload__icon-onDrag {
+.upload__icon--on-drag {
   width: 60px;
 }
 
@@ -113,7 +113,7 @@
   text-wrap: balance;
 }
 
-.upload__file_list {
+.upload__file-list {
   flex-shrink: 0;
   height: 20px;
   min-width: 0;
@@ -131,7 +131,7 @@
   min-width: 0;
 }
 
-.upload__file_name {
+.upload__file-name {
   flex: 1;
   min-width: 0;
   overflow: hidden;
@@ -144,7 +144,7 @@
   padding-left: 2px;
 }
 
-.upload__file_delete-button {
+.upload__file-delete-button {
   border: none;
   background-color: transparent;
   font-size: 10px;
@@ -152,7 +152,7 @@
   max-height: 15px;
 }
 
-.upload__file_delete-button_icon {
+.upload__file-delete-button-icon {
   width: 13px;
 }
 

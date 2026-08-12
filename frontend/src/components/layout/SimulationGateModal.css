@@ -1,4 +1,4 @@
-.simulationGateModal {
+.simulation-gate-modal {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -9,7 +9,7 @@
   position: relative;
 }
 
-.simulationGateModal__close_button {
+.simulation-gate-modal__close-button {
   position: absolute;
   right: -19px;
   top: -23px;
@@ -18,22 +18,22 @@
   color: #26215c;
 }
 
-.simulationGateModal__close_button:hover {
+.simulation-gate-modal__close-button:hover {
   cursor: pointer;
 }
 
-.simulationGateModal__title {
+.simulation-gate-modal__title {
   color: #26215c;
   font-weight: bold;
 }
 
-.simulationGateModal__subtitle {
+.simulation-gate-modal__subtitle {
   font-size: 15px;
   color: rgb(59, 59, 59);
   margin: 12px 0 8px;
 }
 
-.simulationGateModal__button {
+.simulation-gate-modal__button {
   border: none;
   background-color: #26215c;
   color: white;
@@ -48,28 +48,28 @@
     box-shadow 0.2s ease;
 }
 
-.simulationGateModal__button:hover {
+.simulation-gate-modal__button:hover {
   transform: translateY(-2px);
   transition: all 0.2s ease;
 }
 
 @media (max-width: 600px) {
-  .simulationGateModal {
+  .simulation-gate-modal {
     margin-top: 12px;
   }
 
-  .simulationGateModal__close_button {
+  .simulation-gate-modal__close-button {
     top: -6px;
     right: -6px;
     min-width: 40px;
     min-height: 40px;
   }
 
-  .simulationGateModal__subtitle {
+  .simulation-gate-modal__subtitle {
     font-size: 14px;
   }
 
-  .simulationGateModal__button {
+  .simulation-gate-modal__button {
     min-height: 44px;
   }
 }

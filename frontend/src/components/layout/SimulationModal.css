@@ -1,4 +1,4 @@
-.simulationModal {
+.simulation-modal {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -10,7 +10,7 @@
   margin-top: 20px;
 }
 
-.simulationModal__close_button {
+.simulation-modal__close-button {
   position: absolute;
   right: -18px;
   top: -9px;
@@ -19,19 +19,19 @@
   color: #26215c;
 }
 
-.simulationModal__close_button:hover {
+.simulation-modal__close-button:hover {
   cursor: pointer;
 }
 
-.simulationModal__title {
+.simulation-modal__title {
   color: #26215c;
   font-weight: bold;
 }
 
-.simulationModal__subtitle {
+.simulation-modal__subtitle {
   font-size: 15px;
 }
-.simulationModal__list {
+.simulation-modal__list {
   list-style-type: circle;
   list-style-type: none;
   margin: 0;
@@ -40,7 +40,7 @@
   width: 100%;
   padding: 0;
 }
-.simulationModal__item {
+.simulation-modal__item {
   color: rgb(59, 59, 59);
   font-size: 16px;
   padding: 15px;
@@ -56,7 +56,7 @@
     background-color 0.2s ease,
     box-shadow 0.2s ease;
 }
-.simulationModal__button {
+.simulation-modal__button {
   border: none;
   background-color: #26215c;
   color: white;
@@ -71,12 +71,12 @@
     box-shadow 0.2s ease;
 }
 
-.simulationModal__button:hover {
+.simulation-modal__button:hover {
   transform: translateY(-2px);
   transition: all 0.2s ease;
 }
 
-.simulationModal__footer {
+.simulation-modal__footer {
   font-size: 13px;
   color: #5f5e5a;
   text-align: center;
@@ -84,27 +84,27 @@
 }
 
 @media (max-width: 600px) {
-  .simulationModal {
+  .simulation-modal {
     margin-top: 12px;
   }
 
-  .simulationModal__close_button {
+  .simulation-modal__close-button {
     top: -6px;
     right: -6px;
     min-width: 40px;
     min-height: 40px;
   }
 
-  .simulationModal__subtitle {
+  .simulation-modal__subtitle {
     font-size: 14px;
   }
 
-  .simulationModal__item {
+  .simulation-modal__item {
     padding: 12px;
     font-size: 14px;
   }
 
-  .simulationModal__button {
+  .simulation-modal__button {
     min-height: 44px;
   }
 }

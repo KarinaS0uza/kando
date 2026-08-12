@@ -3,8 +3,23 @@ import { useNavigate, Link } from "react-router-dom";
 import authService from "../../services/authService";
 import { createUser, login } from "../../services/api";
 import useAuth from "../../hooks/useAuth";
+import { extractErrorMessage } from "../../utils/errors";
 import "./JoinForm.css";
 import PopoverSignup from "../ui/PopoverSignup";
+
+// DRF's built-in unique-email validator only half-translates under
+// LANGUAGE_CODE=pt-br: the template is localized but the interpolated model
+// name stays "user" (e.g. "user com este email já existe."), instead of a
+// clean Portuguese message like the rest of the API returns. Known cases are
+// translated here rather than in extractErrorMessage, which is shared with
+// other pages' unrelated (already-Portuguese) errors.
+const AUTH_ERROR_TRANSLATIONS = {
+  "user com este email já existe.": "Este email já está cadastrado.",
+};
+
+function translateAuthError(message) {
+  return AUTH_ERROR_TRANSLATIONS[message?.toLowerCase()] || message;
+}
 
 export default function JoinForm({
   pathTo,
@@ -117,10 +132,11 @@ export default function JoinForm({
     } catch (err) {
       console.log(err);
 
-      if (err == "Error: Este email já está cadastrado.") {
-        setErrorEmail(err.message);
+      const message = translateAuthError(extractErrorMessage(err) || err.message);
+      if (formType !== "login" && err.response?.status === 400) {
+        setErrorEmail(message);
       } else {
-        setErrorPassword(err.message);
+        setErrorPassword(message);
       }
     } finally {
       setLoading(false);
@@ -128,9 +144,9 @@ export default function JoinForm({
   };
 
   return (
-    <form action="" className="join__form_inputs" onSubmit={handleSubmit}>
+    <form action="" className="join__fields" onSubmit={handleSubmit}>
       {formType === "signup" && (
-        <div className="join__form_input-email">
+        <div className="join__field">
           <PopoverSignup
             anchorEl={fullNameAnchorEl}
             open={fullNamePopoverOpen && Boolean(fullNameAnchorEl)}
@@ -139,7 +155,7 @@ export default function JoinForm({
           <input
             ref={fullNameInputRef}
             type="text"
-            className={`join__form_email ${errorClassFullName ? "join__form_input-error" : ""}`}
+            className={`join__field-input ${errorClassFullName ? "join__field-input--error" : ""}`}
             placeholder="Nome completo"
             required
             value={fullName}
@@ -147,33 +163,33 @@ export default function JoinForm({
             onFocus={() => setFullNamePopoverOpen(false)}
           />
 
-          {errorFullName && <p className="join__form-error">{errorFullName}</p>}
+          {errorFullName && <p className="join__field-error">{errorFullName}</p>}
         </div>
       )}
-      <div className="join__form_input-email">
+      <div className="join__field">
         <input
           type="email"
-          className={`join__form_email ${errorClassEmail ? "join__form_input-error" : ""}`}
+          className={`join__field-input ${errorClassEmail ? "join__field-input--error" : ""}`}
           placeholder="Email"
           required
           value={email}
           onChange={(e) => handleEmailChange(e)}
         />
-        {errorEmail && <p className="join__form-error">{errorEmail}</p>}
+        {errorEmail && <p className="join__field-error">{errorEmail}</p>}
       </div>
-      <div className="join__form_input-email">
+      <div className="join__field">
         <input
           type="password"
-          className={`join__form_password ${errorClassPassword ? "join__form_input-error" : ""}`}
+          className={`join__field-input-password ${errorClassPassword ? "join__field-input--error" : ""}`}
           placeholder="Senha"
           required
           value={password}
           onChange={(e) => handlePasswordChange(e)}
         />
-        {errorPassword && <p className="join__form-error">{errorPassword}</p>}
+        {errorPassword && <p className="join__field-error">{errorPassword}</p>}
       </div>
       <button
-        className="join__form_button"
+        className="join__button"
         disabled={
           !!checkEmail(email) ||
           !!checkPassword(password) ||
@@ -184,7 +200,7 @@ export default function JoinForm({
       </button>
       <div className="join__create-account">
         <p className="join__account">{accountText}</p>
-        <Link className="join__account_link" to={pathTo}>
+        <Link className="join__account-link" to={pathTo}>
           {linkText}
         </Link>
       </div>

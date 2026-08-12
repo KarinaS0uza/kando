@@ -2,10 +2,10 @@ import "./WelcomePanel.css";
 
 export default function WelcomePanel() {
   return (
-    <section className="login__welcome">
-      <div className="login__welcome_logo">
+    <section className="welcome-panel">
+      <div className="welcome-panel__logo">
         <svg
-          className="login__welcome_logo-img"
+          className="welcome-panel__logo-img"
           xmlns="http://www.w3.org/2000/svg"
           width="1024"
           height="1024"
@@ -18,27 +18,27 @@ export default function WelcomePanel() {
             />
           </g>
         </svg>
-        <h1 className="login__welcome_logo-title">Talent Passport</h1>
+        <h1 className="welcome-panel__logo-title">Talent Passport</h1>
       </div>
-      <div className="login__welcome_intro">
-        <h2 className="login__welcome_intro_subtitle">
+      <div className="welcome-panel__intro">
+        <h2 className="welcome-panel__intro-subtitle">
           Quão pronto você está pro seu emprego dos sonhos?
         </h2>
-        <p className="login__welcome_intro_text">
+        <p className="welcome-panel__intro-text">
           Junte-se e transforme o sonho em realidade.
         </p>
       </div>
-      <div className="login__welcome_instructions">
+      <div className="welcome-panel__instructions">
         {[
           "Envie seu perfil",
           "Faça a simulação",
           "Estude com trilha personalizada",
         ].map((text, i) => (
-          <div className="login__welcome_instructions_row" key={text}>
-            <p className="login__welcome_instructions_list-number">
+          <div className="welcome-panel__instructions-row" key={text}>
+            <p className="welcome-panel__instructions-number">
               {i + 1}
             </p>
-            <p className="login__welcome_instructions_list-text">{text}</p>
+            <p className="welcome-panel__instructions-text">{text}</p>
           </div>
         ))}
       </div>

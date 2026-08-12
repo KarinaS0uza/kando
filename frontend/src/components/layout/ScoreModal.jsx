@@ -84,32 +84,32 @@ export default function SpringModal({ openModal, closeModal, beginTest }) {
       >
         <Fade in={openModal}>
           <Box sx={style}>
-            <div className="scoreModal">
-              <button className="scoreModal__close_button" onClick={closeModal}>
+            <div className="score-modal">
+              <button className="score-modal__close-button" onClick={closeModal}>
                 <CloseIcon sx={{ width: "20px" }} />
               </button>
 
-              <h2 className="scoreModal__title">
+              <h2 className="score-modal__title">
                 Desbloqueie sua análise completa
               </h2>
-              <p className="scoreModal__subtitle">
+              <p className="score-modal__subtitle">
                 Faça o teste e desbloqueie:
               </p>
-              <ul className="scoreModal__list">
-                <li className="scoreModal__item">
+              <ul className="score-modal__list">
+                <li className="score-modal__item">
                   <LeaderboardIcon sx={{ color: "#26215c" }} />
                   Análise comparativa detalhada
                 </li>
-                <li className="scoreModal__item">
+                <li className="score-modal__item">
                   <RouteIcon sx={{ color: "#26215c" }} />
                   Trilha de estudo
                 </li>
-                <li className="scoreModal__item">
+                <li className="score-modal__item">
                   <CertificateIcon sx={{ color: "#26215c" }} />
                   Certificado Talent Passport
                 </li>
               </ul>
-              <button className="scoreModal__button" onClick={beginTest}>
+              <button className="score-modal__button" onClick={beginTest}>
                 Começar teste
               </button>
             </div>

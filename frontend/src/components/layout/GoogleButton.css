@@ -1,4 +1,4 @@
-.login__google_button {
+.google-button {
   color: rgb(129, 129, 129);
   font-size: 16px;
   padding: 10px;
@@ -15,7 +15,7 @@
     box-shadow 0.2s ease;
 }
 
-.login__google_button:hover {
+.google-button:hover {
   box-shadow:
     0 4px 8px rgba(0, 0, 0, 0.12),
     0 1px 3px rgba(0, 0, 0, 0.08);
@@ -24,6 +24,6 @@
   cursor: pointer;
 }
 
-.login__google_button-icon {
+.google-button__icon {
   width: 20px;
 }

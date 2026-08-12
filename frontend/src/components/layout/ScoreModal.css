@@ -1,4 +1,4 @@
-.scoreModal {
+.score-modal {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -8,7 +8,7 @@
   position: relative;
 }
 
-.scoreModal__close_button {
+.score-modal__close-button {
   position: absolute;
   right: -25px;
   top: -24px;
@@ -17,19 +17,19 @@
   color: #26215c;
 }
 
-.scoreModal__close_button:hover {
+.score-modal__close-button:hover {
   cursor: pointer;
 }
 
-.scoreModal__title {
+.score-modal__title {
   color: #26215c;
   font-weight: bold;
 }
 
-.scoreModal__subtitle {
+.score-modal__subtitle {
   font-size: 15px;
 }
-.scoreModal__list {
+.score-modal__list {
   list-style-type: circle;
   list-style-type: none;
   display: flex;
@@ -38,7 +38,7 @@
   padding: 0;
   margin: 8px 0;
 }
-.scoreModal__item {
+.score-modal__item {
   color: rgb(59, 59, 59);
   font-size: 15px;
   padding: 15px;
@@ -54,7 +54,7 @@
     background-color 0.2s ease,
     box-shadow 0.2s ease;
 }
-.scoreModal__button {
+.score-modal__button {
   border: none;
   background-color: #26215c;
   color: white;
@@ -69,39 +69,39 @@
     box-shadow 0.2s ease;
 }
 
-.scoreModal__button:hover {
+.score-modal__button:hover {
   transform: translateY(-2px);
   transition: all 0.2s ease;
 }
 
 @media (max-width: 600px) {
-  .scoreModal {
+  .score-modal {
     margin-top: 12px;
     padding-top: 16px;
   }
 
-  .scoreModal__close_button {
+  .score-modal__close-button {
     top: -6px;
     right: -6px;
     min-width: 40px;
     min-height: 40px;
   }
 
-  .scoreModal__title {
+  .score-modal__title {
     padding-inline: 28px;
     font-size: 20px;
   }
 
-  .scoreModal__subtitle,
-  .scoreModal__item {
+  .score-modal__subtitle,
+  .score-modal__item {
     font-size: 14px;
   }
 
-  .scoreModal__item {
+  .score-modal__item {
     padding: 12px;
   }
 
-  .scoreModal__button {
+  .score-modal__button {
     min-height: 44px;
   }
 }

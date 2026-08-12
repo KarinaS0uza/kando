@@ -1,4 +1,4 @@
-.login__welcome {
+.welcome-panel {
   background-color: rgb(96%, 96%, 100%);
   padding: 25px;
   display: flex;
@@ -6,44 +6,44 @@
   gap: 60px;
   flex: 1;
 }
-.login__welcome_logo {
+.welcome-panel__logo {
   display: flex;
   gap: 15px;
   max-height: 65px;
   align-items: center;
 }
-.login__welcome_logo-img {
+.welcome-panel__logo-img {
   width: 75px;
   height: 75px;
   color: #534ab7;
 }
-.login__welcome_logo-title {
+.welcome-panel__logo-title {
   color: #26215c;
   font-size: 35px;
 }
-.login__welcome_intro {
+.welcome-panel__intro {
   text-align: left;
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
-.login__welcome_intro_subtitle {
+.welcome-panel__intro-subtitle {
   color: #26215c;
 }
-.login__welcome_intro_text {
+.welcome-panel__intro-text {
   color: #534ab7;
 }
-.login__welcome_instructions {
+.welcome-panel__instructions {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
-.login__welcome_instructions_row {
+.welcome-panel__instructions-row {
   display: flex;
   align-items: center;
   gap: 15px;
 }
-.login__welcome_instructions_list-number {
+.welcome-panel__instructions-number {
   background-color: #3c3489;
   color: #eeedfe;
   padding: 10px;
@@ -55,6 +55,6 @@
   align-items: center;
   flex-shrink: 0;
 }
-.login__welcome_instructions_list-text {
+.welcome-panel__instructions-text {
   color: #3c3489;
 }

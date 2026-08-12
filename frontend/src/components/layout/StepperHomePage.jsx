@@ -65,9 +65,9 @@ export default function StepperHomePage() {
   }, []);
 
   return (
-    <Box className="scrollStepper">
+    <Box className="scroll-stepper">
       <Stepper
-        className="scrollStepper__steps"
+        className="scroll-stepper__steps"
         activeStep={activeStep}
         orientation="vertical"
         sx={{
@@ -85,31 +85,31 @@ export default function StepperHomePage() {
             data-step-index={index}
             completed={index < activeStep}
             expanded={index <= activeStep}
-            className={`scrollStepper__step ${
-              index <= activeStep ? "scrollStepper__step--revealed" : ""
+            className={`scroll-stepper__step ${
+              index <= activeStep ? "scroll-stepper__step--revealed" : ""
             } ${
               index === activeStep - 1
-                ? "scrollStepper__step--previous"
+                ? "scroll-stepper__step--previous"
                 : ""
             }`}
           >
             <StepLabel>
               {step.label}
               {index === steps.length - 1 && index <= activeStep && (
-                <ArrowForwardIcon className="scrollStepper__arrow" />
+                <ArrowForwardIcon className="scroll-stepper__arrow" />
               )}
             </StepLabel>
             <StepContent
               transitionDuration={index === steps.length - 1 ? 1600 : 800}
             >
-              <Typography className="scrollStepper__description">
+              <Typography className="scroll-stepper__description">
                 {step.description}
               </Typography>
               {index === steps.length - 1 && (
                 <Paper
-                  className={`scrollStepper__visual ${
+                  className={`scroll-stepper__visual ${
                     activeStep === steps.length - 1
-                      ? "scrollStepper__visual--revealed"
+                      ? "scroll-stepper__visual--revealed"
                       : ""
                   }`}
                   square
@@ -122,7 +122,7 @@ export default function StepperHomePage() {
                     alt="Talent Passport"
                     width="1448"
                     height="1086"
-                    className="scrollStepper__image"
+                    className="scroll-stepper__image"
                   />
                 </Paper>
               )}

@@ -1,3 +1,6 @@
+/* Dead CSS, unused in JoinForm.jsx and its consumers (flagged, not
+   renamed/removed per plan). Kept as-is so the live classes below (renamed
+   to the join__field* family) don't accidentally collide with these. */
 .join__form {
   display: flex;
   flex-direction: column;
@@ -11,14 +14,14 @@
   color: #26215c;
 }
 
-.join__form_inputs {
+.join__fields {
   display: flex;
   flex-direction: column;
   gap: 30px;
   font-size: 16px;
 }
 
-.join__form_input-email {
+.join__field {
   display: flex;
   flex-direction: column;
   font-size: 16px;
@@ -27,7 +30,7 @@
   border-radius: 10px;
 }
 
-.join__form_email {
+.join__field-input {
   background-color: rgb(96%, 96%, 100%);
   border: none;
   font-size: 16px;
@@ -35,7 +38,7 @@
   border-radius: 10px;
 }
 
-.join__form_password {
+.join__field-input-password {
   background-color: rgb(96%, 96%, 100%);
   border: none;
   font-size: 16px;
@@ -43,16 +46,16 @@
   border-radius: 10px;
 }
 
-.join__form_input-error {
+.join__field-input--error {
   border: 1px solid red;
   border-color: red;
 }
 
-.join__form_input-error:focus-visible {
+.join__field-input--error:focus-visible {
   outline: 1px solid red;
 }
 
-.join__form-error {
+.join__field-error {
   color: red;
   font-size: 12px;
   align-self: start;
@@ -61,7 +64,7 @@
   bottom: -23px;
 }
 
-.join__form_button {
+.join__button {
   border: none;
   background-color: #26215c;
   color: white;
@@ -74,13 +77,13 @@
     box-shadow 0.2s ease;
 }
 
-.join__form_button:disabled {
+.join__button:disabled {
   background-color: #e2e2e2;
   color: #adadad;
   font-weight: 500;
 }
 
-.join__form_button:hover {
+.join__button:hover {
   box-shadow:
     0 4px 8px rgba(0, 0, 0, 0.12),
     0 1px 3px rgba(0, 0, 0, 0.08);
@@ -98,11 +101,12 @@
   position: relative;
 }
 
+/* Dead CSS, unused in JSX (flagged, not renamed/removed per plan). */
 .join__create {
   display: flex;
 }
 .join__account {
 }
-.join__account_link {
+.join__account-link {
   text-decoration: none;
 }

@@ -92,8 +92,8 @@ export default function InputUpload({ onFileChange }) {
       <section
         className={[
           "upload__input",
-          isDragActive && "upload__input-onDrag",
-          file && "upload__input-hasFile",
+          isDragActive && "upload__input--on-drag",
+          file && "upload__input--has-file",
         ]
           .filter(Boolean)
           .join(" ")}
@@ -114,7 +114,7 @@ export default function InputUpload({ onFileChange }) {
               </>
             ) : (
               <img
-                className="upload__icon upload__icon-onDrag"
+                className="upload__icon upload__icon--on-drag"
                 src={uploadIcon}
                 alt="Upload image"
               />
@@ -127,15 +127,15 @@ export default function InputUpload({ onFileChange }) {
             <Document
               file={file}
               onLoadSuccess={onDocumentLoadSuccess}
-              className="upload__preview_content"
+              className="upload__preview-content"
             >
               <Page
                 pageNumber={1}
-                className="upload__preview_page"
+                className="upload__preview-page"
                 renderTextLayer={false}
               />
                 {numPages && numPages > 1 && (
-                  <p className="upload__preview_pages">
+                  <p className="upload__preview-pages">
                     +{numPages - 1} página{numPages - 1 > 1 ? "s" : ""}
                   </p>
                 )}
@@ -144,18 +144,18 @@ export default function InputUpload({ onFileChange }) {
         )}
 
         {file && (
-          <ul className="upload__file_list">
+          <ul className="upload__file-list">
             <div className="upload__file">
-              <li className="upload__file_name" key={file.path}>
+              <li className="upload__file-name" key={file.path}>
                 Enviado: {file.name}
               </li>
               <button
-                className="upload__file_delete-button"
+                className="upload__file-delete-button"
                 onClick={handleDelete}
                 type="button"
               >
                 <img
-                  className="upload__file_delete-button_icon"
+                  className="upload__file-delete-button-icon"
                   src={deleteIcon}
                   alt="Delete icon"
                 />

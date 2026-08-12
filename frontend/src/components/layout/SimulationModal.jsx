@@ -80,36 +80,36 @@ export default function TestCompleteModal({
       >
         <Fade in={openModal}>
           <Box sx={style}>
-            <div className="simulationModal">
+            <div className="simulation-modal">
               <button
-                className="simulationModal__close_button"
+                className="simulation-modal__close-button"
                 onClick={closeModal}
               >
                 <CloseIcon sx={{ width: "20px" }} />
               </button>
 
-              <h2 className="simulationModal__title">Parabéns!</h2>
-              <p className="simulationModal__subtitle">
+              <h2 className="simulation-modal__title">Parabéns!</h2>
+              <p className="simulation-modal__subtitle">
                 Agora você tem acesso à:
               </p>
-              <ul className="simulationModal__list">
-                <li className="simulationModal__item">
+              <ul className="simulation-modal__list">
+                <li className="simulation-modal__item">
                   <LeaderboardIcon sx={{ color: "#26215c" }} />
                   Análise aprofundada
                 </li>
-                <li className="simulationModal__item">
+                <li className="simulation-modal__item">
                   <RouteIcon sx={{ color: "#26215c" }} />
                   Trilha de estudo
                 </li>
-                <li className="simulationModal__item">
+                <li className="simulation-modal__item">
                   <CertificateIcon sx={{ color: "#26215c" }} />
                   Talent Passport
                 </li>
               </ul>
-              <p className="simulationModal__footer">
+              <p className="simulation-modal__footer">
                 Aproveite ao máximo os novos recursos. Boa sorte!
               </p>
-              <button className="simulationModal__button" onClick={viewResults}>
+              <button className="simulation-modal__button" onClick={viewResults}>
                 Ver resultados
               </button>
             </div>

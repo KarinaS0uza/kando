@@ -1,11 +1,11 @@
-.scrollStepper {
+.scroll-stepper {
   width: min(100%, 520px);
   display: flex;
   flex-direction: column;
   align-items: stretch;
 }
 
-.scrollStepper__steps {
+.scroll-stepper__steps {
   min-width: 0;
   position: relative;
   --scroll-step-height: 34vh;
@@ -13,12 +13,12 @@
 }
 
 @media (min-width: 1029px) {
-  .scrollStepper__steps {
+  .scroll-stepper__steps {
     --scroll-card-offset: 43px;
   }
 }
 
-.scrollStepper__steps::before {
+.scroll-stepper__steps::before {
   content: "";
   position: absolute;
   z-index: 0;
@@ -29,18 +29,18 @@
   background-color: #bdbdbd;
 }
 
-.scrollStepper__step {
+.scroll-stepper__step {
   min-height: var(--scroll-step-height);
   position: relative;
   transform: translateY(14px);
   transition: transform 0.5s ease;
 }
 
-.scrollStepper__step.Mui-completed {
+.scroll-stepper__step.Mui-completed {
   min-height: var(--scroll-step-height);
 }
 
-.scrollStepper__step:not(:last-child)::before {
+.scroll-stepper__step:not(:last-child)::before {
   content: "";
   position: absolute;
   z-index: 1;
@@ -54,7 +54,7 @@
   transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.scrollStepper__step:last-child::after {
+.scroll-stepper__step:last-child::after {
   content: "";
   position: absolute;
   z-index: 1;
@@ -65,15 +65,15 @@
   background-color: #fff;
 }
 
-.scrollStepper__step.Mui-completed:not(:last-child)::before {
+.scroll-stepper__step.Mui-completed:not(:last-child)::before {
   transform: scaleY(1);
 }
 
-.scrollStepper__step--previous:not(:last-child)::before {
-  animation: scrollStepper__lineLoop 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+.scroll-stepper__step--previous:not(:last-child)::before {
+  animation: scroll-stepper__line-loop 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
-@keyframes scrollStepper__lineLoop {
+@keyframes scroll-stepper__line-loop {
   0% {
     transform: scaleY(0);
   }
@@ -86,14 +86,14 @@
   }
 }
 
-.scrollStepper__step .MuiStepLabel-root {
+.scroll-stepper__step .MuiStepLabel-root {
   position: relative;
   z-index: 2;
   align-items: center;
   padding: 8px 0 0;
 }
 
-.scrollStepper__step .MuiStepLabel-labelContainer {
+.scroll-stepper__step .MuiStepLabel-labelContainer {
   box-sizing: border-box;
   flex: 1;
   min-width: 0;
@@ -109,7 +109,7 @@
     box-shadow 0.8s ease;
 }
 
-.scrollStepper__step--revealed .MuiStepLabel-labelContainer {
+.scroll-stepper__step--revealed .MuiStepLabel-labelContainer {
   border-bottom: 0;
   border-radius: 12px 12px 0 0;
   background-color: #fff;
@@ -117,12 +117,12 @@
   clip-path: inset(-24px -24px 0 -24px);
 }
 
-.scrollStepper__step .MuiStepLabel-iconContainer {
+.scroll-stepper__step .MuiStepLabel-iconContainer {
   position: relative;
   z-index: 4;
 }
 
-.scrollStepper__step .MuiStepIcon-root {
+.scroll-stepper__step .MuiStepIcon-root {
   position: relative;
   z-index: 4;
   overflow: visible;
@@ -130,11 +130,11 @@
   background-color: #fff;
 }
 
-.scrollStepper__steps .MuiStepConnector-line {
+.scroll-stepper__steps .MuiStepConnector-line {
   border-color: transparent;
 }
 
-.scrollStepper__steps .MuiStepContent-root {
+.scroll-stepper__steps .MuiStepContent-root {
   box-sizing: border-box;
   width: calc(100% - var(--scroll-card-offset));
   margin-top: -1px;
@@ -147,7 +147,7 @@
   box-shadow: none;
 }
 
-.scrollStepper__step--revealed .MuiStepContent-root {
+.scroll-stepper__step--revealed .MuiStepContent-root {
   position: relative;
   padding-bottom: 16px;
   background-color: #fff;
@@ -155,7 +155,7 @@
   clip-path: inset(0 -24px -24px -24px);
 }
 
-.scrollStepper__step--revealed .MuiStepContent-root::before {
+.scroll-stepper__step--revealed .MuiStepContent-root::before {
   content: "";
   position: absolute;
   z-index: 1;
@@ -166,11 +166,11 @@
   background-color: #fff;
 }
 
-.scrollStepper__step--revealed {
+.scroll-stepper__step--revealed {
   transform: translateY(0);
 }
 
-.scrollStepper__step .MuiStepLabel-label {
+.scroll-stepper__step .MuiStepLabel-label {
   text-align: left;
   font-size: clamp(16px, 1.3vw, 18px);
   line-height: 1.35;
@@ -181,16 +181,16 @@
     opacity 0.8s ease;
 }
 
-.scrollStepper__step--revealed .MuiStepLabel-label {
+.scroll-stepper__step--revealed .MuiStepLabel-label {
   opacity: 1;
   font-weight: 600;
 }
 
-.scrollStepper__step.Mui-active .MuiStepLabel-label {
+.scroll-stepper__step.Mui-active .MuiStepLabel-label {
   color: #26215c;
 }
 
-.scrollStepper__description {
+.scroll-stepper__description {
   max-width: 340px;
   padding-top: 6px;
   color: #6b6375;
@@ -202,19 +202,19 @@
     opacity 0.8s ease;
 }
 
-.scrollStepper__step.Mui-completed .scrollStepper__description {
+.scroll-stepper__step.Mui-completed .scroll-stepper__description {
   color: #aaa5af;
   opacity: 0.7;
 }
 
-.scrollStepper__arrow {
+.scroll-stepper__arrow {
   margin-left: 8px;
   color: #26215c;
   font-size: 18px !important;
   vertical-align: middle;
 }
 
-.scrollStepper__visual {
+.scroll-stepper__visual {
   box-sizing: border-box;
   width: 100%;
   padding: 20px 0 24px;
@@ -228,18 +228,18 @@
     visibility 0s linear 0.7s;
 }
 
-.scrollStepper__visual--revealed {
+.scroll-stepper__visual--revealed {
   visibility: visible;
   opacity: 1;
   transform: translateY(0);
   transition-delay: 0s;
 }
 
-.scrollStepper__step:last-child .scrollStepper__visual--revealed {
+.scroll-stepper__step:last-child .scroll-stepper__visual--revealed {
   transition-delay: 0.5s;
 }
 
-.scrollStepper__image {
+.scroll-stepper__image {
   width: 100%;
   height: auto;
   aspect-ratio: 4 / 3;
@@ -250,47 +250,47 @@
 }
 
 @media (max-width: 760px) {
-  .scrollStepper {
+  .scroll-stepper {
     width: 100%;
   }
 
-  .scrollStepper__step {
+  .scroll-stepper__step {
     min-height: var(--scroll-step-height);
   }
 
-  .scrollStepper__steps {
+  .scroll-stepper__steps {
     --scroll-step-height: 36vh;
   }
 
-  .scrollStepper__step.Mui-completed {
+  .scroll-stepper__step.Mui-completed {
     min-height: var(--scroll-step-height);
   }
 
-  .scrollStepper__step .MuiStepLabel-label {
+  .scroll-stepper__step .MuiStepLabel-label {
     font-size: 16px;
   }
 
-  .scrollStepper__description {
+  .scroll-stepper__description {
     font-size: 15px !important;
     line-height: 1.5 !important;
   }
 
-  .scrollStepper__visual {
+  .scroll-stepper__visual {
     padding: 16px 0 24px;
   }
 
-  .scrollStepper__image {
+  .scroll-stepper__image {
     width: min(100%, 440px);
     margin-inline: auto;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .scrollStepper__step,
-  .scrollStepper__visual,
-  .scrollStepper__image,
-  .scrollStepper__step::before,
-  .scrollStepper__steps .MuiStepConnector-line {
+  .scroll-stepper__step,
+  .scroll-stepper__visual,
+  .scroll-stepper__image,
+  .scroll-stepper__step::before,
+  .scroll-stepper__steps .MuiStepConnector-line {
     transition: none;
     animation: none;
   }
