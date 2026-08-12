@@ -16,9 +16,17 @@ Including another URLconf
 """
 
 from django.contrib import admin
+from django.http import HttpResponse
 from django.urls import include, path
 
+
+def health_check(request):
+    """Return 200 immediately for Render's port-detection probe."""
+    return HttpResponse("OK")
+
+
 urlpatterns = [
+    path("health/", health_check),
     path("admin/", admin.site.urls),
     path("api/", include("users.urls")),
     path("api/", include("jobs.urls")),
