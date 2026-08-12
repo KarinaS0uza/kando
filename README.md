@@ -33,14 +33,20 @@ nenhum recrutador alimentando a plataforma.
 
 ##  Funcionalidades
 
-- [x] Análise automática de currículo
-- [x] Análise automática de vaga
-- [x] Score de compatibilidade currículo × vaga
-- [x] Geração de desafio técnico personalizado (perguntas conceituais por skill)
-- [x] Avaliação de resposta com IA, com feedback por skill
-- [x] Dashboard de desempenho (por skill) — cálculo 100% em código, sem IA
-- [ ] Trilha de estudo priorizada — lógica pronta e testada; endpoint ainda não exposto na API
-- [ ] Talent Passport — perfil consolidado — lógica pronta e testada; endpoint ainda não exposto na API
+- [x] Normalização automática de currículo, com extração de skills, experiências e senioridade calculada
+- [x] Normalização automática de vaga, requisitos e tecnologias
+- [x] Matching currículo × vaga, com score de compatibilidade, skills compatíveis e lacunas
+- [x] Geração de simulado técnico personalizado com perguntas conceituais
+- [x] Avaliação de respostas com feedback e desempenho por skill
+- [x] Dashboard com score geral e desempenho técnico consolidado
+- [x] Geração de Talent Passport com perfil profissional e recomendações
+- [x] Geração de trilha de estudo personalizada a partir de lacunas e desempenho
+- [x] Principais telas conectadas à API: upload, matching, dashboard, simulado, trilha e Passport
+- [x] Importação de currículos e vagas em PDF, com tratamento de falhas de conversão
+- [x] Tratamento de erros de IA: prompt ausente, JSON inválido, limite de uso e erros de configuração
+- [~] Validação end-to-end contra a API real do Groq
+- [~] Deploy em produção
+
 
 ##  Arquitetura
 
@@ -69,19 +75,36 @@ Para detalhes de implementação de cada parte, veja as docs específicas linkad
 | **Deploy** | ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white) ![Railway](https://img.shields.io/badge/Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white) ![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white) |
 | **Gestão de tarefas** | ![Jira](https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=jira&logoColor=white) |
 
-##  Como rodar localmente
+
+## Como rodar localmente
 
 ### Backend
+
 ```bash
 cd backend
 python -m venv .venv
-# ative o venv conforme seu sistema operacional
+# ative o ambiente virtual conforme seu sistema
 pip install -r requirements.txt
 ```
 
 Crie `backend/.env`:
+
 ```env
-(Em construção)
+# IA: uma chave ou uma lista de chaves separadas por vírgula
+GROQ_API_KEY=sua_chave_aqui
+# GROQ_API_KEYS=chave_1,chave_2
+GROQ_MODEL=llama-3.3-70b-versatile
+
+# Banco local (padrão)
+DATABASE_ENGINE=sqlite
+
+# Opcional: PostgreSQL/Supabase
+# DATABASE_ENGINE=supabase
+# DB_NAME=...
+# DB_USER=...
+# DB_PASSWORD=...
+# DB_HOST=...
+# DB_PORT=5432
 ```
 
 ```bash
@@ -89,12 +112,17 @@ python manage.py migrate
 python manage.py runserver
 ```
 
+> Para as etapas de IA funcionarem, os prompts necessários precisam estar ativos no banco. Sem um prompt ativo, a API devolve um erro controlado para a etapa correspondente.
+
 ### Frontend
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
+
+Durante o desenvolvimento, a API é consumida em `http://localhost:8000/api`.
 
 > A API deve estar disponível em `Em construção`.
 > Detalhes completos em [docs/frontend.md](Em construção), [docs/backend.md](Em construção) e [docs/ai.md](Em construção)
@@ -106,6 +134,7 @@ npm run dev
 | Nícolas | Frontend | [![GitHub](https://img.shields.io/badge/GitHub-NicolasSG-181717?style=flat&logo=github)](https://github.com/NicolasSG) |
 | Karina | Backend | [![GitHub](https://img.shields.io/badge/GitHub-KarinaS0uza-181717?style=flat&logo=github)](https://github.com/KarinaS0uza) |
 | Andreia | IA | [![GitHub](https://img.shields.io/badge/GitHub-Deialima-181717?style=flat&logo=github)](https://github.com/Deialima) |
+
 ## 📅 Status do projeto
 
 Construído para o Hackathon Juninhos-Nortjobs, entre 16/07/2026 e 16/08/2026.
