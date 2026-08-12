@@ -1,10 +1,7 @@
 import axios from "axios";
 
-// Base URL is hardcoded rather than read from import.meta.env.VITE_API_URL
-// - that env var exists in .env/.env.example but nothing in the frontend
-// actually reads it. This same axios.create + Bearer-token interceptor
-// pattern is duplicated (not shared) in simulationService.js and
-// talentPassportService.js.
+// This same axios.create + Bearer-token interceptor pattern is duplicated
+// (not shared) in simulationService.js and talentPassportService.js.
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });

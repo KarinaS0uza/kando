@@ -6,7 +6,7 @@ import axios from "axios";
 // See services/api.js for the note on the hardcoded baseURL and the
 // duplicated Bearer-token interceptor.
 const apiClient = axios.create({
-  baseURL: "import.meta.env.VITE_API_URL",
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
 apiClient.interceptors.request.use((config) => {
