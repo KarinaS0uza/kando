@@ -584,7 +584,7 @@ export default function PassportCertificate({ onImagemGerada }) {
       {!erroDados && erro && <p>Erro ao gerar a imagem.</p>}
       {resultado && (
         <img
-          className="talent__main_image"
+          className="passport-certificate__main-image"
           src={resultado.dataUrl}
           alt="Imagem gerada"
         />
