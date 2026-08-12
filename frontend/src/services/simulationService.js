@@ -4,7 +4,7 @@ import axios from "axios";
 // Bearer-token interceptor being duplicated across this file, api.js and
 // talentPassportService.js.
 const apiClient = axios.create({
-  baseURL: "http://localhost:8000/api",
+  baseURL: "import.meta.env.VITE_API_URL",
 });
 
 apiClient.interceptors.request.use((config) => {
