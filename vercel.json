@@ -1,33 +1,3 @@
 {
-  "services": {
-    "frontend": {
-      "root": "frontend",
-      "framework": "vite",
-      "buildCommand": "npm run build",
-      "outputDirectory": "dist",
-      "installCommand": "npm install"
-    },
-    "backend": {
-      "root": "backend",
-      "framework": null,
-      "buildCommand": "pip install -r requirements.txt",
-      "installCommand": "pip install -r requirements.txt"
-    }
-  },
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": {
-        "type": "service",
-        "service": "backend"
-      }
-    },
-    {
-      "source": "/(.*)",
-      "destination": {
-        "type": "service",
-        "service": "frontend"
-      }
-    }
-  ]
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }
