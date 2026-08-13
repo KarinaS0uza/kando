@@ -37,11 +37,11 @@ export default function LoadingSpinner() {
               width: 32,
               height: 32,
               "@keyframes popIn": {
-                "0%": { transform: "scale(0.2)" },
+                "0%": { transform: "scale(0.5)" },
                 "60%": { transform: "scale(1.25)" },
-                "100%": { transform: "scale(1)" },
+                "100%": { transform: "scale(0.5)" },
               },
-              animation: "popIn 1500ms ease-out",
+              animation: "popIn 2500ms ease-out infinite",
             }}
           />
         </Box>
