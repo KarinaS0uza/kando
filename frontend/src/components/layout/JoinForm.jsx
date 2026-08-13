@@ -103,7 +103,7 @@ export default function JoinForm({
     const val = e.target.value;
     setEmail(val);
     setErrorEmail(checkEmail(val));
-    setErrorClassEmail(checkPassword(val));
+    setErrorClassEmail(checkEmail(val));
   };
 
   const handlePasswordChange = (e) => {
@@ -173,9 +173,6 @@ export default function JoinForm({
               onFocus={() => setFullNamePopoverOpen(false)}
             />
 
-            {errorFullName && (
-              <p className="join__field-error">{errorFullName}</p>
-            )}
           </div>
         )}
         <div className="join__field">
@@ -187,19 +184,24 @@ export default function JoinForm({
             value={email}
             onChange={(e) => handleEmailChange(e)}
           />
-          {errorEmail && <p className="join__field-error">{errorEmail}</p>}
         </div>
-        <div className="join__field">
-          <input
-            type="password"
-            className={`join__field-input-password ${errorClassPassword ? "join__field-input--error" : ""}`}
-            placeholder="Senha"
-            required
-            value={password}
-            onChange={(e) => handlePasswordChange(e)}
-          />
-          {errorPassword && (
-            <p className="join__field-error">{errorPassword}</p>
+        <div className="join__password-group">
+          <div className="join__field">
+            <input
+              type="password"
+              className={`join__field-input-password ${errorClassPassword ? "join__field-input--error" : ""}`}
+              placeholder="Senha"
+              required
+              value={password}
+              onChange={(e) => handlePasswordChange(e)}
+            />
+          </div>
+          {(errorFullName || errorEmail || errorPassword) && (
+            <div className="join__errors" role="alert">
+              {errorFullName && <p className="join__field-error">{errorFullName}</p>}
+              {errorEmail && <p className="join__field-error">{errorEmail}</p>}
+              {errorPassword && <p className="join__field-error">{errorPassword}</p>}
+            </div>
           )}
         </div>
         <button
