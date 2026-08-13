@@ -2,7 +2,7 @@
 
 ## Escopo e autoria
 
-A camada de Frontend do Kando foi concebida e desenvolvida por | Nícolas [![GitHub](https://img.shields.io/badge/GitHub-NicolasSG-181717?style=flat&logo=github)](https://github.com/NicolasSG) |
+A camada de Frontend do Kando foi concebida e desenvolvida por  Nícolas [![GitHub](https://img.shields.io/badge/GitHub-NicolasSG-181717?style=flat&logo=github)](https://github.com/NicolasSG) |
 
 ## Visão geral
 
@@ -66,21 +66,30 @@ No logout, token, `user_id` e estados locais relacionados ao fluxo são removido
 
 ## Integração com a API
 
-O endereço-base atual é fixo nos services:
+A URL-base da API é configurada por variável de ambiente:
 
-```text
-http://localhost:8000/api
+```env
+VITE_API_URL=http://localhost:8000/api
+```
+
+Os clientes Axios em `services/api.js`, `services/simulationService.js` e
+`services/talentPassportService.js` usam `import.meta.env.VITE_API_URL` e
+enviam automaticamente o JWT quando disponível.
+
+```http
+Authorization: Bearer <access_token>
 ```
 
 Principais services:
 
 | Arquivo | Responsabilidade |
 |---|---|
-| `services/api.js` | usuários, autenticação, currículos, vagas e matching |
-| `services/simulationService.js` | criação e envio do simulado |
-| `services/talentPassportService.js` | Passport, trilha e autoavaliação |
-| `services/passportService.js` | adapta dados da API para o certificado visual |
-| `services/imageComposer/` | desenha o certificado em canvas |
+| `services/api.js` | cadastro, login, usuários, currículos, vagas e matching |
+| `services/simulationService.js` | criação, consulta e envio das respostas do simulado |
+| `services/talentPassportService.js` | Passport, dashboard, trilha e autoavaliação |
+| `services/passportService.js` | adaptação dos dados para o certificado visual |
+| `services/imageComposer/` | composição do certificado em canvas |
+| `utils/uploadTracker.js` | coordenação das requisições assíncronas de upload, matching e simulado |
 
 ### Fluxo integrado
 

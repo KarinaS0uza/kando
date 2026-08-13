@@ -4,14 +4,14 @@
 
 ## 🔗 Links rápidos
 
-| | |
+| Recurso | Link |
 |---|---|
-| 🎥 Demo / vídeo | [link] (Em construção)|
-| 🌐 Produto no ar | [link do deploy(Em construção)] |
-| 📋 Pesquisa de Mercado| [link do dashbord(Em construção)] |
-| 📐 Doc de Frontend | [docs/frontend.md](Em construção) |
-| ⚙️ Doc de Backend | [docs/backend.md](Em construção) |
-| 🤖 Doc de IA  | [docs/ai.md](Em construção) |
+| 🎥 Demo / vídeo | Em breve |
+| 🌐 Produto no ar | Em breve |
+| 📋 Pesquisa de mercado | [Dashboard da pesquisa](docs/dashboard_pesquisa_carreira_tech.html) |
+| 💻 Documentação do frontend | [docs/frontend.md](docs/frontend.md) |
+| ⚙️ Documentação do backend | [docs/backend.md](docs/backend.md) |
+| 🤖 Documentação da IA | [docs/ai.md](docs/ai.md) |
 
 ## 🎯 O problema
 
@@ -31,7 +31,7 @@ nenhum recrutador alimentando a plataforma.
 
 
 
-##  Funcionalidades
+## ✨ Funcionalidades
 
 - [x] Normalização automática de currículo, com extração de skills, experiências e senioridade calculada
 - [x] Normalização automática de vaga, requisitos e tecnologias
@@ -70,7 +70,7 @@ Para detalhes de implementação de cada parte, veja as docs específicas linkad
 | **Backend** | ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white) ![Django](https://img.shields.io/badge/Django_6-092E20?style=for-the-badge&logo=django&logoColor=white) ![DRF](https://img.shields.io/badge/Django_REST_Framework-A30000?style=for-the-badge&logo=django&logoColor=white) |
 | **Banco** | ![SQLite](https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white) |
 | **IA** | ![Groq](https://img.shields.io/badge/Groq_API-F55036?style=for-the-badge&logo=groq&logoColor=white) ![Llama](https://img.shields.io/badge/Llama_3.3_70B-0467DF?style=for-the-badge&logo=meta&logoColor=white) ![JSON](https://img.shields.io/badge/JSON_Structured_Output-000000?style=for-the-badge&logo=json&logoColor=white) |
-| **PDFs** | ![Docling](https://img.shields.io/badge/Docling-1A73E8?style=for-the-badge&logo=readthedocs&logoColor=white) |
+| **PDFs** | `pdfplumber` e `pypdfium2` para extração de texto e tratamento de arquivos PDF |
 | **Autenticação** | ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white) |
 | **Deploy** | ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white) ![Railway](https://img.shields.io/badge/Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white) ![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white) |
 | **Gestão de tarefas** | ![Jira](https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=jira&logoColor=white) |
@@ -83,13 +83,17 @@ Para detalhes de implementação de cada parte, veja as docs específicas linkad
 ```bash
 cd backend
 python -m venv .venv
-# ative o ambiente virtual conforme seu sistema
+# Ative o ambiente virtual conforme seu sistema
 pip install -r requirements.txt
 ```
 
 Crie `backend/.env`:
 
 ```env
+DJANGO_SECRET_KEY=uma_chave_secreta_segura
+DJANGO_DEBUG=True
+DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+
 # IA: uma chave ou uma lista de chaves separadas por vírgula
 GROQ_API_KEY=sua_chave_aqui
 # GROQ_API_KEYS=chave_1,chave_2
@@ -97,6 +101,9 @@ GROQ_MODEL=llama-3.3-70b-versatile
 
 # Banco local (padrão)
 DATABASE_ENGINE=sqlite
+
+# Frontend local
+DJANGO_CORS_ALLOWED_ORIGINS=http://localhost:5173
 
 # Opcional: PostgreSQL/Supabase
 # DATABASE_ENGINE=supabase
@@ -114,6 +121,9 @@ python manage.py runserver
 
 > Para as etapas de IA funcionarem, os prompts necessários precisam estar ativos no banco. Sem um prompt ativo, a API devolve um erro controlado para a etapa correspondente.
 
+A API ficará disponível em `http://localhost:8000/api` e o health check em
+`http://localhost:8000/health/`.
+
 ### Frontend
 
 ```bash
@@ -122,10 +132,17 @@ npm install
 npm run dev
 ```
 
-Durante o desenvolvimento, a API é consumida em `http://localhost:8000/api`.
+Crie `frontend/.env`:
 
-> A API deve estar disponível em `Em construção`.
-> Detalhes completos em [docs/frontend.md](Em construção), [docs/backend.md](Em construção) e [docs/ai.md](Em construção)
+```env
+VITE_API_URL=http://localhost:8000/api
+```
+
+O frontend consome a URL definida em `VITE_API_URL`. Para produção, defina essa
+variável com a URL pública da API seguida de `/api`.
+
+Detalhes completos em [docs/frontend.md](docs/frontend.md),
+[docs/backend.md](docs/backend.md) e [docs/ai.md](docs/ai.md).
 
 ## 👥 Equipe
 
@@ -139,12 +156,11 @@ Durante o desenvolvimento, a API é consumida em `http://localhost:8000/api`.
 
 Construído para o Hackathon Juninhos-Nortjobs, entre 16/07/2026 e 16/08/2026.
 
-- [~] Núcleo de IA desenvolvido: normalização, matching, geração de perguntas,
-  avaliação, dashboard, trilha e Talent Passport
-- [~] Testes locais dos contratos JSON, prompts, regras determinísticas e
-  integrações entre módulos de IA
-- [~] Implementação e integração dos módulos pelo backend em andamento
-- [~] Frontend funcional — algumas telas ainda utilizam dados simulados
-- [~] Validação completa do fluxo contra a API real do Groq
-- [~] Deploy em produção
+- [x] Fluxo principal implementado: currículo e vaga → matching → simulado → avaliação → dashboard → trilha → Talent Passport
+- [x] Autenticação JWT, persistência e isolamento dos dados por usuário
+- [x] Upload por texto ou PDF, com validação e tratamento de falhas
+- [x] Tratamento de erros de IA e persistência de resultados com falha controlada
+- [x] Frontend conectado aos principais endpoints da API
+- [~] Validação end-to-end com a API real do Groq
+- [~] Configuração e validação final de deploy
 

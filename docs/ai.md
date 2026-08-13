@@ -2,7 +2,7 @@
 
 ## Escopo e autoria
 
-A camada de IA do Kando foi concebida e desenvolvida por | Andreia [![GitHub](https://img.shields.io/badge/GitHub-Deialima-181717?style=flat&logo=github)](https://github.com/Deialima) |: prompts, contratos JSON, regras de negócio, validações e testes locais. O backend Django realiza sua integração ao produto, oferecendo persistência, endpoints, autenticação e orquestração.
+A camada de IA do Kando foi concebida e desenvolvida por  Andreia [![GitHub](https://img.shields.io/badge/GitHub-Deialima-181717?style=flat&logo=github)](https://github.com/Deialima) |: prompts, contratos JSON, regras de negócio, validações e testes locais. O backend Django realiza sua integração ao produto, oferecendo persistência, endpoints, autenticação e orquestração.
 
 Esta documentação descreve a camada de IA como uma área própria do produto; ela não é apenas um detalhe interno do backend.
 
@@ -94,3 +94,22 @@ technical_skills
 required_skills
 matching_skills
 missing_skills
+```
+
+## Operação da camada de IA
+
+A camada de IA usa a API da Groq. A configuração aceita uma chave única em
+`GROQ_API_KEY` ou múltiplas chaves, separadas por vírgula, em
+`GROQ_API_KEYS`. Quando ambas estão presentes, a lista de chaves tem
+precedência.
+
+```env
+GROQ_API_KEY=sua_chave_aqui
+# GROQ_API_KEYS=chave_1,chave_2
+GROQ_MODEL=llama-3.3-70b-versatile
+```
+
+Cada etapa depende de um prompt ativo no banco. Falhas como prompt ausente,
+JSON inválido, limite de uso ou indisponibilidade do provedor são retornadas
+de modo controlado e persistidas no fluxo correspondente, sem encerrar a
+aplicação.
