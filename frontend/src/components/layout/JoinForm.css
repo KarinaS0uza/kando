@@ -55,13 +55,28 @@
   outline: 1px solid red;
 }
 
+.join__password-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.join__errors {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 .join__field-error {
-  color: red;
+  margin: 0;
+  color: #777;
   font-size: 12px;
-  align-self: start;
   padding-left: 10px;
-  position: absolute;
-  bottom: -23px;
+  text-align: left;
+}
+
+.join__errors--submitted .join__field-error {
+  color: red;
 }
 
 .join__button {

@@ -34,6 +34,11 @@
   border-radius: 25px;
 }
 
+.rely__question-title {
+  width: 100%;
+  text-align: left;
+}
+
 .rely__compare-button {
   width: 200px;
   height: auto;
