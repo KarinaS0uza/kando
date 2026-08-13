@@ -9,6 +9,13 @@ import re
 from django.core.exceptions import ValidationError
 
 
+def join_with_and(items):
+    """Join items with commas and "e" before the last, Portuguese-style."""
+    if len(items) == 1:
+        return items[0]
+    return ", ".join(items[:-1]) + " e " + items[-1]
+
+
 class MaximumLengthValidator:
     """Validate that the password is not longer than ``max_length`` characters."""
 
@@ -40,17 +47,17 @@ class ComplexityValidator:
         """
         missing = []
         if not re.search(r"[A-Z]", password):
-            missing.append("uma letra maiúscula")
+            missing.append("letras maiúsculas")
         if not re.search(r"[a-z]", password):
-            missing.append("uma letra minúscula")
+            missing.append("letras minúsculas")
         if not re.search(r"[0-9]", password):
-            missing.append("um número")
+            missing.append("números")
         if not re.search(r"[^A-Za-z0-9]", password):
-            missing.append("um caractere especial")
+            missing.append("caracteres especiais")
 
         if missing:
             raise ValidationError(
-                "A senha deve conter pelo menos " + ", ".join(missing) + ".",
+                "Adicione " + join_with_and(missing) + ".",
                 code="password_not_complex",
             )
 

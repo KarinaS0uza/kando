@@ -37,18 +37,21 @@ class LoginView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        """Validate the credentials and return JWT tokens when they are valid."""
+        """Validate the credentials and return JWT tokens when they are valid.
+
+        A malformed email is treated the same as a wrong password: both fall
+        through to the generic 401 below instead of ``raise_exception``,
+        which would otherwise expose a field-specific format error and reveal
+        that the email (rather than the password) was the problem.
+        """
         serializer = LoginSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        email = serializer.validated_data["email"]
-        password = serializer.validated_data["password"]
-
-        user = authenticate(request, email=email, password=password)
+        user = None
+        if serializer.is_valid():
+            user = authenticate(request, **serializer.validated_data)
 
         if user is None:
             return Response(
-                {"detail": "Credenciais inválidas."},
+                {"email": "Credenciais inválidas."},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 

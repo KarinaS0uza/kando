@@ -18,6 +18,7 @@ def test_login_rejects_invalid_credentials(api_client, user):
     )
 
     assert response.status_code == 401
+    assert response.data == {"email": "Credenciais inválidas."}
     assert "access" not in response.data
 
 
@@ -32,6 +33,19 @@ def test_login_returns_tokens_for_valid_credentials(api_client, user):
     assert response.data["access"]
     assert response.data["refresh"]
     assert response.data["user_id"] == str(user.id)
+
+
+@pytest.mark.django_db
+def test_login_rejects_malformed_email(api_client):
+    """A malformed email returns the same generic 401 as a wrong password."""
+    response = api_client.post(
+        reverse("login"),
+        {"email": "not-an-email", "password": "whatever"},
+        format="json",
+    )
+
+    assert response.status_code == 401
+    assert response.data == {"email": "Credenciais inválidas."}
 
 
 @pytest.mark.django_db
@@ -82,20 +96,21 @@ def test_user_detail_not_found_for_unknown_id(auth_client):
 
 
 @pytest.mark.django_db
-def test_user_create_rejects_invalid_data(api_client):
-    """Missing required fields return 400 with field-level errors."""
+def test_user_create_rejects_malformed_email(api_client):
+    """A malformed email is rejected specifically."""
     response = api_client.post(
-        reverse("user-create"), {"email": "not-an-email"}, format="json"
+        reverse("user-create"),
+        {"email": "not-an-email", "full_name": "New User", "password": VALID_PASSWORD},
+        format="json",
     )
 
     assert response.status_code == 400
-    assert "email" in response.data
-    assert "full_name" in response.data
+    assert response.data == {"email": ["E-mail inválido."]}
 
 
 @pytest.mark.django_db
 def test_user_create_rejects_weak_password(api_client):
-    """A password missing complexity requirements is rejected."""
+    """A password missing complexity requirements is rejected specifically."""
     response = api_client.post(
         reverse("user-create"),
         {"email": "new-user@example.invalid", "full_name": "New User", "password": "weak"},
@@ -103,7 +118,76 @@ def test_user_create_rejects_weak_password(api_client):
     )
 
     assert response.status_code == 400
-    assert "password" in response.data
+    assert response.data == {"password": ["Senha inválida."]}
+
+
+@pytest.mark.django_db
+def test_user_create_requires_password(api_client):
+    """Public registration cannot create a user without local credentials."""
+    response = api_client.post(
+        reverse("user-create"),
+        {"email": "no-password@example.invalid", "full_name": "No Password"},
+        format="json",
+    )
+
+    assert response.status_code == 400
+    assert response.data == {"password": ["Senha inválida."]}
+    assert not User.objects.filter(email="no-password@example.invalid").exists()
+
+
+@pytest.mark.django_db
+def test_user_create_rejects_whitespace_only_password(api_client):
+    """A password made only of whitespace is treated the same as blank."""
+    response = api_client.post(
+        reverse("user-create"),
+        {
+            "email": "whitespace-password@example.invalid",
+            "full_name": "New User",
+            "password": "   ",
+        },
+        format="json",
+    )
+
+    assert response.status_code == 400
+    assert response.data == {"password": ["Senha inválida."]}
+    assert not User.objects.filter(email="whitespace-password@example.invalid").exists()
+
+
+@pytest.mark.django_db
+def test_user_create_reports_existing_email_specifically(user, api_client):
+    """An existing email is named explicitly, taking priority over password errors."""
+    response = api_client.post(
+        reverse("user-create"),
+        {
+            "email": user.email.upper(),
+            "full_name": user.full_name,
+            "password": "kkkkkkkk",
+        },
+        format="json",
+    )
+
+    assert response.status_code == 400
+    assert response.data == {
+        "email": ["Este e-mail já está cadastrado em nosso sistema."]
+    }
+
+
+@pytest.mark.django_db
+def test_user_create_rejects_single_word_full_name(api_client):
+    """A full_name without a surname is rejected."""
+    response = api_client.post(
+        reverse("user-create"),
+        {
+            "email": "single-name@example.invalid",
+            "full_name": "Ana",
+            "password": VALID_PASSWORD,
+        },
+        format="json",
+    )
+
+    assert response.status_code == 400
+    assert "full_name" in response.data
+    assert not User.objects.filter(email="single-name@example.invalid").exists()
 
 
 @pytest.mark.django_db
