@@ -10,19 +10,6 @@
   margin-top: 20px;
 }
 
-.simulation-modal__close-button {
-  position: absolute;
-  right: -18px;
-  top: -9px;
-  border: none;
-  background-color: transparent;
-  color: #26215c;
-}
-
-.simulation-modal__close-button:hover {
-  cursor: pointer;
-}
-
 .simulation-modal__title {
   color: #26215c;
   font-weight: bold;
@@ -86,13 +73,6 @@
 @media (max-width: 600px) {
   .simulation-modal {
     margin-top: 12px;
-  }
-
-  .simulation-modal__close-button {
-    top: -6px;
-    right: -6px;
-    min-width: 40px;
-    min-height: 40px;
   }
 
   .simulation-modal__subtitle {

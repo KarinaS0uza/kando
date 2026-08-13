@@ -6,8 +6,8 @@
   align-items: center;
   justify-content: center;
   background: rgb(255 255 255 / 55%);
-  backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   color: #26215c;
   cursor: wait;
 }

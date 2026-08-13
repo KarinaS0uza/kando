@@ -516,11 +516,13 @@ export default function PassportCertificate({ onImagemGerada }) {
   const { gerar, loading, resultado, erro } = useImageComposer();
   const [dadosUsuario, setDadosUsuario] = useState(null);
   const [erroDados, setErroDados] = useState(null);
+  const [carregandoDados, setCarregandoDados] = useState(true);
 
   useEffect(() => {
     buscarDadosPassaporte()
       .then(setDadosUsuario)
-      .catch((error) => setErroDados(error.message));
+      .catch((error) => setErroDados(error.message))
+      .finally(() => setCarregandoDados(false));
   }, []);
 
   useEffect(() => {
@@ -581,7 +583,7 @@ export default function PassportCertificate({ onImagemGerada }) {
 
   return (
     <div className="passport-certificate">
-      {loading && !erroDados && (
+      {(carregandoDados || loading) && !erroDados && (
         <div className="passport-certificate__overlay">
           <LoadingSpinner />
         </div>

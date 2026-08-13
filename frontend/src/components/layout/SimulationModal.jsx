@@ -8,13 +8,13 @@ import "./SimulationModal.css";
 import CertificateIcon from "@mui/icons-material/CardMembership";
 import RouteIcon from "@mui/icons-material/Route";
 import LeaderboardIcon from "@mui/icons-material/Leaderboard";
-import CloseIcon from "@mui/icons-material/Close";
 
 // One of 3 near-identical onboarding modals (this one, ScoreModal,
 // SimulationGateModal) - see ScoreModal.jsx for the shared-Fade-pattern
 // note. Shown after the technical simulation completes, celebrating the
-// newly unlocked features. Props: openModal (bool), closeModal (fn),
-// viewResults (fn, "Ver resultados" button).
+// newly unlocked features. Not dismissible (no backdrop/Escape/close
+// button) - the user must click "Ver resultados" to move on. Props:
+// openModal (bool), viewResults (fn, "Ver resultados" button).
 const Fade = React.forwardRef(function Fade(props, ref) {
   const { children, in: open, onClick, onEnter, onExited, ...other } = props;
   const style = useSpring({
@@ -66,7 +66,6 @@ const style = {
 
 export default function TestCompleteModal({
   openModal,
-  closeModal,
   viewResults,
 }) {
   return (
@@ -76,7 +75,7 @@ export default function TestCompleteModal({
         aria-labelledby="spring-modal-title"
         aria-describedby="spring-modal-description"
         open={openModal}
-        onClose={closeModal}
+        disableEscapeKeyDown
         closeAfterTransition
         slots={{ backdrop: Backdrop }}
         slotProps={{
@@ -86,13 +85,6 @@ export default function TestCompleteModal({
         <Fade in={openModal}>
           <Box sx={style}>
             <div className="simulation-modal">
-              <button
-                className="simulation-modal__close-button"
-                onClick={closeModal}
-              >
-                <CloseIcon sx={{ width: "20px" }} />
-              </button>
-
               <h2 className="simulation-modal__title">Parabéns!</h2>
               <p className="simulation-modal__subtitle">
                 Agora você tem acesso à:

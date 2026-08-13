@@ -1,7 +1,6 @@
 import "./Signup.css";
 import WelcomePanel from "../components/layout/WelcomePanel";
 import JoinForm from "../components/layout/JoinForm";
-import GoogleButton from "../components/layout/GoogleButton";
 import joinBackground from "../assets/join-background.png";
 
 export default function Signup() {
@@ -22,10 +21,6 @@ export default function Signup() {
           buttonText="Cadastrar"
           formType="signup"
         />
-        <div className="signup__divider">
-          <span className="signup__divider-text">ou</span>
-        </div>
-        <GoogleButton />
       </section>
     </div>
   );
