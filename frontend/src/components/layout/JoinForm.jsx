@@ -6,6 +6,7 @@ import useAuth from "../../hooks/useAuth";
 import { extractErrorMessage } from "../../utils/errors";
 import "./JoinForm.css";
 import PopoverSignup from "../ui/PopoverSignup";
+import LoadingOverlay from "../ui/LoadingOverlay";
 
 // Login/signup form, shared by both pages via `formType`. Props:
 // - pathTo: link target for the "don't have an account?"/"already have
@@ -141,7 +142,9 @@ export default function JoinForm({
     } catch (err) {
       console.log(err);
 
-      const message = translateAuthError(extractErrorMessage(err) || err.message);
+      const message = translateAuthError(
+        extractErrorMessage(err) || err.message,
+      );
       if (formType !== "login" && err.response?.status === 400) {
         setErrorEmail(message);
       } else {
@@ -153,66 +156,74 @@ export default function JoinForm({
   };
 
   return (
-    <form action="" className="join__fields" onSubmit={handleSubmit}>
-      {formType === "signup" && (
-        <div className="join__field">
-          <PopoverSignup
-            anchorEl={fullNameAnchorEl}
-            open={fullNamePopoverOpen && Boolean(fullNameAnchorEl)}
-            onClose={() => setFullNamePopoverOpen(false)}
-          />
-          <input
-            ref={fullNameInputRef}
-            type="text"
-            className={`join__field-input ${errorClassFullName ? "join__field-input--error" : ""}`}
-            placeholder="Nome completo"
-            required
-            value={fullName}
-            onChange={(e) => handleFullNameChange(e)}
-            onFocus={() => setFullNamePopoverOpen(false)}
-          />
+    <>
+      <form action="" className="join__fields" onSubmit={handleSubmit}>
+        {formType === "signup" && (
+          <div className="join__field">
+            <PopoverSignup
+              anchorEl={fullNameAnchorEl}
+              open={fullNamePopoverOpen && Boolean(fullNameAnchorEl)}
+              onClose={() => setFullNamePopoverOpen(false)}
+            />
+            <input
+              ref={fullNameInputRef}
+              type="text"
+              className={`join__field-input ${errorClassFullName ? "join__field-input--error" : ""}`}
+              placeholder="Nome completo"
+              required
+              value={fullName}
+              onChange={(e) => handleFullNameChange(e)}
+              onFocus={() => setFullNamePopoverOpen(false)}
+            />
 
-          {errorFullName && <p className="join__field-error">{errorFullName}</p>}
+            {errorFullName && (
+              <p className="join__field-error">{errorFullName}</p>
+            )}
+          </div>
+        )}
+        <div className="join__field">
+          <input
+            type="email"
+            className={`join__field-input ${errorClassEmail ? "join__field-input--error" : ""}`}
+            placeholder="Email"
+            required
+            value={email}
+            onChange={(e) => handleEmailChange(e)}
+          />
+          {errorEmail && <p className="join__field-error">{errorEmail}</p>}
         </div>
-      )}
-      <div className="join__field">
-        <input
-          type="email"
-          className={`join__field-input ${errorClassEmail ? "join__field-input--error" : ""}`}
-          placeholder="Email"
-          required
-          value={email}
-          onChange={(e) => handleEmailChange(e)}
-        />
-        {errorEmail && <p className="join__field-error">{errorEmail}</p>}
-      </div>
-      <div className="join__field">
-        <input
-          type="password"
-          className={`join__field-input-password ${errorClassPassword ? "join__field-input--error" : ""}`}
-          placeholder="Senha"
-          required
-          value={password}
-          onChange={(e) => handlePasswordChange(e)}
-        />
-        {errorPassword && <p className="join__field-error">{errorPassword}</p>}
-      </div>
-      <button
-        className="join__button"
-        disabled={
-          !!checkEmail(email) ||
-          !!checkPassword(password) ||
-          (formType === "signup" && (!fullName || !!checkFullName(fullName)))
-        }
-      >
-        {buttonText}
-      </button>
-      <div className="join__create-account">
-        <p className="join__account">{accountText}</p>
-        <Link className="join__account-link" to={pathTo}>
-          {linkText}
-        </Link>
-      </div>
-    </form>
+        <div className="join__field">
+          <input
+            type="password"
+            className={`join__field-input-password ${errorClassPassword ? "join__field-input--error" : ""}`}
+            placeholder="Senha"
+            required
+            value={password}
+            onChange={(e) => handlePasswordChange(e)}
+          />
+          {errorPassword && (
+            <p className="join__field-error">{errorPassword}</p>
+          )}
+        </div>
+        <button
+          className="join__button"
+          disabled={
+            loading ||
+            !!checkEmail(email) ||
+            !!checkPassword(password) ||
+            (formType === "signup" && (!fullName || !!checkFullName(fullName)))
+          }
+        >
+          {buttonText}
+        </button>
+        <div className="join__create-account">
+          <p className="join__account">{accountText}</p>
+          <Link className="join__account-link" to={pathTo}>
+            {linkText}
+          </Link>
+        </div>
+      </form>
+      {loading && <LoadingOverlay />}
+    </>
   );
 }
