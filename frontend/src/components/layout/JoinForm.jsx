@@ -25,6 +25,22 @@ const AUTH_ERROR_TRANSLATIONS = {
   "user com este email já existe.": "Este email já está cadastrado.",
 };
 
+const PASSWORD_REQUIREMENTS = [
+  { test: /[A-Z]/, message: "A senha deve conter pelo menos uma letra maiúscula." },
+  { test: /[a-z]/, message: "A senha deve conter pelo menos uma letra minúscula." },
+  { test: /[^A-Za-z0-9]/, message: "A senha deve conter pelo menos um caractere especial." },
+];
+
+function getSignupPasswordErrors(value) {
+  return PASSWORD_REQUIREMENTS.filter(({ test }) => !test.test(value)).map(
+    ({ message }) => message,
+  );
+}
+
+function hasValidationError(error) {
+  return Array.isArray(error) ? error.length > 0 : Boolean(error);
+}
+
 function translateAuthError(message) {
   return AUTH_ERROR_TRANSLATIONS[message?.toLowerCase()] || message;
 }
@@ -41,8 +57,11 @@ export default function JoinForm({
   const [password, setPassword] = useState("");
   const [errorFullName, setErrorFullName] = useState("");
   const [errorEmail, setErrorEmail] = useState("");
-  const [errorPassword, setErrorPassword] = useState("");
+  const [errorPassword, setErrorPassword] = useState(
+    formType === "signup" ? getSignupPasswordErrors("") : "",
+  );
   const [loading, setLoading] = useState(false);
+  const [submitAttempted, setSubmitAttempted] = useState(false);
   const navigate = useNavigate();
   const [errorClassFullName, setErrorClassFullName] = useState(false);
   const [errorClassEmail, setErrorClassEmail] = useState(false);
@@ -81,6 +100,11 @@ export default function JoinForm({
   }
 
   function checkPassword(value) {
+    if (formType === "signup") {
+      const requirementErrors = getSignupPasswordErrors(value);
+      if (requirementErrors.length > 0) return requirementErrors;
+    }
+
     if (value == "") {
       return "";
     } else if (value.length < 8) {
@@ -109,8 +133,9 @@ export default function JoinForm({
   const handlePasswordChange = (e) => {
     const val = e.target.value;
     setPassword(val);
-    setErrorPassword(checkPassword(val));
-    setErrorClassPassword(checkPassword(val));
+    const passwordError = checkPassword(val);
+    setErrorPassword(passwordError);
+    setErrorClassPassword(hasValidationError(passwordError));
   };
 
   const handleSubmit = async (e) => {
@@ -121,8 +146,30 @@ export default function JoinForm({
     };
 
     e.preventDefault();
-    setErrorEmail("");
-    setErrorPassword("");
+    setSubmitAttempted(true);
+
+    const fullNameError =
+      formType === "signup"
+        ? fullName.trim()
+          ? checkFullName(fullName)
+          : "Nome completo é obrigatório"
+        : "";
+    const emailError = email ? checkEmail(email) : "E-mail é obrigatório";
+    const passwordError = password
+      ? checkPassword(password)
+      : formType === "signup"
+        ? getSignupPasswordErrors("")
+        : "Senha é obrigatória";
+
+    setErrorFullName(fullNameError);
+    setErrorEmail(emailError);
+    setErrorPassword(passwordError);
+    setErrorClassFullName(Boolean(fullNameError));
+    setErrorClassEmail(Boolean(emailError));
+    setErrorClassPassword(hasValidationError(passwordError));
+
+    if (fullNameError || emailError || hasValidationError(passwordError)) return;
+
     setLoading(true);
     try {
       if (formType == "login") {
@@ -154,7 +201,12 @@ export default function JoinForm({
 
   return (
     <>
-      <form action="" className="join__fields" onSubmit={handleSubmit}>
+      <form
+        action=""
+        className="join__fields"
+        onSubmit={handleSubmit}
+        noValidate
+      >
         {formType === "signup" && (
           <div className="join__field">
             <PopoverSignup
@@ -165,7 +217,7 @@ export default function JoinForm({
             <input
               ref={fullNameInputRef}
               type="text"
-              className={`join__field-input ${errorClassFullName ? "join__field-input--error" : ""}`}
+              className={`join__field-input ${submitAttempted && errorClassFullName ? "join__field-input--error" : ""}`}
               placeholder="Nome completo"
               required
               value={fullName}
@@ -178,7 +230,7 @@ export default function JoinForm({
         <div className="join__field">
           <input
             type="email"
-            className={`join__field-input ${errorClassEmail ? "join__field-input--error" : ""}`}
+            className={`join__field-input ${submitAttempted && errorClassEmail ? "join__field-input--error" : ""}`}
             placeholder="Email"
             required
             value={email}
@@ -189,29 +241,35 @@ export default function JoinForm({
           <div className="join__field">
             <input
               type="password"
-              className={`join__field-input-password ${errorClassPassword ? "join__field-input--error" : ""}`}
+              className={`join__field-input-password ${submitAttempted && errorClassPassword ? "join__field-input--error" : ""}`}
               placeholder="Senha"
               required
               value={password}
               onChange={(e) => handlePasswordChange(e)}
             />
           </div>
-          {(errorFullName || errorEmail || errorPassword) && (
-            <div className="join__errors" role="alert">
+          {(errorFullName || errorEmail || hasValidationError(errorPassword)) && (
+            <div
+              className={`join__errors ${submitAttempted ? "join__errors--submitted" : ""}`}
+              role={submitAttempted ? "alert" : "status"}
+            >
               {errorFullName && <p className="join__field-error">{errorFullName}</p>}
               {errorEmail && <p className="join__field-error">{errorEmail}</p>}
-              {errorPassword && <p className="join__field-error">{errorPassword}</p>}
+              {Array.isArray(errorPassword)
+                ? errorPassword.map((message) => (
+                    <p className="join__field-error" key={message}>
+                      {message}
+                    </p>
+                  ))
+                : errorPassword && (
+                    <p className="join__field-error">{errorPassword}</p>
+                  )}
             </div>
           )}
         </div>
         <button
           className="join__button"
-          disabled={
-            loading ||
-            !!checkEmail(email) ||
-            !!checkPassword(password) ||
-            (formType === "signup" && (!fullName || !!checkFullName(fullName)))
-          }
+          disabled={loading}
         >
           {buttonText}
         </button>

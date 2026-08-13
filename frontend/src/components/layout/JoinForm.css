@@ -69,10 +69,14 @@
 
 .join__field-error {
   margin: 0;
-  color: red;
+  color: #777;
   font-size: 12px;
   padding-left: 10px;
   text-align: left;
+}
+
+.join__errors--submitted .join__field-error {
+  color: red;
 }
 
 .join__button {
