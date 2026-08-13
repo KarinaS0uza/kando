@@ -105,7 +105,7 @@ export default function SimulationQuestions() {
 
     const prevIndex = currentIndex - 1;
     setCurrentIndex(prevIndex);
-    setQuestionText(answers[questions[prevIndex].id] || "");
+    setQuestionText(updatedAnswers[questions[prevIndex].id] || "");
   };
 
   const saveAnswerAndContinue = async (answer) => {
@@ -139,7 +139,7 @@ export default function SimulationQuestions() {
 
     const nextIndex = currentIndex + 1;
     setCurrentIndex(nextIndex);
-    setQuestionText(answers[questions[nextIndex].id] || "");
+    setQuestionText(updatedAnswers[questions[nextIndex].id] || "");
   };
 
   const handleClickNext = async () => {
