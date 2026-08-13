@@ -65,6 +65,28 @@ def test_create_publishes_a_new_prompt(auth_client):
 
 
 @pytest.mark.django_db
+def test_create_publishes_a_second_version_of_an_existing_description(auth_client):
+    """Creating with an already-used prompt_description publishes version 2.
+
+    DRF's automatic uniqueness checks can't see that prompt_description is
+    only conditionally unique (and mis-derive a check on the read-only
+    version field), which would otherwise reject every republish of an
+    existing prompt; Prompt.publish() is the actual source of truth here.
+    """
+    Prompt.objects.create(prompt_description="job_normalization", prompt_detail="v1")
+
+    response = auth_client.post(
+        CREATE_URL,
+        {"prompt_description": "job_normalization", "prompt_detail": "v2"},
+        format="json",
+    )
+
+    assert response.status_code == 201
+    assert response.data["version"] == 2
+    assert Prompt.objects.filter(prompt_description="job_normalization").count() == 2
+
+
+@pytest.mark.django_db
 def test_detail_returns_404_for_unknown_id(auth_client):
     """A nonexistent id returns 404."""
     response = auth_client.get(detail_url(uuid.uuid4()))

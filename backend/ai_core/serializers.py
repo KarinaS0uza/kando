@@ -27,6 +27,21 @@ class PromptSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
+        extra_kwargs = {
+            # prompt_description is only unique conditionally (per the
+            # is_active constraint in Prompt.Meta), but DRF's automatic
+            # uniqueness check can't see the condition and treats it as
+            # globally unique — blocking every re-publish of an existing
+            # prompt. Prompt.publish() already owns this invariant.
+            "prompt_description": {"validators": []},
+        }
+        # DRF also auto-adds a UniqueTogetherValidator for
+        # (prompt_description, version) from Prompt.Meta.constraints. Since
+        # version is read-only, DRF checks it against the field's static
+        # default (1) instead of the version Prompt.publish() will actually
+        # assign, so it always collides once a prompt has a version 1 row.
+        # Prompt.publish() already owns this invariant too.
+        validators = []
 
     def create(self, validated_data):
         """Publish a new version instead of a raw insert (append-only)."""

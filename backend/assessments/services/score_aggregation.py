@@ -106,7 +106,7 @@ def aggregate_evaluations(evaluations: list) -> dict:
                 "skills": [],
                 "strengths": [],
                 "weaknesses": [],
-                "feedback": "No valid evaluations were available.",
+                "feedback": "Nenhuma avaliação válida foi obtida.",
             }
         }
 
@@ -137,7 +137,7 @@ def aggregate_evaluations(evaluations: list) -> dict:
             "strengths": strengths,
             "weaknesses": weaknesses,
             "feedback": (
-                f"Average based on {len(valid)} of {len(evaluations)} evaluated questions."
+                f"Média baseada em {len(valid)} de {len(evaluations)} perguntas avaliadas."
             ),
         }
     }
@@ -211,5 +211,5 @@ def grade_assessment(assessment, submitted_answers: list) -> dict:
         "score": None,
         "answers": submitted_answers,
         "structured_data": structured_data,
-        "error_message": "No answer could be evaluated.",
+        "error_message": "Nenhuma resposta pôde ser avaliada.",
     }

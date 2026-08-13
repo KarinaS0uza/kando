@@ -158,7 +158,10 @@ def run_prompt_safe(
             "error": "Você atingiu o limite de uso. Tente novamente mais tarde.",
             "retryable": True,
         }
-    except (AuthenticationError, PermissionDeniedError, BadRequestError, NotFoundError) as exc:
-        return {"error": f"Falha de configuração ao chamar o LLM: {exc}", "retryable": False}
-    except Exception as exc:  # pylint: disable=broad-exception-caught
-        return {"error": f"Falha ao chamar o LLM: {exc}", "retryable": True}
+    except (AuthenticationError, PermissionDeniedError, BadRequestError, NotFoundError):
+        return {
+            "error": "Falha de configuração ao chamar o LLM.",
+            "retryable": False,
+        }
+    except Exception:  # pylint: disable=broad-exception-caught
+        return {"error": "Falha ao chamar o LLM.", "retryable": True}
