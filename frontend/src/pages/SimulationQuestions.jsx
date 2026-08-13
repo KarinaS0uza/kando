@@ -206,7 +206,6 @@ export default function SimulationQuestions() {
       {submitting && <LoadingOverlay />}
       <SimulationModal
         openModal={showCompleteModal}
-        closeModal={() => setShowCompleteModal(false)}
         viewResults={() => navigate("/dashboard")}
       />
     </>
