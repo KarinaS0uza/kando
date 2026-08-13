@@ -213,8 +213,7 @@ class TestRunPromptSafe:
             active_prompt.prompt_description, {"name": "x"}, missing_prompt_message="x"
         )
 
-        assert result["retryable"] is True
-        assert "boom" in result["error"]
+        assert result == {"error": "Falha ao chamar o LLM.", "retryable": True}
 
 
 class TestMultiKeyFallback:
