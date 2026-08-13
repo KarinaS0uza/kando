@@ -742,6 +742,30 @@ def test_passport_create_returns_400_when_match_missing(
 
 
 @pytest.mark.django_db
+def test_passport_create_returns_safe_500_for_unexpected_generation_error(
+    auth_client, full_upstream, monkeypatch
+):
+    """Unexpected generation failures return JSON without exposing internal details."""
+    monkeypatch.setattr(
+        "passports.views.generate_talent_passport",
+        lambda *args, **kwargs: (_ for _ in ()).throw(RuntimeError("sensitive failure")),
+    )
+
+    response = auth_client.post(
+        PASSPORT_LIST_URL,
+        {
+            "resume_id": str(full_upstream.resume.id),
+            "job_id": str(full_upstream.job.id),
+        },
+        format="json",
+    )
+
+    assert response.status_code == 500
+    assert response.data == {"detail": "Não foi possível gerar o Talent Passport."}
+    assert "sensitive failure" not in str(response.data)
+
+
+@pytest.mark.django_db
 def test_passport_create_succeeds_and_rerun_upserts(auth_client, user, full_upstream, monkeypatch):
     """A successful generation is created once, then updated in place on rerun."""
     mock_llm(monkeypatch)
@@ -888,6 +912,33 @@ def test_waiting_readiness_get_returns_404_when_not_submitted(
     response = auth_client.get(READINESS_URL, {"resume_id": str(resume.id), "job_id": str(job.id)})
 
     assert response.status_code == 404
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "query,missing_field",
+    [({}, "resume_id"), ({"resume_id": str(uuid.uuid4())}, "job_id")],
+)
+def test_waiting_readiness_get_requires_both_query_parameters(
+    auth_client, query, missing_field
+):
+    """Missing identifiers are invalid input rather than a nonexistent record."""
+    response = auth_client.get(READINESS_URL, query)
+
+    assert response.status_code == 400
+    assert missing_field in response.data
+
+
+@pytest.mark.django_db
+def test_waiting_readiness_get_rejects_malformed_uuid(auth_client):
+    """Malformed query identifiers produce a field-specific validation error."""
+    response = auth_client.get(
+        READINESS_URL,
+        {"resume_id": "not-a-uuid", "job_id": str(uuid.uuid4())},
+    )
+
+    assert response.status_code == 400
+    assert "resume_id" in response.data
 
 
 @pytest.mark.django_db
