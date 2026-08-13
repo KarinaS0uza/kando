@@ -1,6 +1,7 @@
 """Authenticated API views for generating and accessing Talent Passports."""
 
-from django.core.exceptions import ValidationError as DjangoValidationError
+import logging
+
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -9,11 +10,14 @@ from rest_framework.views import APIView
 from .models import CandidatePreparationSelfAssessment, TalentPassport
 from .serializers import (
     CandidatePreparationSelfAssessmentSerializer,
+    CandidatePreparationSelfAssessmentQuerySerializer,
     CandidatePreparationSelfAssessmentSubmitSerializer,
     TalentPassportGenerateRequestSerializer,
     TalentPassportSerializer,
 )
 from .services.passport_generation import PassportGenerationError, generate_talent_passport
+
+logger = logging.getLogger(__name__)
 
 
 class TalentPassportListCreateView(APIView):
@@ -53,6 +57,19 @@ class TalentPassportListCreateView(APIView):
             passport, created = generate_talent_passport(request.user, resume, job_posting)
         except PassportGenerationError as exc:
             return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception:  # pylint: disable=broad-exception-caught
+            logger.exception(
+                "Unexpected Talent Passport generation failure",
+                extra={
+                    "user_id": str(request.user.id),
+                    "resume_id": str(resume.id),
+                    "job_id": str(job_posting.id),
+                },
+            )
+            return Response(
+                {"detail": "Não foi possível gerar o Talent Passport."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
         output_serializer = TalentPassportSerializer(passport)
 
@@ -100,17 +117,17 @@ class CandidatePreparationSelfAssessmentView(APIView):
 
     def get(self, request):
         """Return the self-assessment for one owned (resume, job_posting) pair."""
-        try:
-            self_assessment = CandidatePreparationSelfAssessment.objects.filter(
-                user=request.user,
-                resume_id=request.query_params.get("resume_id"),
-                job_posting_id=request.query_params.get("job_id"),
-            ).first()
-        except (ValueError, DjangoValidationError):
-            return Response(
-                {"detail": "resume_id e job_id devem ser UUIDs válidos."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        query_serializer = CandidatePreparationSelfAssessmentQuerySerializer(
+            data=request.query_params
+        )
+        query_serializer.is_valid(raise_exception=True)
+        query = query_serializer.validated_data
+
+        self_assessment = CandidatePreparationSelfAssessment.objects.filter(
+            user=request.user,
+            resume_id=query["resume_id"],
+            job_posting_id=query["job_id"],
+        ).first()
 
         if self_assessment is None:
             return Response(

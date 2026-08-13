@@ -134,6 +134,13 @@ class CandidatePreparationSelfAssessmentSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
 
+class CandidatePreparationSelfAssessmentQuerySerializer(serializers.Serializer):  # pylint: disable=abstract-method
+    """Validate the identifiers used to retrieve a readiness self-assessment."""
+
+    resume_id = serializers.UUIDField(required=True)
+    job_id = serializers.UUIDField(required=True)
+
+
 class CandidatePreparationSelfAssessmentSubmitSerializer(serializers.Serializer):  # pylint: disable=abstract-method
     """Validate a request to submit or update the candidate's preparation self-assessment.
 
