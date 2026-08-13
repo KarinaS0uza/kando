@@ -6,7 +6,6 @@ import StepLabel from "@mui/material/StepLabel";
 import StepContent from "@mui/material/StepContent";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import tpImageHomepage from "../../assets/TP-image_homepage.png";
 import "./StepperHomePage.css";
 
@@ -100,9 +99,6 @@ export default function StepperHomePage() {
           >
             <StepLabel>
               {step.label}
-              {index === steps.length - 1 && index <= activeStep && (
-                <ArrowForwardIcon className="scroll-stepper__arrow" />
-              )}
             </StepLabel>
             <StepContent
               transitionDuration={index === steps.length - 1 ? 1600 : 800}

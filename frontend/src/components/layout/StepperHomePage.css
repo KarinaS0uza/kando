@@ -207,13 +207,6 @@
   opacity: 0.7;
 }
 
-.scroll-stepper__arrow {
-  margin-left: 8px;
-  color: #26215c;
-  font-size: 18px !important;
-  vertical-align: middle;
-}
-
 .scroll-stepper__visual {
   box-sizing: border-box;
   width: 100%;
