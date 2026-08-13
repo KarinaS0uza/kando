@@ -1,4 +1,4 @@
-"""Unit tests for resumes.services.pdf_extraction: conversion and I/O failure paths."""
+"""Unit tests for resumes.services.pdf_extraction: parsing and I/O failure paths."""
 
 # Mirrors jobs/test_pdf_extraction.py by design, since it exercises the
 # identical resumes/jobs pdf_extraction.py implementations; and the fakes
@@ -8,50 +8,34 @@
 import logging
 
 import pytest
-from docling.exceptions import ConversionError
+from pdfminer.pdfparser import PDFSyntaxError
 
 from .services import pdf_extraction
 
 
-class FakeSerializedText:
-    """Stands in for MarkdownDocSerializer().serialize() return value."""
+class FakePage:
+    """Stands in for a pdfplumber page, exposing only extract_text()."""
 
     def __init__(self, text):
         self.text = text
 
+    def extract_text(self):
+        """Return the fixed page text, matching Page.extract_text()."""
+        return self.text
 
-class FakeSerializer:
-    """Stands in for MarkdownDocSerializer, returning a fixed markdown text."""
 
-    def __init__(self, markdown_text):
-        self.markdown_text = markdown_text
+class FakePdf:
+    """Stands in for pdfplumber's PDF context manager, exposing only .pages."""
 
-    def __call__(self, doc, params):
-        """Match the MarkdownDocSerializer(doc=..., params=...) constructor call."""
+    def __init__(self, pages):
+        self.pages = pages
+
+    def __enter__(self):
         return self
 
-    def serialize(self):
-        """Return the fixed markdown text, matching MarkdownDocSerializer.serialize()."""
-        return FakeSerializedText(self.markdown_text)
-
-
-class FakeConversionResult:
-    """Stands in for docling's ConversionResult, exposing only .document."""
-
-    document = object()
-
-
-class FakeConverter:
-    """Stands in for DocumentConverter, raising or returning a fixed result."""
-
-    def __init__(self, convert_exception=None):
-        self.convert_exception = convert_exception
-
-    def convert(self, path):  # pylint: disable=unused-argument
-        """Match DocumentConverter.convert(path): raise or return a fixed result."""
-        if self.convert_exception is not None:
-            raise self.convert_exception
-        return FakeConversionResult()
+    def __exit__(self, *args):
+        """Match pdfplumber.PDF's context manager protocol; nothing to clean up."""
+        return False
 
 
 class FakeTempStorage:
@@ -68,12 +52,15 @@ class FakeTempStorage:
             raise self.delete_exception
 
 
-def patch_pipeline(monkeypatch, *, convert_exception=None, markdown_text="extracted text"):
-    """Replace DocumentConverter/MarkdownDocSerializer with controllable fakes."""
-    monkeypatch.setattr(
-        pdf_extraction, "DocumentConverter", lambda **kwargs: FakeConverter(convert_exception)
-    )
-    monkeypatch.setattr(pdf_extraction, "MarkdownDocSerializer", FakeSerializer(markdown_text))
+def patch_pipeline(monkeypatch, *, open_exception=None, pages_text=("extracted text",)):
+    """Replace pdfplumber.open with a controllable fake."""
+
+    def fake_open(path):  # pylint: disable=unused-argument
+        if open_exception is not None:
+            raise open_exception
+        return FakePdf([FakePage(text) for text in pages_text])
+
+    monkeypatch.setattr(pdf_extraction.pdfplumber, "open", fake_open)
 
 
 def patch_temp_storage(
@@ -86,20 +73,30 @@ def patch_temp_storage(
     return fake_storage
 
 
-def test_successful_extraction_returns_markdown_and_cleans_up(monkeypatch):
+def test_successful_extraction_returns_text_and_cleans_up(monkeypatch):
     """Extraction succeeds and the temp file is deleted afterward."""
-    patch_pipeline(monkeypatch, markdown_text="# Resume\nSkills: Python")
+    patch_pipeline(monkeypatch, pages_text=("Resume\nSkills: Python",))
     fake_storage = patch_temp_storage(monkeypatch)
 
     result = pdf_extraction.extract_text_from_pdf(pdf_file=object())
 
-    assert result == "# Resume\nSkills: Python"
+    assert result == "Resume\nSkills: Python"
     assert fake_storage.deleted == ["fake.pdf"]
 
 
-def test_conversion_error_becomes_pdf_extraction_error(monkeypatch):
-    """A ConversionError from docling degrades to a clean PdfExtractionError."""
-    patch_pipeline(monkeypatch, convert_exception=ConversionError("bad structure"))
+def test_successful_extraction_joins_multiple_pages(monkeypatch):
+    """Extraction concatenates text from every page, separated by a blank line."""
+    patch_pipeline(monkeypatch, pages_text=("page one", "page two"))
+    patch_temp_storage(monkeypatch)
+
+    result = pdf_extraction.extract_text_from_pdf(pdf_file=object())
+
+    assert result == "page one\n\npage two"
+
+
+def test_parse_error_becomes_pdf_extraction_error(monkeypatch):
+    """A PDFSyntaxError from pdfplumber degrades to a clean PdfExtractionError."""
+    patch_pipeline(monkeypatch, open_exception=PDFSyntaxError("bad structure"))
     fake_storage = patch_temp_storage(monkeypatch)
 
     with pytest.raises(
@@ -110,18 +107,18 @@ def test_conversion_error_becomes_pdf_extraction_error(monkeypatch):
     assert fake_storage.deleted == ["fake.pdf"]
 
 
-def test_non_conversion_error_from_docling_is_not_swallowed(monkeypatch):
-    """A docling bug unrelated to conversion must propagate as-is, not as PdfExtractionError."""
-    patch_pipeline(monkeypatch, convert_exception=AttributeError("internal docling bug"))
+def test_non_parse_error_from_pdfplumber_is_not_swallowed(monkeypatch):
+    """A pdfplumber bug unrelated to parsing must propagate as-is, not as PdfExtractionError."""
+    patch_pipeline(monkeypatch, open_exception=AttributeError("internal pdfplumber bug"))
     patch_temp_storage(monkeypatch)
 
-    with pytest.raises(AttributeError, match="internal docling bug"):
+    with pytest.raises(AttributeError, match="internal pdfplumber bug"):
         pdf_extraction.extract_text_from_pdf(pdf_file=object())
 
 
-def test_empty_markdown_raises_pdf_extraction_error(monkeypatch):
-    """Whitespace-only extracted markdown degrades to a clean PdfExtractionError."""
-    patch_pipeline(monkeypatch, markdown_text="   ")
+def test_empty_text_raises_pdf_extraction_error(monkeypatch):
+    """Whitespace-only extracted text degrades to a clean PdfExtractionError."""
+    patch_pipeline(monkeypatch, pages_text=("   ",))
     fake_storage = patch_temp_storage(monkeypatch)
 
     with pytest.raises(pdf_extraction.PdfExtractionError, match="texto utilizável"):
@@ -142,9 +139,9 @@ def test_temp_file_save_failure_becomes_pdf_extraction_error(monkeypatch):
         pdf_extraction.extract_text_from_pdf(pdf_file=object())
 
 
-def test_temp_file_delete_failure_does_not_mask_conversion_error(monkeypatch, caplog):
-    """A failed cleanup must not replace the real conversion error with an OSError."""
-    patch_pipeline(monkeypatch, convert_exception=ConversionError("bad structure"))
+def test_temp_file_delete_failure_does_not_mask_parse_error(monkeypatch, caplog):
+    """A failed cleanup must not replace the real parse error with an OSError."""
+    patch_pipeline(monkeypatch, open_exception=PDFSyntaxError("bad structure"))
     patch_temp_storage(monkeypatch, delete_exception=OSError("permission denied"))
 
     with caplog.at_level(logging.WARNING):
@@ -158,11 +155,11 @@ def test_temp_file_delete_failure_does_not_mask_conversion_error(monkeypatch, ca
 
 def test_temp_file_delete_failure_does_not_break_happy_path(monkeypatch, caplog):
     """A failed temp-file delete logs a warning but does not break a successful extraction."""
-    patch_pipeline(monkeypatch, markdown_text="# Resume")
+    patch_pipeline(monkeypatch, pages_text=("Resume",))
     patch_temp_storage(monkeypatch, delete_exception=OSError("permission denied"))
 
     with caplog.at_level(logging.WARNING):
         result = pdf_extraction.extract_text_from_pdf(pdf_file=object())
 
-    assert result == "# Resume"
+    assert result == "Resume"
     assert "failed to delete temp file" in caplog.text

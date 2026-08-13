@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pesquisa: Preparação para entrevistas em tecnologia (50 respostas)</title>
+<style>
+  :root {
+    --surface-2: #ffffff;
+    --surface-1: #f5f4f0;
+    --surface-0: #fcfcfb;
+    --text-primary: #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted: #898781;
+    --border: rgba(11,11,11,0.10);
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--surface-0);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 2rem 1rem 4rem;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 22px; font-weight: 500; margin: 0 0 0.25rem; }
+  .subtitle { font-size: 14px; color: var(--text-secondary); margin: 0 0 2rem; }
+  h2 { font-size: 16px; font-weight: 500; margin: 2.5rem 0 0.75rem; }
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 1rem;
+  }
+  .metric-card {
+    background: var(--surface-1);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+  }
+  .metric-card .label { font-size: 13px; color: var(--text-secondary); }
+  .metric-card .value { font-size: 26px; font-weight: 500; margin-top: 4px; }
+  .card {
+    background: var(--surface-2);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
+  .chart-box { position: relative; width: 100%; }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 600px) {
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+  footer {
+    margin-top: 3rem;
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Pesquisa: preparação para entrevistas em tecnologia</h1>
+  <p class="subtitle">50 respostas &middot; gerado a partir dos dados exportados do Google Forms</p>
+
+  <div class="metrics">
+    <div class="metric-card"><div class="label">Respostas</div><div class="value">50</div></div>
+    <div class="metric-card"><div class="label">Em transição de carreira</div><div class="value">58%</div></div>
+    <div class="metric-card"><div class="label">Já fez entrevista técnica</div><div class="value">42%</div></div>
+    <div class="metric-card"><div class="label">Gênero feminino</div><div class="value">74%</div></div>
+  </div>
+
+  <h2>Nível de experiência</h2>
+  <div class="card"><div class="chart-box" style="height:240px;">
+    <canvas id="chartExp" role="img" aria-label="Nível de experiência: Estudante 22, Estagiário 6, Júnior 17, Pleno 3, Sênior 2">Estudante 22, Estagiário 6, Júnior 17, Pleno 3, Sênior 2</canvas>
+  </div></div>
+
+  <h2>Área buscando ou de atuação</h2>
+  <div class="card"><div class="chart-box" style="height:300px;">
+    <canvas id="chartArea" role="img" aria-label="Área: Dados 18, Desenvolvimento web 10, QA 5, Cibersegurança 3, Ainda não decidi 4, AI/ML 2, UX/UI 2, DevOps 1, outros 5">Área de atuação buscada pelos respondentes</canvas>
+  </div></div>
+
+  <h2>Nível de formação na área tech</h2>
+  <div class="card"><div class="chart-box" style="height:280px;">
+    <canvas id="chartForm" role="img" aria-label="Formação: Bacharelado/Tecnólogo 16, Não possuo formação 8, Bootcamp 8, Cursos livres 7, Pós-graduação/MBA 5, Mestrado 2, Técnico 1, Doutorado 0, outros 3">Formação dos respondentes na área de tecnologia</canvas>
+  </div></div>
+
+  <div class="grid-2" style="margin-top: 2.5rem;">
+    <div>
+      <h2 style="margin-top:0;">Em transição de carreira?</h2>
+      <div class="card"><div class="chart-box" style="height:220px;">
+        <canvas id="chartTrans" role="img" aria-label="Transição de carreira: Sim 29, Não 21">Sim 29, Não 21</canvas>
+      </div></div>
+    </div>
+    <div>
+      <h2 style="margin-top:0;">Já fez entrevista técnica?</h2>
+      <div class="card"><div class="chart-box" style="height:220px;">
+        <canvas id="chartTec" role="img" aria-label="Entrevista técnica: Sim 21, Não 29">Sim 21, Não 29</canvas>
+      </div></div>
+    </div>
+  </div>
+
+  <h2>Sensação de preparo antes de um processo seletivo (1 = nada preparado, 5 = muito preparado)</h2>
+  <div class="card"><div class="chart-box" style="height:240px;">
+    <canvas id="chartPrep" role="img" aria-label="Nível de preparo: 1 tem 13 respostas, 2 tem 8, 3 tem 21, 4 tem 4, 5 tem 4">Nível de preparo declarado pelos respondentes</canvas>
+  </div></div>
+
+  <h2>Principais dificuldades em entrevistas técnicas (top 8)</h2>
+  <div class="card"><div class="chart-box" style="height:380px;">
+    <canvas id="chartDif" role="img" aria-label="Dificuldades: nunca participei de entrevista técnica 17, falta de prática com desafios reais 17, não entendo o nível esperado pelas empresas 17, não sei quais conteúdos estudar 16, não sei se estou preparado 14, receber pouco feedback 11, ansiedade ou nervosismo 10, entender o que o entrevistador avalia 10">Principais dificuldades relatadas pelos respondentes</canvas>
+  </div></div>
+
+  <footer>Dashboard gerado a partir das respostas do formulário &middot; Chart.js</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+const muted = isDark ? '#c3c2b7' : '#52514e';
+const grid = isDark ? '#2c2c2a' : '#e1e0d9';
+Chart.defaults.color = muted;
+Chart.defaults.font.size = 12;
+
+const baseBar = {
+  responsive: true, maintainAspectRatio: false,
+  plugins: { legend: { display: false } },
+  scales: {
+    x: { grid: { display: false } },
+    y: { beginAtZero: true, grid: { color: grid }, ticks: { precision: 0 } }
+  }
+};
+
+const baseHBar = {
+  responsive: true, maintainAspectRatio: false,
+  plugins: { legend: { display: false } },
+  indexAxis: 'y',
+  scales: {
+    y: { grid: { display: false } },
+    x: { beginAtZero: true, grid: { color: grid }, ticks: { precision: 0 } }
+  }
+};
+
+new Chart(document.getElementById('chartExp'), {
+  type: 'bar',
+  data: {
+    labels: ['Estudante','Estagiário','Júnior','Pleno','Sênior'],
+    datasets: [{ data: [22,6,17,3,2], backgroundColor: '#2a78d6', borderRadius: 4, maxBarThickness: 40 }]
+  },
+  options: baseBar
+});
+
+new Chart(document.getElementById('chartArea'), {
+  type: 'bar',
+  data: {
+    labels: ['Dados','Desenv. web','QA','Ainda não decidi','Cibersegurança','AI/ML','UX/UI','DevOps','Outros'],
+    datasets: [{ data: [18,10,5,4,3,2,2,1,5], backgroundColor: '#2a78d6', borderRadius: 4 }]
+  },
+  options: baseHBar
+});
+
+new Chart(document.getElementById('chartForm'), {
+  type: 'bar',
+  data: {
+    labels: ['Bacharelado/Tecn.','Não possui formação','Bootcamp','Cursos livres','Pós-grad/MBA','Mestrado','Técnico','Doutorado','Outros'],
+    datasets: [{ data: [16,8,8,7,5,2,1,0,3], backgroundColor: '#2a78d6', borderRadius: 4 }]
+  },
+  options: baseHBar
+});
+
+function donut(id, labels, data, colors) {
+  new Chart(document.getElementById(id), {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data, backgroundColor: colors, borderColor: isDark ? '#1a1a19' : '#fcfcfb', borderWidth: 2 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '65%',
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 12 } } }
+    }
+  });
+}
+donut('chartTrans', ['Sim','Não'], [29,21], ['#eb6834','#2a78d6']);
+donut('chartTec', ['Sim','Não'], [21,29], ['#1baf7a','#2a78d6']);
+
+new Chart(document.getElementById('chartPrep'), {
+  type: 'bar',
+  data: {
+    labels: ['1','2','3','4','5'],
+    datasets: [{ data: [13,8,21,4,4], backgroundColor: '#2a78d6', borderRadius: 4, maxBarThickness: 50 }]
+  },
+  options: baseBar
+});
+
+new Chart(document.getElementById('chartDif'), {
+  type: 'bar',
+  data: {
+    labels: [
+      'Nunca participei de entrevista técnica',
+      'Falta de prática com desafios reais',
+      'Não entendo o nível esperado pelas empresas',
+      'Não sei quais conteúdos estudar',
+      'Não sei se estou preparado(a)',
+      'Pouco ou nenhum feedback recebido',
+      'Ansiedade ou nervosismo',
+      'Entender o que o entrevistador avalia'
+    ],
+    datasets: [{ data: [17,17,17,16,14,11,10,10], backgroundColor: '#eb6834', borderRadius: 4 }]
+  },
+  options: baseHBar
+});
+</script>
+</body>
+</html>
