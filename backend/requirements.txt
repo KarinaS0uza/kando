@@ -44,12 +44,6 @@ MarkupSafe==3.0.3
 mccabe==0.7.0
 mdurl==0.1.2
 nodeenv==1.10.0
-<<<<<<< HEAD
-numpy==2.5.1
-omegaconf==2.3.1
-opencv-python==5.0.0.93
-=======
->>>>>>> 22a334e (fix(pdf): replace Docling with pdfplumber to reduce memory usage)
 openpyxl==3.1.5
 packaging==26.2
 pdfminer.six==20260107
