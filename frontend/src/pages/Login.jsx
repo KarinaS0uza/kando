@@ -1,8 +1,7 @@
 import "./Login.css";
 import WelcomePanel from "../components/layout/WelcomePanel";
 import JoinForm from "../components/layout/JoinForm";
-import GoogleButton from "../components/layout/GoogleButton";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import joinBackground from "../assets/join-background.png";
 
 export default function Login() {
@@ -27,10 +26,6 @@ export default function Login() {
           buttonText="Entrar"
           formType="login"
         />
-        <div className="login__divider">
-          <span className="login__divider-text">ou</span>
-        </div>
-        <GoogleButton />
       </section>
     </div>
   );

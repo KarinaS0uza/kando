@@ -123,8 +123,7 @@ Todas as rotas autenticadas passam por `ProtectedRoute` (redireciona para
 Fluxo principal (candidato novo, do cadastro ao resultado):
 
 1. **`/` → `/login` ou `/signup`** — `JoinForm` (email/senha, real, via
-   `services/api.js`) ou o botão do Google (mock, ver
-   `components/layout/GoogleButton.jsx`).
+   `services/api.js`).
 2. **`/upload`** — o candidato envia currículo + descrição da vaga (PDF ou
    texto colado). Ao submeter, `UploadProfile` dispara as duas requisições
    de criação (`createResume`/`createJobPosting`) **sem aguardar** e já

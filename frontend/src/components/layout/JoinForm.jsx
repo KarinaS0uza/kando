@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import authService from "../../services/authService";
 import { createUser, login } from "../../services/api";
-import useAuth from "../../hooks/useAuth";
 import { extractErrorMessage } from "../../utils/errors";
 import "./JoinForm.css";
 import PopoverSignup from "../ui/PopoverSignup";
@@ -45,7 +43,6 @@ export default function JoinForm({
   const [errorEmail, setErrorEmail] = useState("");
   const [errorPassword, setErrorPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  //const { login } = useAuth();
   const navigate = useNavigate();
   const [errorClassFullName, setErrorClassFullName] = useState(false);
   const [errorClassEmail, setErrorClassEmail] = useState(false);
