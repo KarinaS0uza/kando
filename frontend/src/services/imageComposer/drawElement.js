@@ -48,6 +48,15 @@ function calcularDimensoesProporcionais(img, { largura, altura } = {}) {
   return { largura: img.width, altura: img.height };
 }
 
+function aplicarCorMonocromatica(ctx, largura, altura, cor) {
+  if (!cor) return;
+
+  ctx.globalCompositeOperation = "source-in";
+  ctx.fillStyle = cor;
+  ctx.fillRect(0, 0, largura, altura);
+  ctx.globalCompositeOperation = "source-over";
+}
+
 export function desenharElemento(
   ctx,
   el,
@@ -95,6 +104,12 @@ export function desenharElemento(
         spriteCtx.filter = el.filtro || "none";
         spriteCtx.drawImage(el.imagemCarregada, 0, 0, largura, altura);
         spriteCtx.filter = "none";
+        aplicarCorMonocromatica(
+          spriteCtx,
+          largura,
+          altura,
+          el.corMonocromatica,
+        );
 
         aplicarFalhaDeTinta(
           spriteCtx,
@@ -105,6 +120,22 @@ export function desenharElemento(
           el.falhaTintaIntensidade,
         );
 
+        ctx.drawImage(spriteCanvas, x, y);
+      } else if (el.corMonocromatica) {
+        // Canvas filters are unreliable on iOS Safari. Recoloring through
+        // source-in preserves the PNG alpha while replacing every visible
+        // border pixel with the requested color on all supported browsers.
+        const spriteCanvas = document.createElement("canvas");
+        spriteCanvas.width = largura;
+        spriteCanvas.height = altura;
+        const spriteCtx = spriteCanvas.getContext("2d");
+        spriteCtx.drawImage(el.imagemCarregada, 0, 0, largura, altura);
+        aplicarCorMonocromatica(
+          spriteCtx,
+          largura,
+          altura,
+          el.corMonocromatica,
+        );
         ctx.drawImage(spriteCanvas, x, y);
       } else {
         ctx.filter = el.filtro || "none";
