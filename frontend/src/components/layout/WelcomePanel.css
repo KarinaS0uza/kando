@@ -58,3 +58,47 @@
 .welcome-panel__instructions-text {
   color: #3c3489;
 }
+
+@media (max-width: 768px) {
+  .welcome-panel {
+    flex: none;
+    padding: 20px 24px;
+    gap: 16px;
+    border-radius: 15px 15px 0 0;
+  }
+
+  .welcome-panel__logo {
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .welcome-panel__logo-img {
+    width: 48px;
+    height: 48px;
+  }
+
+  .welcome-panel__logo-title {
+    margin: 0;
+    font-size: 26px;
+  }
+
+  .welcome-panel__intro,
+  .welcome-panel__instructions {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .welcome-panel {
+    padding: 14px 16px;
+  }
+
+  .welcome-panel__logo-img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .welcome-panel__logo-title {
+    font-size: 22px;
+  }
+}

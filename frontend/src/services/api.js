@@ -6,6 +6,11 @@ const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
 
+// Public authentication endpoints must never inherit a stale session token.
+const publicApiClient = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+});
+
 // Interceptor para adicionar o token automaticamente
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
@@ -18,12 +23,12 @@ apiClient.interceptors.request.use((config) => {
 
 /** Creates a user account. @param {{email: string, password: string, full_name: string}} userInfo */
 export const createUser = (userInfo) => {
-  return apiClient.post(`/users/create/`, userInfo);
+  return publicApiClient.post(`/users/create/`, userInfo);
 };
 
 /** Logs in with email/password, returning the JWT access token + user id. @param {{email: string, password: string}} userInfo */
 export const login = (userInfo) => {
-  return apiClient.post(`/login/`, userInfo);
+  return publicApiClient.post(`/login/`, userInfo);
 };
 
 /** Fetches a user's profile (used for the full name shown on the certificate). @param {string|number} userId */
