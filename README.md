@@ -66,12 +66,17 @@ Para detalhes de implementação de cada parte, veja as docs específicas linkad
 
 | Camada | Stack |
 |---|---|
+## Tecnologias
+
+| Camada | Stack |
+|---|---|
 | **Frontend** | ![React](https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB) ![Vite](https://img.shields.io/badge/Vite_8-646CFF?style=for-the-badge&logo=vite&logoColor=white) ![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=reactrouter&logoColor=white) ![Mantine](https://img.shields.io/badge/Mantine-339AF0?style=for-the-badge&logo=mantine&logoColor=white) ![MUI](https://img.shields.io/badge/MUI-007FFF?style=for-the-badge&logo=mui&logoColor=white) ![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white) ![jsPDF](https://img.shields.io/badge/jsPDF-E34F26?style=for-the-badge&logo=javascript&logoColor=white) |
 | **Backend** | ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white) ![Django](https://img.shields.io/badge/Django_6-092E20?style=for-the-badge&logo=django&logoColor=white) ![DRF](https://img.shields.io/badge/Django_REST_Framework-A30000?style=for-the-badge&logo=django&logoColor=white) |
-| **Banco** | ![SQLite](https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white) |
+| **Banco** | ![SQLite](https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white) ![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white) |
 | **IA** | ![Groq](https://img.shields.io/badge/Groq_API-F55036?style=for-the-badge&logo=groq&logoColor=white) ![Llama](https://img.shields.io/badge/Llama_3.3_70B-0467DF?style=for-the-badge&logo=meta&logoColor=white) ![JSON](https://img.shields.io/badge/JSON_Structured_Output-000000?style=for-the-badge&logo=json&logoColor=white) |
-| **PDFs** | `pdfplumber` e `pypdfium2` para extração de texto e tratamento de arquivos PDF |
+| **PDFs** | ![pdfplumber](https://img.shields.io/badge/pdfplumber-EC1C24?style=for-the-badge&logo=adobeacrobatreader&logoColor=white) ![pypdfium2](https://img.shields.io/badge/pypdfium2-EC1C24?style=for-the-badge&logo=adobeacrobatreader&logoColor=white) |
 | **Autenticação** | ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white) |
+| **Containerização** | ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) |
 | **Deploy** | ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white) ![Railway](https://img.shields.io/badge/Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white) ![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white) |
 
 ## Como rodar localmente
