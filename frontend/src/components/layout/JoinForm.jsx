@@ -26,8 +26,10 @@ const AUTH_ERROR_TRANSLATIONS = {
 };
 
 const PASSWORD_REQUIREMENTS = [
+  { test: /.{8,}/, message: "Senha deve conter no mínimo 8 caracteres." },
   { test: /[A-Z]/, message: "A senha deve conter pelo menos uma letra maiúscula." },
   { test: /[a-z]/, message: "A senha deve conter pelo menos uma letra minúscula." },
+  { test: /\d/, message: "A senha deve conter pelo menos um número." },
   { test: /[^A-Za-z0-9]/, message: "A senha deve conter pelo menos um caractere especial." },
 ];
 
@@ -57,9 +59,7 @@ export default function JoinForm({
   const [password, setPassword] = useState("");
   const [errorFullName, setErrorFullName] = useState("");
   const [errorEmail, setErrorEmail] = useState("");
-  const [errorPassword, setErrorPassword] = useState(
-    formType === "signup" ? getSignupPasswordErrors("") : "",
-  );
+  const [errorPassword, setErrorPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [submitAttempted, setSubmitAttempted] = useState(false);
   const navigate = useNavigate();
@@ -100,15 +100,19 @@ export default function JoinForm({
   }
 
   function checkPassword(value) {
+    if (value == "") {
+      return "";
+    }
+
     if (formType === "signup") {
       const requirementErrors = getSignupPasswordErrors(value);
       if (requirementErrors.length > 0) return requirementErrors;
     }
 
-    if (value == "") {
-      return "";
-    } else if (value.length < 8) {
-      return "Senha inválida. Mínimo de 8 caracteres";
+    if (value.length < 8) {
+      return "Senha deve conter no mínimo 8 caracteres.";
+    } else if (!/\d/.test(value)) {
+      return "A senha deve conter pelo menos um número.";
     } else if (value.length > 100) {
       return "Senha inválida. Máximo de 100 caracteres";
     } else {
@@ -155,11 +159,7 @@ export default function JoinForm({
           : "Nome completo é obrigatório"
         : "";
     const emailError = email ? checkEmail(email) : "E-mail é obrigatório";
-    const passwordError = password
-      ? checkPassword(password)
-      : formType === "signup"
-        ? getSignupPasswordErrors("")
-        : "Senha é obrigatória";
+    const passwordError = password ? checkPassword(password) : "";
 
     setErrorFullName(fullNameError);
     setErrorEmail(emailError);
@@ -168,7 +168,12 @@ export default function JoinForm({
     setErrorClassEmail(Boolean(emailError));
     setErrorClassPassword(hasValidationError(passwordError));
 
-    if (fullNameError || emailError || hasValidationError(passwordError)) return;
+    if (
+      fullNameError ||
+      emailError ||
+      !password ||
+      hasValidationError(passwordError)
+    ) return;
 
     setLoading(true);
     try {

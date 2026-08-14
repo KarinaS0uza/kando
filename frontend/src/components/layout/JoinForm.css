@@ -19,6 +19,7 @@
   flex-direction: column;
   gap: 30px;
   font-size: 16px;
+  width: 100%;
 }
 
 .join__field {
@@ -124,4 +125,16 @@
 }
 .join__account-link {
   text-decoration: none;
+}
+
+@media (max-width: 420px) {
+  .join__fields {
+    gap: 22px;
+  }
+
+  .join__create-account {
+    flex-wrap: wrap;
+    row-gap: 2px;
+    top: -10px;
+  }
 }
