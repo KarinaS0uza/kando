@@ -2,7 +2,7 @@
 
 ## Escopo e autoria
 
-A camada de Backend do Kando foi concebida e desenvolvida por | Karina [![GitHub](https://img.shields.io/badge/GitHub-KarinaS0uza-181717?style=flat&logo=github)](https://github.com/KarinaS0uza) |
+A camada de Backend do Kando foi concebida e desenvolvida por  Karina [![GitHub](https://img.shields.io/badge/GitHub-KarinaS0uza-181717?style=flat&logo=github)](https://github.com/KarinaS0uza) 
 
 ## Visão geral
 
@@ -13,7 +13,7 @@ O backend do Kando é uma API Django REST responsável por autenticação, persi
 - Python e Django 6
 - Django REST Framework
 - JWT (`djangorestframework-simplejwt`)
-- Docling para extração de texto de PDFs
+- `pdfplumber` e `pypdfium2` para extração e processamento de PDFs
 - Groq para chamadas ao modelo de IA
 - SQLite para desenvolvimento local
 - PostgreSQL/Supabase opcional para banco remoto
@@ -46,7 +46,31 @@ Rotas públicas:
 | `POST` | `/api/users/create/` | Cadastro |
 | `POST` | `/api/login/` | Retorna access token, refresh token e `user_id` |
 
+## Configuração
+
+As configurações são carregadas de `backend/.env`. Para executar localmente,
+são necessários ao menos:
+
+```env
+DJANGO_SECRET_KEY=uma_chave_secreta_segura
+DJANGO_DEBUG=True
+DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+DJANGO_CORS_ALLOWED_ORIGINS=http://localhost:5173
+GROQ_API_KEY=sua_chave_aqui
+DATABASE_ENGINE=sqlite
+```
+
+A API usa SQLite por padrão. Para PostgreSQL/Supabase, defina
+`DATABASE_ENGINE=supabase` e as variáveis `DB_NAME`, `DB_USER`,
+`DB_PASSWORD`, `DB_HOST` e `DB_PORT`.
+
 ## Endpoints
+
+### Infraestrutura
+
+| Método | Rota | Finalidade |
+|---|---|---|
+| `GET` | `/health/` | Health check público para monitoramento e deploy |
 
 ### Usuários
 
@@ -62,9 +86,9 @@ Rotas públicas:
 | Método | Rota | Corpo principal |
 |---|---|---|
 | `GET, POST` | `/api/resumes/` | texto bruto ou PDF |
-| `GET` | `/api/resumes/<uuid>/` | — |
+| `GET, DELETE` | `/api/resumes/<uuid>/` | Consulta ou remove um currículo |
 | `GET, POST` | `/api/job-postings/` | texto bruto ou PDF |
-| `GET` | `/api/job-postings/<uuid>/` | — |
+| `GET, DELETE` | `/api/job-postings/<uuid>/` | Consulta ou remove uma vaga |
 
 As submissões são normalizadas. Em caso de falha da IA, o backend registra o estado de erro sem derrubar toda a aplicação.
 
@@ -96,5 +120,14 @@ O resultado do simulado contém avaliação por pergunta, score agregado e dados
 | `GET, POST` | `/api/passports/waiting-readiness/` | autoavaliação de preparo |
 
 Pré-requisitos para gerar um Passport: currículo e vaga normalizados, matching concluído, simulado gerado e respostas corrigidas. Um Passport é único por par currículo/vaga; gerar novamente atualiza o existente.
+
+### Prompts de IA
+
+| Método | Rota | Finalidade |
+|---|---|---|
+| `GET` | `/api/prompts/` | Lista prompts |
+| `POST` | `/api/prompts/create/` | Cria prompt |
+| `GET` | `/api/prompts/<uuid>/` | Consulta prompt |
+| `PUT/PATCH` | `/api/prompts/<uuid>/update/` | Atualiza prompt |
 
 ## Fluxo de dados
