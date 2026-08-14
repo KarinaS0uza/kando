@@ -8,7 +8,7 @@
 |---|---|
 | 🎥 Demo / vídeo | Em breve |
 | 🌐 Produto no ar | Em breve |
-| 📋 Pesquisa de mercado | [Dashboard da pesquisa](docs/dashboard_pesquisa_carreira_tech.html) |
+| 📋 Pesquisa de mercado | [Dashboard da pesquisa](https://deialima.github.io/kando/Pesquisa%20de%20mercado.html) |
 | 💻 Documentação do frontend | [docs/frontend.md](docs/frontend.md) |
 | ⚙️ Documentação do backend | [docs/backend.md](docs/backend.md) |
 | 🤖 Documentação da IA | [docs/ai.md](docs/ai.md) |
@@ -44,8 +44,8 @@ nenhum recrutador alimentando a plataforma.
 - [x] Principais telas conectadas à API: upload, matching, dashboard, simulado, trilha e Passport
 - [x] Importação de currículos e vagas em PDF, com tratamento de falhas de conversão
 - [x] Tratamento de erros de IA: prompt ausente, JSON inválido, limite de uso e erros de configuração
-- [~] Validação end-to-end contra a API real do Groq
-- [~] Deploy em produção
+- [x] Validação end-to-end contra a API real do Groq
+- [x] Deploy em produção
 
 
 ##  Arquitetura
@@ -73,8 +73,6 @@ Para detalhes de implementação de cada parte, veja as docs específicas linkad
 | **PDFs** | `pdfplumber` e `pypdfium2` para extração de texto e tratamento de arquivos PDF |
 | **Autenticação** | ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white) |
 | **Deploy** | ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white) ![Railway](https://img.shields.io/badge/Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white) ![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white) |
-| **Gestão de tarefas** | ![Jira](https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=jira&logoColor=white) |
-
 
 ## Como rodar localmente
 
@@ -161,6 +159,6 @@ Construído para o Hackathon Juninhos-Nortjobs, entre 16/07/2026 e 16/08/2026.
 - [x] Upload por texto ou PDF, com validação e tratamento de falhas
 - [x] Tratamento de erros de IA e persistência de resultados com falha controlada
 - [x] Frontend conectado aos principais endpoints da API
-- [~] Validação end-to-end com a API real do Groq
-- [~] Configuração e validação final de deploy
+- [x] Validação end-to-end com a API real do Groq
+- [x] Configuração e validação final de deploy
 
