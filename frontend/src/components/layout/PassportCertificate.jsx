@@ -266,7 +266,7 @@ function resolverIcone(skill) {
 function aplicarValidacao(validado, corOriginal, nivelOriginal) {
   return {
     cor: validado ? corOriginal : CINZA_NAO_VALIDADO,
-    filtro: validado ? "none" : "grayscale(1) brightness(1.5)",
+    corMonocromatica: validado ? null : CINZA_NAO_VALIDADO,
     elementosExtras: validado
       ? []
       : [
@@ -462,7 +462,7 @@ function construirLayoutsDeCarimbo() {
 }
 
 function montarCarimbo(layout, competencia) {
-  const { cor, filtro, elementosExtras, nivel } = aplicarValidacao(
+  const { cor, corMonocromatica, elementosExtras, nivel } = aplicarValidacao(
     competencia.validado,
     layout.corOriginal,
     competencia.nivel,
@@ -474,7 +474,7 @@ function montarCarimbo(layout, competencia) {
     yPercent: layout.yPercent,
     largura: 300,
     cor,
-    filtro,
+    corMonocromatica,
     elementos: [
       {
         tipo: "texto",

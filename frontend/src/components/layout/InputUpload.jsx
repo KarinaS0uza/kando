@@ -4,7 +4,7 @@ import { useDropzone } from "react-dropzone";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 import uploadIcon from "../../assets/upload-icon.svg";
 import deleteIcon from "../../assets/delete-icon.svg";
@@ -71,29 +71,6 @@ export default function InputUpload({ onFileChange }) {
 
   return (
     <>
-      <Toaster
-        position="top-right"
-        containerStyle={{
-          top: 70,
-          left: 20,
-          bottom: 20,
-          right: 20,
-        }}
-        toastOptions={{
-          style: {
-            background: "#1e1e2f",
-            color: "#fff",
-          },
-          success: {
-            style: { background: "#16a34a", color: "#fff" },
-            iconTheme: { primary: "#fff", secondary: "#16a34a" },
-          },
-          error: {
-            style: { background: "#dc2626", color: "#fff" },
-            iconTheme: { primary: "#fff", secondary: "#dc2626" },
-          },
-        }}
-      />
       <section
         className={[
           "upload__input",

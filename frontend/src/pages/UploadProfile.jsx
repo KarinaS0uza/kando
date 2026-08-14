@@ -1,11 +1,12 @@
 import Header from "../components/layout/Header";
 import "./UploadProfile.css";
 import InputUpload from "../components/layout/InputUpload";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import textFieldIcon from "../assets/text-field.svg";
-import { useNavigate } from "react-router-dom";
-import { login, createJobPosting, createResume } from "../services/api";
+import { useLocation, useNavigate } from "react-router-dom";
+import { createJobPosting, createResume } from "../services/api";
 import { setUploadPromises } from "../utils/uploadTracker";
+import { Toaster, toast } from "react-hot-toast";
 
 export default function UploadProfile() {
   const [resumeFile, setResumeFile] = useState(null);
@@ -15,6 +16,18 @@ export default function UploadProfile() {
   const [jobText, setJobText] = useState(null);
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const uploadError = location.state?.uploadError;
+    if (!uploadError) return;
+
+    toast.error(uploadError, {
+      id: "returned-upload-error",
+      duration: 10000,
+    });
+    navigate(location.pathname, { replace: true, state: null });
+  }, [location.pathname, location.state, navigate]);
 
   function isTextInvalid(text) {
     return !text || text.length < 150 || text.length > 20000;
@@ -44,6 +57,16 @@ export default function UploadProfile() {
 
   return (
     <>
+      <Toaster
+        position="top-right"
+        containerStyle={{ top: 64, left: 12, right: 12, zIndex: 11000 }}
+        toastOptions={{
+          style: {
+            maxWidth: "min(420px, calc(100vw - 24px))",
+            overflowWrap: "anywhere",
+          },
+        }}
+      />
       <Header menuActive={false} />
       <div className="upload">
         <h1 className="upload__title">Compare suas habilidades</h1>
@@ -136,9 +159,9 @@ export default function UploadProfile() {
 
           <div className="upload__compare-button-wrap">
             <button
+              type="submit"
               className="upload__compare-button"
               disabled={!resumeOk || !jobOk}
-              onClick={handleSubmit}
             >
               Avançar
             </button>
