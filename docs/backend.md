@@ -2,7 +2,7 @@
 
 ## Escopo e autoria
 
-A camada de Backend do Kando foi concebida e desenvolvida por  Karina [![GitHub](https://img.shields.io/badge/GitHub-KarinaS0uza-181717?style=flat&logo=github)](https://github.com/KarinaS0uza) |
+A camada de Backend do Kando foi concebida e desenvolvida por  Karina [![GitHub](https://img.shields.io/badge/GitHub-KarinaS0uza-181717?style=flat&logo=github)](https://github.com/KarinaS0uza) 
 
 ## Visão geral
 

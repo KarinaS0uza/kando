@@ -2,7 +2,7 @@
 
 ## Escopo e autoria
 
-A camada de Frontend do Kando foi concebida e desenvolvida por  Nícolas [![GitHub](https://img.shields.io/badge/GitHub-NicolasSG-181717?style=flat&logo=github)](https://github.com/NicolasSG) |
+A camada de Frontend do Kando foi concebida e desenvolvida por  Nícolas [![GitHub](https://img.shields.io/badge/GitHub-NicolasSG-181717?style=flat&logo=github)](https://github.com/NicolasSG) 
 
 ## Visão geral
 

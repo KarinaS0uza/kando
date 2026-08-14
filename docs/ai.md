@@ -2,7 +2,7 @@
 
 ## Escopo e autoria
 
-A camada de IA do Kando foi concebida e desenvolvida por  Andreia [![GitHub](https://img.shields.io/badge/GitHub-Deialima-181717?style=flat&logo=github)](https://github.com/Deialima) |: prompts, contratos JSON, regras de negócio, validações e testes locais. O backend Django realiza sua integração ao produto, oferecendo persistência, endpoints, autenticação e orquestração.
+A camada de IA do Kando foi concebida e desenvolvida por  Andreia [![GitHub](https://img.shields.io/badge/GitHub-Deialima-181717?style=flat&logo=github)](https://github.com/Deialima): prompts, contratos JSON, regras de negócio, validações e testes locais. O backend Django realiza sua integração ao produto, oferecendo persistência, endpoints, autenticação e orquestração.
 
 Esta documentação descreve a camada de IA como uma área própria do produto; ela não é apenas um detalhe interno do backend.
 
