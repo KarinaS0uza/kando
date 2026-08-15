@@ -55,4 +55,13 @@ def generate_assessment(resume_structured_data: dict, job_structured_data: dict)
         missing_prompt_message="Prompt de geração da avaliação não configurado",
         timeout=REQUEST_TIMEOUT_SECONDS,
     )
-    return result if "error" in result else canonicalize_json(result)
+    if "error" in result:
+        return result
+
+    canonical = canonicalize_json(result)
+    if not isinstance(canonical, dict) or not isinstance(canonical.get("blocks"), list):
+        return {
+            "error": "O LLM retornou a avaliação em formato inesperado",
+            "retryable": True,
+        }
+    return canonical
