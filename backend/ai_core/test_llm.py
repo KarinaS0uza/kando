@@ -80,6 +80,20 @@ class TestRunPromptErrorClassification:
         assert call.output_text == "not json"
 
     @pytest.mark.django_db
+    def test_non_dict_json_raises_and_logs_invalid_json(self, active_prompt, monkeypatch):
+        """A top-level JSON array (valid JSON, wrong shape) is treated as invalid JSON,
+        since every prompt's contract expects a top-level object."""
+        monkeypatch.setattr(
+            llm, "clients", [make_fake_client([make_success_response('[{"ok": true}]')])]
+        )
+
+        with pytest.raises(json.JSONDecodeError):
+            llm.run_prompt(active_prompt.prompt_description, {"name": "x"})
+
+        call = PromptCallMetadata.objects.get()
+        assert call.status == PromptCallMetadata.Status.INVALID_JSON
+
+    @pytest.mark.django_db
     def test_rate_limit_raises_and_logs(self, active_prompt, monkeypatch):
         """A RateLimitError still failing on the wait-and-retry attempt raises and logs RATE_LIMITED."""
         exc = make_groq_error(RateLimitError, 429)
@@ -294,6 +308,45 @@ class TestMultiKeyFallback:
             llm.run_prompt(active_prompt.prompt_description, {"name": "x"})
 
         untouched_client.chat.completions.create.assert_not_called()
+
+    @pytest.mark.django_db
+    def test_retries_same_key_once_after_json_validation_error_then_succeeds(
+        self, active_prompt, monkeypatch
+    ):
+        """A 400 where the model failed its own json_object constraint is
+        retried on the same key -- it's model variance, not a real config
+        problem -- and if that retry succeeds, the call completes normally."""
+        exc = make_groq_error(
+            BadRequestError, 400, message="Failed to validate JSON. Please adjust your prompt."
+        )
+        client = make_fake_client([exc, make_success_response('{"ok": true}')])
+        monkeypatch.setattr(llm, "clients", [client])
+
+        result = llm.run_prompt(active_prompt.prompt_description, {"name": "x"})
+
+        assert result == {"ok": True}
+        assert client.chat.completions.create.call_count == 2
+        call = PromptCallMetadata.objects.get()
+        assert call.status == PromptCallMetadata.Status.SUCCESS
+
+    @pytest.mark.django_db
+    def test_falls_back_to_next_key_when_json_validation_error_persists(
+        self, active_prompt, monkeypatch
+    ):
+        """A first key failing json validation on both its attempt and its
+        retry falls back to a working second key."""
+        exc = make_groq_error(
+            BadRequestError, 400, message="Failed to validate JSON. Please adjust your prompt."
+        )
+        failing_client = make_fake_client([exc, exc])
+        working_client = make_fake_client([make_success_response('{"ok": true}')])
+        monkeypatch.setattr(llm, "clients", [failing_client, working_client])
+
+        result = llm.run_prompt(active_prompt.prompt_description, {"name": "x"})
+
+        assert result == {"ok": True}
+        assert failing_client.chat.completions.create.call_count == 2
+        working_client.chat.completions.create.assert_called_once()
 
 
 class TestRateLimitWaitSeconds:
