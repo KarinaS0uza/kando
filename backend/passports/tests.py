@@ -339,7 +339,7 @@ def test_generate_professional_profile_returns_error_dict_on_llm_failure(monkeyp
         lambda *args, **kwargs: {"error": "Falha ao chamar o LLM: boom", "retryable": True},
     )
 
-    result = profile_recommendations.generate_professional_profile({}, {}, {})
+    result = profile_recommendations.generate_professional_profile({}, {}, {"aggregation": {}})
 
     assert result == {"error": "Falha ao chamar o LLM: boom", "retryable": True}
 
@@ -351,7 +351,7 @@ def test_generate_professional_profile_degrades_on_malformed_llm_shape(monkeypat
         lambda *args, **kwargs: {"talent_passport": {"competencies": ["React"]}},
     )
 
-    result = profile_recommendations.generate_professional_profile({}, {}, {})
+    result = profile_recommendations.generate_professional_profile({}, {}, {"aggregation": {}})
 
     assert result["error"]
     assert result["retryable"] is True
@@ -365,7 +365,9 @@ def test_generate_professional_profile_success_attaches_proficiency(monkeypatch)
     )
     resume_data = {"technical_skills": [{"name": "React", "confidence_level": 0.9}]}
 
-    result = profile_recommendations.generate_professional_profile(resume_data, {}, {})
+    result = profile_recommendations.generate_professional_profile(
+        resume_data, {}, {"aggregation": {}}
+    )
 
     competency = result["talent_passport"]["competencies"][0]
     assert competency["proficiency_level"] == "expert"
