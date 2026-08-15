@@ -41,7 +41,7 @@ def load_api_keys() -> list[str | None]:
 
 API_KEYS = load_api_keys()
 clients = [Groq(api_key=key) for key in API_KEYS]
-MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
+MODEL = os.environ.get("GROQ_MODEL", "openai/gpt-oss-120b")
 
 
 def create_completion(request_kwargs: dict):
