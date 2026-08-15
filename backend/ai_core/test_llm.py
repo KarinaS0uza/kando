@@ -22,10 +22,10 @@ from . import llm
 from .models import Prompt, PromptCallMetadata
 
 
-def make_groq_error(error_cls, status_code, message="groq error"):
+def make_groq_error(error_cls, status_code, message="groq error", headers=None):
     """Build a real Groq SDK exception instance with a minimal httpx response."""
     request = httpx.Request("POST", "https://api.groq.com/openai/v1/chat/completions")
-    response = httpx.Response(status_code=status_code, request=request)
+    response = httpx.Response(status_code=status_code, request=request, headers=headers or {})
     return error_cls(message, response=response, body=None)
 
 
@@ -81,9 +81,10 @@ class TestRunPromptErrorClassification:
 
     @pytest.mark.django_db
     def test_rate_limit_raises_and_logs(self, active_prompt, monkeypatch):
-        """A RateLimitError from the only configured key raises and logs RATE_LIMITED."""
+        """A RateLimitError still failing on the wait-and-retry attempt raises and logs RATE_LIMITED."""
         exc = make_groq_error(RateLimitError, 429)
-        monkeypatch.setattr(llm, "clients", [make_fake_client([exc])])
+        monkeypatch.setattr(llm.time, "sleep", lambda seconds: None)
+        monkeypatch.setattr(llm, "clients", [make_fake_client([exc, exc])])
 
         with pytest.raises(RateLimitError):
             llm.run_prompt(active_prompt.prompt_description, {"name": "x"})
@@ -171,9 +172,10 @@ class TestRunPromptSafe:
 
     @pytest.mark.django_db
     def test_rate_limit_is_retryable(self, active_prompt, monkeypatch):
-        """A rate limit is reported as retryable with a user-facing PT-BR message."""
+        """A rate limit still failing after the wait-and-retry is reported as retryable with a user-facing PT-BR message."""
         exc = make_groq_error(RateLimitError, 429)
-        monkeypatch.setattr(llm, "clients", [make_fake_client([exc])])
+        monkeypatch.setattr(llm.time, "sleep", lambda seconds: None)
+        monkeypatch.setattr(llm, "clients", [make_fake_client([exc, exc])])
 
         result = llm.run_prompt_safe(
             active_prompt.prompt_description, {"name": "x"}, missing_prompt_message="x"
@@ -220,16 +222,34 @@ class TestMultiKeyFallback:
     """create_completion must fail over across keys only for key-specific errors."""
 
     @pytest.mark.django_db
+    def test_retries_same_key_once_after_rate_limit_then_succeeds(self, active_prompt, monkeypatch):
+        """A rate limit is retried on the same key and, if that retry
+        succeeds, the call completes normally without moving to another key."""
+        exc = make_groq_error(RateLimitError, 429)
+        client = make_fake_client([exc, make_success_response('{"ok": true}')])
+        monkeypatch.setattr(llm.time, "sleep", lambda seconds: None)
+        monkeypatch.setattr(llm, "clients", [client])
+
+        result = llm.run_prompt(active_prompt.prompt_description, {"name": "x"})
+
+        assert result == {"ok": True}
+        assert client.chat.completions.create.call_count == 2
+        call = PromptCallMetadata.objects.get()
+        assert call.status == PromptCallMetadata.Status.SUCCESS
+
+    @pytest.mark.django_db
     def test_falls_back_to_next_key_on_rate_limit(self, active_prompt, monkeypatch):
-        """A rate-limited first key falls back to a working second key."""
-        failing_client = make_fake_client([make_groq_error(RateLimitError, 429)])
+        """A first key rate-limited on both its attempt and its retry falls back to a working second key."""
+        exc = make_groq_error(RateLimitError, 429)
+        failing_client = make_fake_client([exc, exc])
         working_client = make_fake_client([make_success_response('{"ok": true}')])
+        monkeypatch.setattr(llm.time, "sleep", lambda seconds: None)
         monkeypatch.setattr(llm, "clients", [failing_client, working_client])
 
         result = llm.run_prompt(active_prompt.prompt_description, {"name": "x"})
 
         assert result == {"ok": True}
-        failing_client.chat.completions.create.assert_called_once()
+        assert failing_client.chat.completions.create.call_count == 2
         working_client.chat.completions.create.assert_called_once()
         call = PromptCallMetadata.objects.get()
         assert call.status == PromptCallMetadata.Status.SUCCESS
@@ -247,11 +267,12 @@ class TestMultiKeyFallback:
 
     @pytest.mark.django_db
     def test_raises_last_error_when_all_keys_exhausted(self, active_prompt, monkeypatch):
-        """When every key fails, the last key's error is the one raised and logged."""
+        """When every key fails on both its attempt and its retry, the last key's error is the one raised and logged."""
         first_exc = make_groq_error(RateLimitError, 429, message="first key limited")
         second_exc = make_groq_error(RateLimitError, 429, message="second key limited")
-        client_a = make_fake_client([first_exc])
-        client_b = make_fake_client([second_exc])
+        client_a = make_fake_client([first_exc, first_exc])
+        client_b = make_fake_client([second_exc, second_exc])
+        monkeypatch.setattr(llm.time, "sleep", lambda seconds: None)
         monkeypatch.setattr(llm, "clients", [client_a, client_b])
 
         with pytest.raises(RateLimitError) as excinfo:
@@ -273,6 +294,38 @@ class TestMultiKeyFallback:
             llm.run_prompt(active_prompt.prompt_description, {"name": "x"})
 
         untouched_client.chat.completions.create.assert_not_called()
+
+
+class TestRateLimitWaitSeconds:
+    """rate_limit_wait_seconds must read the retry-after header, fall back to
+    the message text, then a fixed default -- always capped at the maximum.
+    """
+
+    def test_reads_retry_after_header(self):
+        """The retry-after response header takes precedence when present."""
+        exc = make_groq_error(RateLimitError, 429, headers={"retry-after": "3.5"})
+
+        assert llm.rate_limit_wait_seconds(exc) == 3.5
+
+    def test_parses_wait_from_message_when_header_missing(self):
+        """Without a header, the wait is parsed from Groq's message text."""
+        exc = make_groq_error(
+            RateLimitError, 429, message="rate limited, please try again in 2.085s"
+        )
+
+        assert llm.rate_limit_wait_seconds(exc) == 2.085
+
+    def test_falls_back_to_default_when_nothing_available(self):
+        """With neither a header nor a parseable message, use the fixed default."""
+        exc = make_groq_error(RateLimitError, 429, message="rate limited")
+
+        assert llm.rate_limit_wait_seconds(exc) == llm.RATE_LIMIT_DEFAULT_WAIT_SECONDS
+
+    def test_caps_wait_at_maximum(self):
+        """A very long indicated wait is capped so a single call can't hang the request."""
+        exc = make_groq_error(RateLimitError, 429, headers={"retry-after": "999"})
+
+        assert llm.rate_limit_wait_seconds(exc) == llm.RATE_LIMIT_MAX_WAIT_SECONDS
 
 
 class TestLoadApiKeys:

@@ -11,6 +11,7 @@ rejected.
 import json
 import logging
 import os
+import re
 import time
 from string import Template
 
@@ -26,6 +27,10 @@ from groq import (
 from .models import Prompt, PromptCallMetadata
 
 logger = logging.getLogger(__name__)
+
+RATE_LIMIT_MAX_WAIT_SECONDS = 10.0
+RATE_LIMIT_DEFAULT_WAIT_SECONDS = 2.0
+RETRY_AFTER_MESSAGE_PATTERN = re.compile(r"try again in ([\d.]+)s")
 
 
 def load_api_keys() -> list[str | None]:
@@ -44,15 +49,56 @@ clients = [Groq(api_key=key) for key in API_KEYS]
 MODEL = os.environ.get("GROQ_MODEL", "openai/gpt-oss-120b")
 
 
+def rate_limit_wait_seconds(exc: RateLimitError) -> float:
+    """Return how long to wait before retrying a rate-limited call.
+
+    Reads the standard ``retry-after`` response header first, falling back to
+    parsing Groq's "please try again in Xs" message text, and finally a fixed
+    default. Capped at RATE_LIMIT_MAX_WAIT_SECONDS so a single call can't hold
+    up the caller's request indefinitely.
+    """
+    header_value = exc.response.headers.get("retry-after") if exc.response is not None else None
+    if header_value is not None:
+        try:
+            return min(float(header_value), RATE_LIMIT_MAX_WAIT_SECONDS)
+        except ValueError:
+            pass
+    match = RETRY_AFTER_MESSAGE_PATTERN.search(str(exc))
+    if match:
+        return min(float(match.group(1)), RATE_LIMIT_MAX_WAIT_SECONDS)
+    return RATE_LIMIT_DEFAULT_WAIT_SECONDS
+
+
 def create_completion(request_kwargs: dict):
-    """Call chat.completions.create, falling back to the next key on
-    rate-limit or auth/permission errors from the current one.
+    """Call chat.completions.create, waiting out a rate limit once per key
+    before falling back to the next key on a repeated rate-limit or an
+    auth/permission error from the current one.
     """
     last_exc: Exception | None = None
     for index, client in enumerate(clients):
         try:
             return client.chat.completions.create(**request_kwargs)
-        except (RateLimitError, AuthenticationError, PermissionDeniedError) as exc:
+        except RateLimitError as exc:
+            wait_seconds = rate_limit_wait_seconds(exc)
+            logger.warning(
+                "llm: key %d/%d rate limited, waiting %.2fs before retrying",
+                index + 1,
+                len(clients),
+                wait_seconds,
+            )
+            time.sleep(wait_seconds)
+            try:
+                return client.chat.completions.create(**request_kwargs)
+            except (RateLimitError, AuthenticationError, PermissionDeniedError) as retry_exc:
+                last_exc = retry_exc
+                if index < len(clients) - 1:
+                    logger.warning(
+                        "llm: key %d/%d failed again (%s), falling back to next key",
+                        index + 1,
+                        len(clients),
+                        type(retry_exc).__name__,
+                    )
+        except (AuthenticationError, PermissionDeniedError) as exc:
             last_exc = exc
             if index < len(clients) - 1:
                 logger.warning(
