@@ -4,14 +4,25 @@ import { useNavigate } from "react-router-dom";
 import LoadingOverlay from "../components/ui/LoadingOverlay";
 import "./Reliability.css";
 import { useEffect, useState } from "react";
-import { waitForUploads, startMatch, startQuestions } from "../utils/uploadTracker";
+import {
+  waitForUploads,
+  startMatch,
+  startQuestions,
+} from "../utils/uploadTracker";
 import { submitReadinessSelfAssessment } from "../services/talentPassportService";
 import { Toaster, toast } from "react-hot-toast";
 import { extractErrorMessage } from "../utils/errors";
 
-function getUploadError(result, documentLabel, fallback) {
+function getUploadError(result, fallback) {
   if (result.status !== "rejected") return null;
-  return `${documentLabel}: ${extractErrorMessage(result.reason) || fallback}`;
+  return extractErrorMessage(result.reason) || fallback;
+}
+
+function getUploadErrors(jobResult, resumeResult) {
+  return [
+    getUploadError(jobResult, "Não foi possível processar a vaga."),
+    getUploadError(resumeResult, "Não foi possível processar o currículo."),
+  ].filter(Boolean);
 }
 
 export default function Reliability() {
@@ -22,39 +33,21 @@ export default function Reliability() {
 
   useEffect(() => {
     let cancelled = false;
-    let redirectTimer;
 
     waitForUploads().then(([jobResult, resumeResult]) => {
       if (cancelled) return;
 
-      const jobError = getUploadError(
-        jobResult,
-        "Descrição da vaga",
-        "Não foi possível processar a vaga.",
-      );
-      const resumeError = getUploadError(
-        resumeResult,
-        "Currículo",
-        "Não foi possível processar o currículo.",
-      );
-
-      if (jobError) toast.error(jobError, { id: "job-upload-error" });
-      if (resumeError) toast.error(resumeError, { id: "resume-upload-error" });
-
-      if (jobError || resumeError) {
-        const uploadError = jobError || resumeError;
-        redirectTimer = window.setTimeout(() => {
-          navigate("/upload", {
-            replace: true,
-            state: { uploadError },
-          });
-        }, 4000);
+      const uploadErrors = getUploadErrors(jobResult, resumeResult);
+      if (uploadErrors.length > 0) {
+        navigate("/upload", {
+          replace: true,
+          state: { uploadError: uploadErrors.join("\n") },
+        });
       }
     });
 
     return () => {
       cancelled = true;
-      window.clearTimeout(redirectTimer);
     };
   }, [navigate]);
 
@@ -64,23 +57,12 @@ export default function Reliability() {
 
     try {
       const [jobResult, resumeResult] = await waitForUploads();
-      if (jobResult.status === "rejected") {
-        const message = getUploadError(
-          jobResult,
-          "Descrição da vaga",
-          "Não foi possível processar a vaga.",
-        );
-        toast.error(message, { id: "job-upload-error" });
-        return;
-      }
-
-      if (resumeResult.status === "rejected") {
-        const message = getUploadError(
-          resumeResult,
-          "Currículo",
-          "Não foi possível processar o currículo.",
-        );
-        toast.error(message, { id: "resume-upload-error" });
+      const uploadErrors = getUploadErrors(jobResult, resumeResult);
+      if (uploadErrors.length > 0) {
+        navigate("/upload", {
+          replace: true,
+          state: { uploadError: uploadErrors.join("\n") },
+        });
         return;
       }
 
@@ -135,14 +117,20 @@ export default function Reliability() {
             <p className="rely__question-title">
               1. O quão preparado você se sente para essa vaga?
             </p>
-            <Slider value={perceivedPreparation} onChange={setPerceivedPreparation} />
+            <Slider
+              value={perceivedPreparation}
+              onChange={setPerceivedPreparation}
+            />
           </div>
           <div className="rely__question--2">
             <p className="rely__question-title">
               2. Qual o percentual de requisitos da vaga você acha que deve
               alcançar antes de aplicar?
             </p>
-            <Slider value={applicationThreshold} onChange={setApplicationThreshold} />
+            <Slider
+              value={applicationThreshold}
+              onChange={setApplicationThreshold}
+            />
           </div>
           <button className="rely__compare-button">Comparar</button>
         </form>
