@@ -102,12 +102,10 @@ class JobPostingListCreateView(APIView):
         if normalization_result.get("invalid_input") is True:
             reason = normalization_result.get("invalid_input_reason")
             return Response(
-                {"raw_text": [
-                    reason or (
-                        "O texto enviado não parece ser uma vaga. "
-                        "Verifique se você não colou um currículo por engano."
-                    )
-                ]},
+                {"detail": reason or (
+                    "O texto enviado não parece ser uma vaga. "
+                    "Verifique se você não colou um currículo por engano."
+                )},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

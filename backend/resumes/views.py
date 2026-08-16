@@ -102,12 +102,10 @@ class ResumeListCreateView(APIView):
         if normalization_result.get("invalid_input") is True:
             reason = normalization_result.get("invalid_input_reason")
             return Response(
-                {"raw_text": [
-                    reason or (
-                        "O texto enviado não parece ser um currículo. "
-                        "Verifique se você não colou uma vaga por engano."
-                    )
-                ]},
+                {"detail": reason or (
+                    "O texto enviado não parece ser um currículo. "
+                    "Verifique se você não colou uma vaga por engano."
+                )},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
