@@ -114,13 +114,10 @@ class MatchRequestSerializer(serializers.Serializer):
                 {"job_id": "Vaga não encontrada."}
             ) from exc
 
-        resume_invalid = (
-            not getattr(resume, "normalization", None) or not resume.normalization.success
-        )
-        job_posting_invalid = (
-            not getattr(job_posting, "normalization", None)
-            or not job_posting.normalization.success
-        )
+        resume_normalization = getattr(resume, "normalization", None)
+        resume_invalid = not resume_normalization or not resume_normalization.success
+        job_normalization = getattr(job_posting, "normalization", None)
+        job_posting_invalid = not job_normalization or not job_normalization.success
 
         if resume_invalid and job_posting_invalid:
             raise serializers.ValidationError(
