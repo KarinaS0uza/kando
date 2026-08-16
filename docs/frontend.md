@@ -10,12 +10,15 @@ O frontend do Kando é uma aplicação React que conduz a pessoa candidata pelo 
 
 ## Stack
 
-- React 19 e Vite
-- React Router
+- React 19 (19.2.7) e Vite (8.1.1) — SPA pura, sem Next.js
+- React Router (`react-router-dom`, v7.18.1)
 - Axios para comunicação com a API
-- Mantine e Material UI para componentes
+- Mantine (`@mantine/core`) e Material UI (`@mui/material`) para componentes
+- `devicon`, `lucide-react` e `@phosphor-icons` para ícones; `react-hot-toast` para notificações
 - jsPDF para exportar o certificado
 - Canvas/compositor de imagens para o Talent Passport
+- `react-pdf` e `react-dropzone` para upload e visualização de PDF
+- `react-archer` e `@react-spring/web` para elementos visuais/animações (ex.: trilha de estudo)
 
 ## Estrutura principal
 
@@ -28,6 +31,11 @@ frontend/src/
   routes/       # rotas públicas e autenticadas
   utils/        # utilitários do fluxo
 ```
+
+> **Divergência conhecida:** `routes/routeConfig.js` lista uma rota `/report` que **não
+> existe** em `AppRoutes.jsx` (ver seção "Rotas" abaixo). Pode ser uma rota planejada e nunca
+> implementada, ou removida sem atualizar essa lista de config — vale confirmar com o time
+> antes de tratar `routeConfig.js` como fonte de verdade das rotas.
 
 ## Rotas
 
@@ -64,6 +72,12 @@ Authorization: Bearer <token>
 
 No logout, token, `user_id` e estados locais relacionados ao fluxo são removidos.
 
+> **Onde isso acontece no código:** a gravação ocorre em
+> `components/layout/JoinForm.jsx`; a leitura, em `hooks/useAuth.js` (usado pelo
+> `ProtectedRoute`) e nos interceptors Axios dos três services listados abaixo; a remoção
+> acontece em `components/layout/Header.jsx` (logout) e também ao montar `pages/Login.jsx`.
+> Não há cookie nem Context API/provider de auth dedicado — é `localStorage` puro.
+
 ## Integração com a API
 
 A URL-base da API é configurada por variável de ambiente:
@@ -80,6 +94,10 @@ enviam automaticamente o JWT quando disponível.
 Authorization: Bearer <access_token>
 ```
 
+> **Débito técnico conhecido:** cada um desses três arquivos cria sua própria instância
+> `axios.create()` e seu próprio interceptor, em vez de compartilhar uma configuração única
+> — duplicação já assinalada em comentário no próprio código-fonte.
+
 Principais services:
 
 | Arquivo | Responsabilidade |
@@ -91,6 +109,13 @@ Principais services:
 | `services/imageComposer/` | composição do certificado em canvas |
 | `utils/uploadTracker.js` | coordenação das requisições assíncronas de upload, matching e simulado |
 
+> **Nota:** nenhum mock ou dado hardcoded foi encontrado substituindo chamada real de API —
+> todas as telas com dados consomem a API de fato. Os únicos arquivos "falsos" no projeto são
+> stubs vazios **sem consumidores** (não são mocks ativos em uso hoje):
+> `services/githubService.js` e `services/resumeService.js` (ambos com comentário explícito
+> "not implemented"), e os hooks `hooks/useProfileAnalysis.js` e `hooks/useSimulation.js`
+> (placeholders retornando `{}`, também sem uso real em nenhuma tela).
+
 ### Fluxo integrado
 
 1. A pessoa candidata envia currículo e vaga.
@@ -101,9 +126,26 @@ Principais services:
 
 ## Score e simulado
 
-A tela de score exibe skills compatíveis e lacunas. Quando há muitas skills, mostra as seis primeiras e oferece **“Ver mais”**.
+A tela de score exibe skills compatíveis e lacunas. Quando há muitas skills, mostra as seis primeiras e oferece **"Ver mais"**.
 
 No simulado:
 
 - perguntas usam o campo `prompt` da API;
 - respostas usam o campo `answer`;
+
+## Débitos técnicos conhecidos
+
+Não há marcadores formais `TODO`/`FIXME` no frontend, mas há trabalho incompleto sinalizado
+diretamente no código:
+
+- Stubs/placeholders sem uso real (`githubService.js`, `resumeService.js`,
+  `useProfileAnalysis.js`, `useSimulation.js` — ver seção "Integração com a API").
+- Duplicação de `axios.create()`/interceptor entre `api.js`, `simulationService.js` e
+  `talentPassportService.js`.
+- Um `console.error` de debug esquecido em `hooks/useImageComposer.js` (linha 33).
+- Um "Caveat" documentado em `utils/uploadTracker.js`: o rastreamento de promises usa um
+  **slot único** (não é por usuário/aba), e é **sobrescrito silenciosamente** caso um novo
+  ciclo de upload/matching/simulado comece antes do anterior terminar — vale atenção em
+  cenários de múltiplas abas ou uploads concorrentes.
+- A divergência entre `routes/routeConfig.js` e `AppRoutes.jsx` (rota `/report`), já
+  sinalizada na seção "Estrutura principal".

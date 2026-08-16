@@ -13,18 +13,19 @@
 | 💻 Documentação do frontend | [docs/frontend.md](docs/frontend.md) |
 | ⚙️ Documentação do backend | [docs/backend.md](docs/backend.md) |
 | 🤖 Documentação da IA | [docs/ai.md](docs/ai.md) |
-| 📄 Licença | [MIT](LICENSE) |
 
 ## 📑 Sumário
 
 - [O problema](#-o-problema)
 - [A solução](#-a-solução)
+- [Demonstração](#-demonstração)
 - [Funcionalidades](#-funcionalidades)
 - [Arquitetura](#arquitetura)
 - [Tecnologias](#tecnologias)
 - [Como rodar localmente](#como-rodar-localmente)
 - [Equipe](#-equipe)
 - [Status do projeto](#-status-do-projeto)
+- [Aprendizados e desafios](#-aprendizados-e-desafios)
 - [Licença](#-licença)
 
 ## 🎯 O problema
@@ -44,6 +45,9 @@ plano de estudo priorizado pelas lacunas reais encontradas — tudo isso sem
 nenhum recrutador alimentando a plataforma.
 
 
+
+> Veja o produto no ar em
+> [kando-eta.vercel.app](https://kando-eta.vercel.app/).*
 
 ## ✨ Funcionalidades
 
@@ -85,10 +89,15 @@ Para detalhes de implementação de cada parte, veja as docs específicas linkad
 | **IA** | ![Groq](https://img.shields.io/badge/Groq_API-F55036?style=for-the-badge&logo=groq&logoColor=white) ![GPT--OSS](https://img.shields.io/badge/openai%2Fgpt--oss--120b-412991?style=for-the-badge&logo=openai&logoColor=white) ![JSON](https://img.shields.io/badge/JSON_Structured_Output-000000?style=for-the-badge&logo=json&logoColor=white) |
 | **PDFs** | ![pdfplumber](https://img.shields.io/badge/pdfplumber-EC1C24?style=for-the-badge&logo=adobeacrobatreader&logoColor=white) ![pypdfium2](https://img.shields.io/badge/pypdfium2-EC1C24?style=for-the-badge&logo=adobeacrobatreader&logoColor=white) |
 | **Autenticação** | ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white) |
-| **Containerização** | ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) |
 | **Deploy** | ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white) ![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white) |
 
 ## Como rodar localmente
+
+### Pré-requisitos
+
+- Python 3.11+
+- Node.js 20+
+- Uma chave de API da [Groq](https://groq.com/)
 
 ### Backend
 
@@ -175,6 +184,7 @@ Construído para o Hackathon Juninhos-Nortjobs, entre 16/07/2026 e 16/08/2026.
 - [x] Frontend conectado aos principais endpoints da API
 - [x] Validação end-to-end com a API real do Groq
 - [x] Configuração e validação final de deploy
+
 
 ## 📄 Licença
 

@@ -10,13 +10,14 @@ O backend do Kando é uma API Django REST responsável por autenticação, persi
 
 ## Stack
 
-- Python e Django 6
-- Django REST Framework
-- JWT (`djangorestframework-simplejwt`)
+- Python e Django 6 (versão instalada: 6.0.7)
+- Django REST Framework (3.17.1)
+- JWT (`djangorestframework-simplejwt`, 5.5.1)
+- `django-cors-headers` (4.9.0)
 - `pdfplumber` e `pypdfium2` para extração e processamento de PDFs
-- Groq para chamadas ao modelo de IA
+- Groq para chamadas ao modelo de IA (SDK `groq`, 1.5.0 — único provider de IA do projeto)
 - SQLite para desenvolvimento local
-- PostgreSQL/Supabase opcional para banco remoto
+- PostgreSQL/Supabase opcional para banco remoto (via `psycopg`)
 
 ## Apps
 
@@ -31,6 +32,10 @@ O backend do Kando é uma API Django REST responsável por autenticação, persi
 | `ai_core` | prompts, chamadas à IA, metadados e contratos JSON |
 | `config` | configurações e roteamento global |
 
+> Além dos apps acima, `local_scripts/` guarda scripts locais fora do controle de versão
+> (gitignored), incluindo `seed_prompts.py` e `prompts_data.py`, usados para popular os
+> prompts de IA no banco (ver `docs/ai.md`).
+
 ## Autenticação
 
 O backend usa JWT. Salvo cadastro e login, as rotas exigem autenticação.
@@ -38,6 +43,9 @@ O backend usa JWT. Salvo cadastro e login, as rotas exigem autenticação.
 ```http
 Authorization: Bearer <access_token>
 ```
+
+O access token tem validade de 2 horas e o refresh token de 7 dias
+(configurado em `SIMPLE_JWT`, em `config/settings.py`).
 
 Rotas públicas:
 
@@ -64,6 +72,17 @@ A API usa SQLite por padrão. Para PostgreSQL/Supabase, defina
 `DATABASE_ENGINE=supabase` e as variáveis `DB_NAME`, `DB_USER`,
 `DB_PASSWORD`, `DB_HOST` e `DB_PORT`.
 
+`DEBUG`, `ALLOWED_HOSTS` e as variáveis de CORS são sempre lidas do ambiente
+(`os.environ.get(...)`) — nunca hardcoded em `settings.py`.
+
+> **Nota de ambiente local:** no momento do último levantamento de documentação, o `.env`
+> local do projeto estava configurado de forma diferente do exemplo acima —
+> `DEBUG=True`, `ALLOWED_HOSTS=localhost,127.0.0.1`, `CORS_ALLOW_ALL_ORIGINS=True`,
+> `CORS_ALLOWED_ORIGINS` vazio e, principalmente, `DATABASE_ENGINE=supabase` (ou seja,
+> apontando para Postgres/Supabase, não SQLite). O exemplo acima continua válido como
+> configuração mínima de referência; vale só ter em mente que o ambiente local real pode
+> estar rodando contra o banco remoto em vez do SQLite.
+
 ## Endpoints
 
 ### Infraestrutura
@@ -71,6 +90,7 @@ A API usa SQLite por padrão. Para PostgreSQL/Supabase, defina
 | Método | Rota | Finalidade |
 |---|---|---|
 | `GET` | `/health/` | Health check público para monitoramento e deploy |
+| `*` | `/admin/` | Admin padrão do Django |
 
 ### Usuários
 
@@ -97,7 +117,7 @@ As submissões são normalizadas. Em caso de falha da IA, o backend registra o e
 | Método | Rota | Corpo |
 |---|---|---|
 | `GET, POST` | `/api/matching/` | `{ "resume_id": "...", "job_id": "..." }` |
-| `GET` | `/api/matching/<uuid>/` | — |
+| `GET, DELETE` | `/api/matching/<uuid>/` | Consulta ou remove um matching |
 
 O resultado inclui score geral, `matches`, `gaps`, forças e pontos de melhoria.
 
@@ -121,6 +141,8 @@ O resultado do simulado contém avaliação por pergunta, score agregado e dados
 
 Pré-requisitos para gerar um Passport: currículo e vaga normalizados, matching concluído, simulado gerado e respostas corrigidas. Um Passport é único por par currículo/vaga; gerar novamente atualiza o existente.
 
+> Ao contrário dos outros recursos, `/api/passports/<uuid>/` não tem `DELETE` implementado.
+
 ### Prompts de IA
 
 | Método | Rota | Finalidade |
@@ -130,4 +152,37 @@ Pré-requisitos para gerar um Passport: currículo e vaga normalizados, matching
 | `GET` | `/api/prompts/<uuid>/` | Consulta prompt |
 | `PUT/PATCH` | `/api/prompts/<uuid>/update/` | Atualiza prompt |
 
+## Migrations
+
+As migrations são gitignoradas (`**/migrations/` no `.gitignore`) — cada ambiente precisa
+gerá-las localmente (`python manage.py makemigrations`) antes de rodar `migrate` pela
+primeira vez. Apenas 4 arquivos `__init__.py` de migrations (`jobs`, `resumes`, `users`,
+`passports`) ficaram rastreados no git, provavelmente de antes dessa regra existir;
+`matching`, `assessments` e `ai_core` não têm nada rastreado.
+
+## Estado do código
+
+Nenhuma ocorrência de `TODO`/`FIXME`/`XXX`/`HACK` em nenhum arquivo `.py` do backend
+(verificado via grep repo-wide, excluindo venv e migrations).
+
 ## Fluxo de dados
+
+> Seção reconstruída a partir dos pré-requisitos e dependências já descritos acima
+> (ex.: pré-requisitos do Talent Passport) — vale revisar contra o diagrama de arquitetura
+> do `README.md` para confirmar se bate exatamente com o desenho oficial do fluxo.
+
+1. **Cadastro e login** (`/api/users/create/`, `/api/login/`) — usuário obtém par de tokens JWT.
+2. **Envio de currículo e vaga** (`/api/resumes/`, `/api/job-postings/`) — texto ou PDF é
+   normalizado via IA (`resume_normalization`, `job_normalization`) e persistido em formato
+   estruturado.
+3. **Matching** (`/api/matching/`) — currículo e vaga normalizados são comparados via IA
+   (`job_resume_matching_analysis`), gerando score, skills compatíveis/faltantes, forças e
+   pontos de melhoria.
+4. **Simulado técnico** (`/api/assessments/`) — perguntas são geradas via IA
+   (`question_generation`) a partir do currículo e da vaga; respostas do candidato são
+   avaliadas em `/api/assessments/<uuid>/result/` via IA (`question_answer`).
+5. **Agregação** — as avaliações individuais do simulado são consolidadas por skill em
+   código (não é uma etapa de IA).
+6. **Talent Passport** (`/api/passports/`) — a partir de currículo, matching e avaliação já
+   concluídos, a IA gera perfil (`talent_passport_profile`) e trilha de estudo
+   (`talent_passport_study_track`); o dashboard é calculado deterministicamente em código.
