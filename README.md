@@ -1,17 +1,31 @@
 # Kando — Talent Passport
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+
 > Plataforma de preparação para processos seletivos em tecnologia: o candidato sobe currículo e vaga, recebe um score de compatibilidade, faz um simulado técnico personalizado e sai com uma trilha de estudo personalizada e um perfil consolidado (Talent Passport).
 
 ## 🔗 Links rápidos
 
 | Recurso | Link |
 |---|---|
-| 🎥 Demo / vídeo | Em breve |
-| 🌐 Produto no ar | Em breve |
+| 🌐 Produto no ar | [kando-eta.vercel.app](https://kando-eta.vercel.app/) |
 | 📋 Pesquisa de mercado | [Dashboard da pesquisa](https://deialima.github.io/kando/Pesquisa%20de%20mercado.html) |
 | 💻 Documentação do frontend | [docs/frontend.md](docs/frontend.md) |
 | ⚙️ Documentação do backend | [docs/backend.md](docs/backend.md) |
 | 🤖 Documentação da IA | [docs/ai.md](docs/ai.md) |
+| 📄 Licença | [MIT](LICENSE) |
+
+## 📑 Sumário
+
+- [O problema](#-o-problema)
+- [A solução](#-a-solução)
+- [Funcionalidades](#-funcionalidades)
+- [Arquitetura](#arquitetura)
+- [Tecnologias](#tecnologias)
+- [Como rodar localmente](#como-rodar-localmente)
+- [Equipe](#-equipe)
+- [Status do projeto](#-status-do-projeto)
+- [Licença](#-licença)
 
 ## 🎯 O problema
 
@@ -47,8 +61,7 @@ nenhum recrutador alimentando a plataforma.
 - [x] Validação end-to-end contra a API real do Groq
 - [x] Deploy em produção
 
-
-##  Arquitetura
+## Arquitetura
 
 Visão geral do fluxo:
 
@@ -62,10 +75,6 @@ Vaga ───────┘                                                   
 
 Para detalhes de implementação de cada parte, veja as docs específicas linkadas acima.
 
-##  Tecnologias
-
-| Camada | Stack |
-|---|---|
 ## Tecnologias
 
 | Camada | Stack |
@@ -73,11 +82,11 @@ Para detalhes de implementação de cada parte, veja as docs específicas linkad
 | **Frontend** | ![React](https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB) ![Vite](https://img.shields.io/badge/Vite_8-646CFF?style=for-the-badge&logo=vite&logoColor=white) ![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=reactrouter&logoColor=white) ![Mantine](https://img.shields.io/badge/Mantine-339AF0?style=for-the-badge&logo=mantine&logoColor=white) ![MUI](https://img.shields.io/badge/MUI-007FFF?style=for-the-badge&logo=mui&logoColor=white) ![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white) ![jsPDF](https://img.shields.io/badge/jsPDF-E34F26?style=for-the-badge&logo=javascript&logoColor=white) |
 | **Backend** | ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white) ![Django](https://img.shields.io/badge/Django_6-092E20?style=for-the-badge&logo=django&logoColor=white) ![DRF](https://img.shields.io/badge/Django_REST_Framework-A30000?style=for-the-badge&logo=django&logoColor=white) |
 | **Banco** | ![SQLite](https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white) ![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white) |
-| **IA** | ![Groq](https://img.shields.io/badge/Groq_API-F55036?style=for-the-badge&logo=groq&logoColor=white) ![Llama](https://img.shields.io/badge/Llama_3.3_70B-0467DF?style=for-the-badge&logo=meta&logoColor=white) ![JSON](https://img.shields.io/badge/JSON_Structured_Output-000000?style=for-the-badge&logo=json&logoColor=white) |
+| **IA** | ![Groq](https://img.shields.io/badge/Groq_API-F55036?style=for-the-badge&logo=groq&logoColor=white) ![GPT--OSS](https://img.shields.io/badge/openai%2Fgpt--oss--120b-412991?style=for-the-badge&logo=openai&logoColor=white) ![JSON](https://img.shields.io/badge/JSON_Structured_Output-000000?style=for-the-badge&logo=json&logoColor=white) |
 | **PDFs** | ![pdfplumber](https://img.shields.io/badge/pdfplumber-EC1C24?style=for-the-badge&logo=adobeacrobatreader&logoColor=white) ![pypdfium2](https://img.shields.io/badge/pypdfium2-EC1C24?style=for-the-badge&logo=adobeacrobatreader&logoColor=white) |
 | **Autenticação** | ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white) |
 | **Containerização** | ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) |
-| **Deploy** | ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white) ![Railway](https://img.shields.io/badge/Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white) ![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white) |
+| **Deploy** | ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white) ![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white) |
 
 ## Como rodar localmente
 
@@ -100,7 +109,7 @@ DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
 # IA: uma chave ou uma lista de chaves separadas por vírgula
 GROQ_API_KEY=sua_chave_aqui
 # GROQ_API_KEYS=chave_1,chave_2
-GROQ_MODEL=llama-3.3-70b-versatile
+GROQ_MODEL=openai/gpt-oss-120b
 
 # Banco local (padrão)
 DATABASE_ENGINE=sqlite
@@ -167,3 +176,6 @@ Construído para o Hackathon Juninhos-Nortjobs, entre 16/07/2026 e 16/08/2026.
 - [x] Validação end-to-end com a API real do Groq
 - [x] Configuração e validação final de deploy
 
+## 📄 Licença
+
+Este projeto está licenciado sob a [MIT License](LICENSE) — você pode usar, copiar, modificar e distribuir livremente, inclusive para fins comerciais, desde que mantenha o aviso de copyright original.
