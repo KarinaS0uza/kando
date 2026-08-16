@@ -30,20 +30,40 @@ def test_list_requires_authentication(api_client):
 
 
 @pytest.mark.django_db
-def test_list_returns_prompts(auth_client):
-    """Existing prompts are returned to any authenticated caller."""
+def test_list_forbidden_for_non_admin(auth_client):
+    """A regular authenticated user cannot list prompts."""
+    response = auth_client.get(LIST_URL)
+
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_list_returns_prompts_for_admin(admin_client):
+    """Existing prompts are returned to an admin caller."""
     Prompt.objects.create(prompt_description="job_normalization", prompt_detail="v1")
 
-    response = auth_client.get(LIST_URL)
+    response = admin_client.get(LIST_URL)
 
     assert response.status_code == 200
     assert len(response.data) == 1
 
 
 @pytest.mark.django_db
-def test_create_rejects_missing_fields(auth_client):
+def test_create_forbidden_for_non_admin(auth_client):
+    """A regular authenticated user cannot publish a prompt."""
+    response = auth_client.post(
+        CREATE_URL,
+        {"prompt_description": "job_normalization", "prompt_detail": "hello $vaga"},
+        format="json",
+    )
+
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_create_rejects_missing_fields(admin_client):
     """Missing required fields return 400."""
-    response = auth_client.post(CREATE_URL, {}, format="json")
+    response = admin_client.post(CREATE_URL, {}, format="json")
 
     assert response.status_code == 400
     assert "prompt_description" in response.data
@@ -51,9 +71,9 @@ def test_create_rejects_missing_fields(auth_client):
 
 
 @pytest.mark.django_db
-def test_create_publishes_a_new_prompt(auth_client):
+def test_create_publishes_a_new_prompt(admin_client):
     """A valid create returns 201 with version 1 and is_active True by default."""
-    response = auth_client.post(
+    response = admin_client.post(
         CREATE_URL,
         {"prompt_description": "job_normalization", "prompt_detail": "hello $vaga"},
         format="json",
@@ -65,7 +85,7 @@ def test_create_publishes_a_new_prompt(auth_client):
 
 
 @pytest.mark.django_db
-def test_create_publishes_a_second_version_of_an_existing_description(auth_client):
+def test_create_publishes_a_second_version_of_an_existing_description(admin_client):
     """Creating with an already-used prompt_description publishes version 2.
 
     DRF's automatic uniqueness checks can't see that prompt_description is
@@ -75,7 +95,7 @@ def test_create_publishes_a_second_version_of_an_existing_description(auth_clien
     """
     Prompt.objects.create(prompt_description="job_normalization", prompt_detail="v1")
 
-    response = auth_client.post(
+    response = admin_client.post(
         CREATE_URL,
         {"prompt_description": "job_normalization", "prompt_detail": "v2"},
         format="json",
@@ -87,28 +107,52 @@ def test_create_publishes_a_second_version_of_an_existing_description(auth_clien
 
 
 @pytest.mark.django_db
-def test_detail_returns_404_for_unknown_id(auth_client):
-    """A nonexistent id returns 404."""
-    response = auth_client.get(detail_url(uuid.uuid4()))
+def test_detail_forbidden_for_non_admin(auth_client):
+    """A regular authenticated user cannot retrieve a prompt."""
+    prompt = Prompt.objects.create(prompt_description="job_normalization", prompt_detail="v1")
+
+    response = auth_client.get(detail_url(prompt.id))
+
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_detail_returns_404_for_unknown_id(admin_client):
+    """A nonexistent id returns 404 for an admin."""
+    response = admin_client.get(detail_url(uuid.uuid4()))
 
     assert response.status_code == 404
 
 
 @pytest.mark.django_db
-def test_detail_returns_existing_prompt(auth_client):
-    """An existing prompt is returned by id."""
+def test_detail_returns_existing_prompt(admin_client):
+    """An existing prompt is returned by id to an admin."""
     prompt = Prompt.objects.create(prompt_description="job_normalization", prompt_detail="v1")
 
-    response = auth_client.get(detail_url(prompt.id))
+    response = admin_client.get(detail_url(prompt.id))
 
     assert response.status_code == 200
     assert response.data["id"] == str(prompt.id)
 
 
 @pytest.mark.django_db
-def test_update_returns_404_for_unknown_id(auth_client):
-    """A nonexistent id returns 404."""
+def test_update_forbidden_for_non_admin(auth_client):
+    """A regular authenticated user cannot update a prompt."""
+    prompt = Prompt.objects.create(prompt_description="job_normalization", prompt_detail="v1")
+
     response = auth_client.put(
+        update_url(prompt.id),
+        {"prompt_description": "job_normalization", "prompt_detail": "v2"},
+        format="json",
+    )
+
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_update_returns_404_for_unknown_id(admin_client):
+    """A nonexistent id returns 404 for an admin."""
+    response = admin_client.put(
         update_url(uuid.uuid4()),
         {"prompt_description": "x", "prompt_detail": "y"},
         format="json",
@@ -118,11 +162,11 @@ def test_update_returns_404_for_unknown_id(auth_client):
 
 
 @pytest.mark.django_db
-def test_update_publishes_a_new_version_when_detail_changes(auth_client):
+def test_update_publishes_a_new_version_when_detail_changes(admin_client):
     """Editing the detail publishes a new, separate version row."""
     prompt = Prompt.objects.create(prompt_description="job_normalization", prompt_detail="v1")
 
-    response = auth_client.put(
+    response = admin_client.put(
         update_url(prompt.id),
         {"prompt_description": "job_normalization", "prompt_detail": "v2"},
         format="json",
@@ -135,11 +179,11 @@ def test_update_publishes_a_new_version_when_detail_changes(auth_client):
 
 
 @pytest.mark.django_db
-def test_update_does_not_duplicate_when_detail_is_unchanged(auth_client):
+def test_update_does_not_duplicate_when_detail_is_unchanged(admin_client):
     """Submitting the same detail again does not create a redundant version."""
     prompt = Prompt.objects.create(prompt_description="job_normalization", prompt_detail="v1")
 
-    response = auth_client.put(
+    response = admin_client.put(
         update_url(prompt.id),
         {"prompt_description": "job_normalization", "prompt_detail": "v1"},
         format="json",

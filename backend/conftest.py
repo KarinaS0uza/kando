@@ -50,9 +50,22 @@ def other_user(user_factory):
 
 
 @pytest.fixture
+def admin_user(user_factory):
+    """Return a persisted test user with is_staff=True."""
+    return user_factory(is_staff=True)
+
+
+@pytest.fixture
 def auth_client(api_client, user):
     """Return an API client authenticated as `user`."""
     api_client.force_authenticate(user=user)
+    return api_client
+
+
+@pytest.fixture
+def admin_client(api_client, admin_user):
+    """Return an API client authenticated as `admin_user`."""
+    api_client.force_authenticate(user=admin_user)
     return api_client
 
 

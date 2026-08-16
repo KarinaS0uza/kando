@@ -8,16 +8,14 @@ from django.contrib.auth import authenticate
 from django.http import Http404
 from rest_framework import generics, status
 from rest_framework.exceptions import NotFound
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User
+from .permissions import IsSelfOrAdmin
 from .serializers import UserSerializer, LoginSerializer
-
-# NOTE: the authenticated views below use IsAuthenticated during development;
-# switch to an admin-only permission as the project matures.
 
 
 class UserNotFoundMixin:
@@ -69,19 +67,19 @@ class LoginView(APIView):
 
 
 class UserListView(generics.ListAPIView):
-    """List all users, newest first (authenticated only)."""
+    """List all users, newest first (admin only)."""
 
     queryset = User.objects.all().order_by("-date_joined")
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
 
 class UserDetailView(UserNotFoundMixin, generics.RetrieveAPIView):
-    """Retrieve a single user (authenticated only)."""
+    """Retrieve a single user (own record, or any record for an admin)."""
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsSelfOrAdmin]
 
 
 class UserCreateView(generics.CreateAPIView):
@@ -93,16 +91,16 @@ class UserCreateView(generics.CreateAPIView):
 
 
 class UserUpdateView(UserNotFoundMixin, generics.UpdateAPIView):
-    """Update an existing user (authenticated only)."""
+    """Update an existing user (admin only)."""
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
 
 class UserDeleteView(UserNotFoundMixin, generics.DestroyAPIView):
-    """Delete a user (authenticated only)."""
+    """Delete a user (admin only)."""
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
