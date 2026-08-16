@@ -64,6 +64,7 @@ export default function UploadProfile() {
           style: {
             maxWidth: "min(420px, calc(100vw - 24px))",
             overflowWrap: "anywhere",
+            whiteSpace: "pre-line",
           },
         }}
       />

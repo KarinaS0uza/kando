@@ -57,13 +57,17 @@ def test_user_list_requires_authentication(api_client):
 
 
 @pytest.mark.django_db
-def test_user_list_currently_returns_every_user(auth_client, user, other_user):
-    """Any authenticated user currently sees every account, not just their own.
-
-    Documents the known temporary IsAuthenticated scope; expected to start
-    failing once the users views move to IsAdminUser/ownership scoping.
-    """
+def test_user_list_forbidden_for_non_admin(auth_client):
+    """A regular authenticated user cannot list all accounts."""
     response = auth_client.get(reverse("user-list"))
+
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_user_list_returns_every_user_for_admin(admin_client, user, other_user):
+    """An admin sees every account."""
+    response = admin_client.get(reverse("user-list"))
 
     assert response.status_code == 200
     returned_ids = {row["id"] for row in response.data}
@@ -79,9 +83,26 @@ def test_user_detail_requires_authentication(api_client, user):
 
 
 @pytest.mark.django_db
-def test_user_detail_currently_returns_any_user(auth_client, other_user):
-    """Any authenticated user can currently read another user's detail record."""
+def test_user_detail_forbidden_for_other_user(auth_client, other_user):
+    """A regular user cannot read another user's detail record."""
     response = auth_client.get(reverse("user-detail", kwargs={"pk": other_user.id}))
+
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_user_detail_allows_own_record(auth_client, user):
+    """A regular user can read their own detail record."""
+    response = auth_client.get(reverse("user-detail", kwargs={"pk": user.id}))
+
+    assert response.status_code == 200
+    assert response.data["id"] == str(user.id)
+
+
+@pytest.mark.django_db
+def test_user_detail_allows_admin_for_any_user(admin_client, other_user):
+    """An admin can read any user's detail record."""
+    response = admin_client.get(reverse("user-detail", kwargs={"pk": other_user.id}))
 
     assert response.status_code == 200
     assert response.data["id"] == str(other_user.id)
@@ -220,13 +241,31 @@ def test_user_update_requires_authentication(api_client, user):
 
 
 @pytest.mark.django_db
-def test_user_update_currently_allows_editing_another_user(auth_client, other_user):
-    """Any authenticated user can currently change another user's password.
-
-    Documents the known IDOR in UserUpdateView; expected to start failing
-    once update access is restricted to the owner or an admin.
-    """
+def test_user_update_forbidden_for_non_admin(auth_client, other_user):
+    """A regular user cannot update another user's record."""
     response = auth_client.patch(
+        reverse("user-update", kwargs={"pk": other_user.id}),
+        {"password": "NewOwner#Passw0rd!"},
+        format="json",
+    )
+
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_user_update_forbidden_for_own_record(auth_client, user):
+    """A regular user cannot update even their own record; only an admin can."""
+    response = auth_client.patch(
+        reverse("user-update", kwargs={"pk": user.id}), {"full_name": "X Y"}, format="json"
+    )
+
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_user_update_allows_admin_to_edit_any_user(admin_client, other_user):
+    """An admin can update another user's record."""
+    response = admin_client.patch(
         reverse("user-update", kwargs={"pk": other_user.id}),
         {"password": "NewOwner#Passw0rd!"},
         format="json",
@@ -238,9 +277,9 @@ def test_user_update_currently_allows_editing_another_user(auth_client, other_us
 
 
 @pytest.mark.django_db
-def test_user_update_not_found_for_unknown_id(auth_client):
-    """A nonexistent id returns 404."""
-    response = auth_client.patch(
+def test_user_update_not_found_for_unknown_id(admin_client):
+    """A nonexistent id returns 404 for an admin."""
+    response = admin_client.patch(
         reverse("user-update", kwargs={"pk": uuid.uuid4()}), {"full_name": "X"}, format="json"
     )
 
@@ -256,17 +295,26 @@ def test_user_delete_requires_authentication(api_client, user):
 
 
 @pytest.mark.django_db
-def test_user_delete_removes_target_user(auth_client, other_user):
-    """A successful delete returns 204 and the row no longer exists."""
+def test_user_delete_forbidden_for_non_admin(auth_client, other_user):
+    """A regular user cannot delete another user's account."""
     response = auth_client.delete(reverse("user-delete", kwargs={"pk": other_user.id}))
+
+    assert response.status_code == 403
+    assert User.objects.filter(id=other_user.id).exists()
+
+
+@pytest.mark.django_db
+def test_user_delete_removes_target_user_for_admin(admin_client, other_user):
+    """A successful admin delete returns 204 and the row no longer exists."""
+    response = admin_client.delete(reverse("user-delete", kwargs={"pk": other_user.id}))
 
     assert response.status_code == 204
     assert not User.objects.filter(id=other_user.id).exists()
 
 
 @pytest.mark.django_db
-def test_user_delete_not_found_for_unknown_id(auth_client):
-    """A nonexistent id returns 404."""
-    response = auth_client.delete(reverse("user-delete", kwargs={"pk": uuid.uuid4()}))
+def test_user_delete_not_found_for_unknown_id(admin_client):
+    """A nonexistent id returns 404 for an admin."""
+    response = admin_client.delete(reverse("user-delete", kwargs={"pk": uuid.uuid4()}))
 
     assert response.status_code == 404
