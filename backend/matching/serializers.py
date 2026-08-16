@@ -114,14 +114,25 @@ class MatchRequestSerializer(serializers.Serializer):
                 {"job_id": "Vaga não encontrada."}
             ) from exc
 
-        if not getattr(resume, "normalization", None) or not resume.normalization.success:
+        resume_normalization = getattr(resume, "normalization", None)
+        resume_invalid = not resume_normalization or not resume_normalization.success
+        job_normalization = getattr(job_posting, "normalization", None)
+        job_posting_invalid = not job_normalization or not job_normalization.success
+
+        if resume_invalid and job_posting_invalid:
             raise serializers.ValidationError(
-                {"resume_id": "O currículo ainda não foi normalizado com sucesso."}
+                "Currículo e vaga parecem estar invertidos. Confira se você não colou "
+                "o currículo no campo de vaga e a vaga no campo de currículo."
             )
 
-        if not getattr(job_posting, "normalization", None) or not job_posting.normalization.success:
+        if resume_invalid:
             raise serializers.ValidationError(
-                {"job_id": "A vaga ainda não foi normalizada com sucesso."}
+                {"resume_id": "Confira se o campo de currículo não recebeu uma vaga por engano."}
+            )
+
+        if job_posting_invalid:
+            raise serializers.ValidationError(
+                {"job_id": "Confira se o campo de vaga não recebeu um currículo por engano."}
             )
 
         attrs["resume"] = resume

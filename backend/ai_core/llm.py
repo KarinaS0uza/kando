@@ -11,6 +11,7 @@ rejected.
 import json
 import logging
 import os
+import re
 import time
 from string import Template
 
@@ -27,6 +28,11 @@ from .models import Prompt, PromptCallMetadata
 
 logger = logging.getLogger(__name__)
 
+RATE_LIMIT_MAX_WAIT_SECONDS = 10.0
+RATE_LIMIT_DEFAULT_WAIT_SECONDS = 2.0
+RETRY_AFTER_MESSAGE_PATTERN = re.compile(r"try again in ([\d.]+)s")
+JSON_VALIDATION_ERROR_PATTERN = re.compile(r"failed to validate json", re.IGNORECASE)
+
 
 def load_api_keys() -> list[str | None]:
     """Return the configured Groq API keys, in fallback order.
@@ -41,18 +47,85 @@ def load_api_keys() -> list[str | None]:
 
 API_KEYS = load_api_keys()
 clients = [Groq(api_key=key) for key in API_KEYS]
-MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
+MODEL = os.environ.get("GROQ_MODEL", "openai/gpt-oss-120b")
+
+
+def rate_limit_wait_seconds(exc: RateLimitError) -> float:
+    """Return how long to wait before retrying a rate-limited call.
+
+    Reads the standard ``retry-after`` response header first, falling back to
+    parsing Groq's "please try again in Xs" message text, and finally a fixed
+    default. Capped at RATE_LIMIT_MAX_WAIT_SECONDS so a single call can't hold
+    up the caller's request indefinitely.
+    """
+    header_value = exc.response.headers.get("retry-after") if exc.response is not None else None
+    if header_value is not None:
+        try:
+            return min(float(header_value), RATE_LIMIT_MAX_WAIT_SECONDS)
+        except ValueError:
+            pass
+    match = RETRY_AFTER_MESSAGE_PATTERN.search(str(exc))
+    if match:
+        return min(float(match.group(1)), RATE_LIMIT_MAX_WAIT_SECONDS)
+    return RATE_LIMIT_DEFAULT_WAIT_SECONDS
 
 
 def create_completion(request_kwargs: dict):
-    """Call chat.completions.create, falling back to the next key on
-    rate-limit or auth/permission errors from the current one.
+    """Call chat.completions.create, waiting out a rate limit once per key
+    and retrying once on a JSON-validation 400 (the model failed its own
+    json_object constraint for that generation -- model variance, not a
+    real config problem) before falling back to the next key on a repeated
+    failure or an auth/permission error from the current one.
     """
     last_exc: Exception | None = None
     for index, client in enumerate(clients):
         try:
             return client.chat.completions.create(**request_kwargs)
-        except (RateLimitError, AuthenticationError, PermissionDeniedError) as exc:
+        except RateLimitError as exc:
+            wait_seconds = rate_limit_wait_seconds(exc)
+            logger.warning(
+                "llm: key %d/%d rate limited, waiting %.2fs before retrying",
+                index + 1,
+                len(clients),
+                wait_seconds,
+            )
+            time.sleep(wait_seconds)
+            try:
+                return client.chat.completions.create(**request_kwargs)
+            except (RateLimitError, AuthenticationError, PermissionDeniedError) as retry_exc:
+                last_exc = retry_exc
+                if index < len(clients) - 1:
+                    logger.warning(
+                        "llm: key %d/%d failed again (%s), falling back to next key",
+                        index + 1,
+                        len(clients),
+                        type(retry_exc).__name__,
+                    )
+        except BadRequestError as exc:
+            if not JSON_VALIDATION_ERROR_PATTERN.search(str(exc)):
+                raise
+            logger.warning(
+                "llm: key %d/%d got a JSON-validation error from the model, retrying once",
+                index + 1,
+                len(clients),
+            )
+            try:
+                return client.chat.completions.create(**request_kwargs)
+            except (
+                RateLimitError,
+                AuthenticationError,
+                PermissionDeniedError,
+                BadRequestError,
+            ) as retry_exc:
+                last_exc = retry_exc
+                if index < len(clients) - 1:
+                    logger.warning(
+                        "llm: key %d/%d failed again (%s), falling back to next key",
+                        index + 1,
+                        len(clients),
+                        type(retry_exc).__name__,
+                    )
+        except (AuthenticationError, PermissionDeniedError) as exc:
             last_exc = exc
             if index < len(clients) - 1:
                 logger.warning(
@@ -68,6 +141,11 @@ def run_prompt(
     prompt_key: str, variables: dict, *, timeout: int | None = None, temperature: float = 0.2
 ) -> dict:
     """Run the active prompt for prompt_key with variables and return parsed JSON.
+
+    A top-level result that isn't a JSON object (e.g. the model wraps it in
+    an array) is treated the same as invalid JSON -- every prompt's contract
+    expects an object, so callers can trust a non-error return is always a
+    dict without re-checking its shape themselves.
 
     Logs a PromptCallMetadata row per call, with a status distinguishing
     missing prompt, invalid JSON, rate limit, config error (auth/permission/
@@ -97,6 +175,8 @@ def run_prompt(
         usage = response.usage
         output_text = response.choices[0].message.content
         output_data = json.loads(output_text)
+        if not isinstance(output_data, dict):
+            raise json.JSONDecodeError("Expected a JSON object", output_text, 0)
         status = PromptCallMetadata.Status.SUCCESS
         return output_data
     except Prompt.DoesNotExist as exc:

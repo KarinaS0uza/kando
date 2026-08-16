@@ -86,7 +86,7 @@ def generate_professional_profile(
     variables = {
         "resume": dump_json(resume_data),
         "matching": dump_json(match_data),
-        "evaluation": dump_json(assessment_data),
+        "evaluation": dump_json(assessment_data["aggregation"]),
     }
     result = run_prompt_safe(
         PROMPT_KEY,
